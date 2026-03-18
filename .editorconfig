@@ -1,0 +1,15 @@
+# https://editorconfig.org
+root = true
+
+# Configuration par défaut pour tous les fichiers
+[*]
+charset = utf-8
+indent_style = space        # Force les espaces (pas de tabulations)
+indent_size = 2             # Taille de 2 espaces
+end_of_line = lf            # Force les fins de ligne Linux/Mac (LF)
+insert_final_newline = true # Ajoute une ligne vide à la fin du fichier
+trim_trailing_whitespace = true # Supprime les espaces inutiles en fin de ligne
+
+# Surcharge spécifique pour le YAML ou GitHub Actions
+[*.{yml,yaml}]
+indent_size = 2
