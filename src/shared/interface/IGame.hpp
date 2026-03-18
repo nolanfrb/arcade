@@ -16,8 +16,8 @@
  * ------------------------------------------------------------------------------------
  */
 
-#ifndef INCLUDED_IGAME_HPP
-#define INCLUDED_IGAME_HPP
+#ifndef IGAME_HPP_
+#define IGAME_HPP_
 
 #include <string>
 #include <vector>

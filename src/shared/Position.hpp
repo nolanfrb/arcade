@@ -16,15 +16,15 @@
  * ------------------------------------------------------------------------------------
  */
 
-#ifndef INCLUDED_POSITION_HPP
-#define INCLUDED_POSITION_HPP
+#ifndef POSITION_HPP_
+#define POSITION_HPP_
 
 #include <optional>
 
 struct Position {
-  float x;
-  float y;
-  std::optional<float> z;
+  float x = 0;
+  float y = 0;
+  std::optional<float> z = std::nullopt;
 };
 
 #endif

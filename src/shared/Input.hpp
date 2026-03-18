@@ -16,8 +16,8 @@
  * ------------------------------------------------------------------------------------
  */
 
-#ifndef INCLUDED_INPUT_HPP
-#define INCLUDED_INPUT_HPP
+#ifndef INPUT_HPP_
+#define INPUT_HPP_
 
 #include <cstdint>
 

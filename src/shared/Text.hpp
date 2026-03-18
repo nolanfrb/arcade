@@ -16,8 +16,8 @@
  * ------------------------------------------------------------------------------------
  */
 
-#ifndef INCLUDED_TEXT_HPP
-#define INCLUDED_TEXT_HPP
+#ifndef TEXT_HPP_
+#define TEXT_HPP_
 
 #include <array>
 #include <cstdint>

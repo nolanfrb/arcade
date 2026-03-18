@@ -18,8 +18,8 @@
  * ------------------------------------------------------------------------------------
  */
 
-#ifndef INCLUDED_ENTITY_HPP
-#define INCLUDED_ENTITY_HPP
+#ifndef ENTITY_HPP_
+#define ENTITY_HPP_
 
 #include <array>
 #include <cstdint>

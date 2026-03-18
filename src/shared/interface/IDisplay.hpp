@@ -16,8 +16,8 @@
  * ------------------------------------------------------------------------------------
  */
 
-#ifndef INCLUDED_IDISPLAY_HPP
-#define INCLUDED_IDISPLAY_HPP
+#ifndef IDISPLAY_HPP_
+#define IDISPLAY_HPP_
 
 #include <string>
 #include <vector>
