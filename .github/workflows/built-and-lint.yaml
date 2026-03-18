@@ -1,0 +1,67 @@
+name: Lint and Format
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches-ignore:
+      - "ga-ignore-*"
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install dependencies
+        run: sudo apt-get update -qq && sudo apt-get install -y build-essential cmake
+
+      - name: Build project
+        run: cmake -S . -B build && cmake --build build --config Release
+
+      - name: Run tests
+        run: |
+          ctest --output-on-failure
+
+  clang-format:
+    name: Check Formatting (clang-format)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Install clang-format-20
+        run: |
+          wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
+          echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-20 main" | sudo tee /etc/apt/sources.list.d/llvm-20.list
+          sudo apt-get update -qq && sudo apt-get install -y clang-format-20
+
+      - name: Check formatting
+        run: |
+          find src include -type f \( -name '*.cpp' -o -name '*.hpp' \) \
+            | xargs clang-format-20 --dry-run --Werror
+
+  clang-tidy:
+    name: Static Analysis (clang-tidy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cpp-linter/cpp-linter-action@v2
+        id: linter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          style: "file" # Use .clang-format config file
+          tidy-checks: "./clang-tidy" # Use .clang-tidy config file
+          extra-args: "-Iinclude"
+          thread-comments: false
+      - name: Fail fast?!
+        if: steps.linter.outputs.checks-failed > 0
+        run: exit 1
