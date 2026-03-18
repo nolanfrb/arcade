@@ -21,9 +21,9 @@
 
 #include <string>
 #include <vector>
-#include "Entity.hpp"
-#include "Input.hpp"
-#include "Text.hpp"
+#include "../Entity.hpp"
+#include "../Input.hpp"
+#include "../Text.hpp"
 
 class IGame {
  public:
