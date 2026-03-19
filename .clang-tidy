@@ -14,7 +14,8 @@ Checks: '*,
          -altera-unroll-loops,
          -modernize-use-trailing-return-type,
          -llvm-include-order,
-         -altera-*'
+         -altera-*,
+         -llvm-header-guard'
 
 # Treat warnings as errors so the CI fails on bad code
 WarningsAsErrors: '*'
