@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}",
+                "${workspaceFolder}/include",
+                "/usr/local/include"
+            ],
+            "defines": [],
+            "macFrameworkPath": [
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
+            ],
+            "compilerPath": "/opt/homebrew/opt/llvm@20/bin/clang++",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "macos-clang-x64",
+            "compilerArgs": [
+                "-I${workspaceFolder}",
+                "-I${workspaceFolder}/include"
+            ],
+            "recommendations": [
+                "xaver.clang-format",
+                "llvm-vs-code-extensions.vscode-clangd"
+            ]
+        }
+    ],
+    "version": 4
+}
