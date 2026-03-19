@@ -17,4 +17,5 @@ struct Entity {
   char asciiChar;
   std::string texturePath;
   std::array<uint8_t, 4> color;
+  bool isPlayer;
 };

@@ -16,6 +16,7 @@
 class IGame {
  public:
   virtual ~IGame() = default;
+  IGame() = default;
 
   IGame(const IGame&) = default;
   IGame& operator=(const IGame&) = default;
