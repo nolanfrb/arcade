@@ -16,6 +16,7 @@
 class IDisplay {
  public:
   virtual ~IDisplay() = default;
+  IDisplay() = default;
 
   virtual void init() = 0;
   virtual void stop() = 0;
