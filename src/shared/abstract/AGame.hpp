@@ -7,6 +7,11 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+#include "../Entity.hpp"
+#include "../Input.hpp"
+#include "../Text.hpp"
 #include "../interface/IGame.hpp"
 
 class AGame : public IGame {

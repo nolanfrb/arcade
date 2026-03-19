@@ -7,6 +7,11 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+#include "../Entity.hpp"
+#include "../Input.hpp"
+#include "../Text.hpp"
 #include "../interface/IDisplay.hpp"
 
 class ADisplay : public IDisplay {
