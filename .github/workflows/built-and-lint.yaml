@@ -12,6 +12,7 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker
 
     steps:
       - name: Checkout repository
