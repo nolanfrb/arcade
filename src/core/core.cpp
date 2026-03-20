@@ -6,6 +6,7 @@
 */
 
 #include "core.hpp"
+#include <iostream>
 
 core::core() {
   _systemCommand.getOnExitRequested() = [this]() { _running = false; };
@@ -49,7 +50,12 @@ void core::menu() {
   _libManager.loadDisplay("Ncurses");
 }
 
-void core::run() {
+int core::run(std::filesystem::path const& path) {
+  _libManager.scanLibs(path);
+  if (_display == nullptr) {
+    std::cerr << "No display library found." << '\n';
+    return ERROR;
+  }
   while (_running) {
     _systemCommand.handleSystemEvent(_display->getEvent());
     if (_display != nullptr && _game != nullptr) {
@@ -65,6 +71,7 @@ void core::run() {
   if (_game != nullptr) {
     _game->stop();
   }
+  return 0;
 }
 
 void core::restart() {

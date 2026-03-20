@@ -16,6 +16,8 @@
 #include "SystemCommand/SystemCommand.hpp"
 #include "dlLoader/dlLoader.hpp"
 
+#define ERROR 84
+
 class core {
  public:
   core();
@@ -26,7 +28,7 @@ class core {
   core(core&& other) = delete;
   core& operator=(core&& other) = delete;
 
-  void run();
+  int run(std::filesystem::path const& path);
   void menu();
   void restart();
   void loadGame(std::string const& path);

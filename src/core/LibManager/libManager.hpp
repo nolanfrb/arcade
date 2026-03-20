@@ -36,6 +36,8 @@ class LibManager {
   [[nodiscard]] IDisplay* getDisplay() const { return _display; }
 
  private:
+  void checkAndAddLib(const std::string& filepath);
+
   dlLoader<IGame> _gameLoader;
   dlLoader<IDisplay> _displayLoader;
 

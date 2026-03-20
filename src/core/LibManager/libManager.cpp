@@ -7,29 +7,46 @@
 
 #include "LibManager.hpp"
 #include <filesystem>
+#include <iostream>
 
 LibManager::~LibManager() {
   if (_game != nullptr) {
     _game->stop();
     delete _game;
+    _game = nullptr;
   }
   if (_display != nullptr) {
     _display->stop();
     delete _display;
+    _display = nullptr;
+  }
+}
+
+void LibManager::checkAndAddLib(const std::string& filepath) {
+  if (dlLoader<IGame>::hasSymbol(filepath, "createGame")) {
+    _games.push_back(filepath);
+  } else if (dlLoader<IDisplay>::hasSymbol(filepath, "createDisplay")) {
+    _displays.push_back(filepath);
   }
 }
 
 void LibManager::scanLibs(const std::string& path) {
   _games.clear();
   _displays.clear();
-  for (auto const& entry : std::filesystem::directory_iterator(path)) {
-    if (entry.path().extension() == ".so") {
-      if (dlLoader<IGame>::hasSymbol(entry.path(), "createGame")) {
-        _games.push_back(entry.path().string());
-      } else if (dlLoader<IDisplay>::hasSymbol(entry.path(), "createDisplay")) {
-        _displays.push_back(entry.path().string());
+  if (!std::filesystem::exists(path)) {
+    std::cerr << "Warning: Directory or file '" << path << "' not found."
+              << '\n';
+    return;
+  }
+  if (std::filesystem::is_directory(path)) {
+    for (auto const& entry : std::filesystem::directory_iterator(path)) {
+      if (entry.is_regular_file() && entry.path().extension() == ".so") {
+        checkAndAddLib(entry.path().string());
       }
     }
+  } else if (std::filesystem::is_regular_file(path) &&
+             std::filesystem::path(path).extension() == ".so") {
+    checkAndAddLib(path);
   }
 }
 
