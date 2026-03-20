@@ -14,17 +14,17 @@
 #include "../../shared/interface/IGame.hpp"
 
 template <typename T>
-dlLoader<T>::dlLoader() = default;
+DlLoader<T>::DlLoader() = default;
 
 template <typename T>
-dlLoader<T>::~dlLoader() {
+DlLoader<T>::~DlLoader() {
   if (handle != nullptr) {
     dlclose(handle);
   }
 }
 
 template <typename T>
-void dlLoader<T>::loadLib(std::filesystem::path const& path) {
+void DlLoader<T>::loadLib(std::filesystem::path const& path) {
   unloadLib();
   handle = dlopen(path.c_str(), RTLD_LAZY);
   if (handle == nullptr) {
@@ -33,7 +33,7 @@ void dlLoader<T>::loadLib(std::filesystem::path const& path) {
 }
 
 template <typename T>
-T* dlLoader<T>::getInstance(std::string const& entryPoint) {
+T* DlLoader<T>::getInstance(std::string const& entryPoint) {
   if (handle == nullptr) {
     return nullptr;
   }
@@ -47,7 +47,7 @@ T* dlLoader<T>::getInstance(std::string const& entryPoint) {
 }
 
 template <typename T>
-void dlLoader<T>::unloadLib() {
+void DlLoader<T>::unloadLib() {
   if (handle != nullptr) {
     if (dlclose(handle) != 0) {
       std::cerr << "dlclose failed" << "\n";
@@ -56,5 +56,5 @@ void dlLoader<T>::unloadLib() {
   }
 }
 
-template class dlLoader<IGame>;
-template class dlLoader<IDisplay>;
+template class DlLoader<IGame>;
+template class DlLoader<IDisplay>;

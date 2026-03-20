@@ -6,7 +6,6 @@
 */
 
 #include "libManager.hpp"
-#include <cstddef>
 #include <filesystem>
 #include <iostream>
 #include <string>
@@ -26,9 +25,9 @@ LibManager::~LibManager() {
 }
 
 void LibManager::checkAndAddLib(const std::string& filepath) {
-  if (dlLoader<IGame>::hasSymbol(filepath, "createGame")) {
+  if (DlLoader<IGame>::hasSymbol(filepath, "createGame")) {
     _games.push_back(filepath);
-  } else if (dlLoader<IDisplay>::hasSymbol(filepath, "createDisplay")) {
+  } else if (DlLoader<IDisplay>::hasSymbol(filepath, "createDisplay")) {
     _displays.push_back(filepath);
   }
 }
@@ -64,8 +63,8 @@ void LibManager::loadGame(const std::string& path) {
   _game = _gameLoader.getInstance("createGame");
   if (_game != nullptr) {
     _game->init();
-    for (std::size_t index = 0; index < _games.size(); ++index) {
-      if (_games[index] == path) {
+    for (int index = 0; index < _games.size(); ++index) {
+      if (std::filesystem::equivalent(_games[index], path)) {
         _gameIndex = index;
         break;
       }
@@ -84,8 +83,8 @@ void LibManager::loadDisplay(const std::string& path) {
   _display = _displayLoader.getInstance("createDisplay");
   if (_display != nullptr) {
     _display->init();
-    for (std::size_t index = 0; index < _displays.size(); ++index) {
-      if (_displays[index] == path) {
+    for (int index = 0; index < _displays.size(); ++index) {
+      if (std::filesystem::equivalent(_displays[index], path)) {
         _displayIndex = index;
         break;
       }

@@ -38,8 +38,8 @@ class LibManager {
  private:
   void checkAndAddLib(const std::string& filepath);
 
-  dlLoader<IGame> _gameLoader;
-  dlLoader<IDisplay> _displayLoader;
+  DlLoader<IGame> _gameLoader;
+  DlLoader<IDisplay> _displayLoader;
 
   IGame* _game = nullptr;
   IDisplay* _display = nullptr;

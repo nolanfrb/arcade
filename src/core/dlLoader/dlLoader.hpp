@@ -12,15 +12,15 @@
 #include <string>
 
 template <typename T>
-class dlLoader {
+class DlLoader {
  public:
-  dlLoader();
-  ~dlLoader();
+  DlLoader();
+  ~DlLoader();
 
-  dlLoader(const dlLoader& other) = delete;
-  dlLoader& operator=(const dlLoader& other) = delete;
-  dlLoader(dlLoader&& other) = delete;
-  dlLoader& operator=(dlLoader&& other) = delete;
+  DlLoader(const DlLoader& other) = delete;
+  DlLoader& operator=(const DlLoader& other) = delete;
+  DlLoader(DlLoader&& other) = delete;
+  DlLoader& operator=(DlLoader&& other) = delete;
 
   void loadLib(std::filesystem::path const& path);
   T* getInstance(std::string const& entryPoint);
