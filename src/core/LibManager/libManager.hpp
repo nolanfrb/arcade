@@ -16,7 +16,7 @@
 
 class LibManager {
  public:
-  LibManager();
+  LibManager() = default;
   ~LibManager();
 
   LibManager(const LibManager& other) = delete;

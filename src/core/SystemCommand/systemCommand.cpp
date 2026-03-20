@@ -7,11 +7,31 @@
 
 #include "SystemCommand.hpp"
 
-void SystemCommand::handleMenu() { onMenuRequested(); }
-void SystemCommand::handleExit() { onExitRequested(); }
-void SystemCommand::handleRestart() { onRestartRequested(); }
-void SystemCommand::handleNextGame() { onNextGameRequested(); }
-void SystemCommand::handleNextDisplay() { onNextDisplayRequested(); }
+void SystemCommand::handleMenu() {
+  if (onMenuRequested) {
+    onMenuRequested();
+  }
+}
+void SystemCommand::handleExit() {
+  if (onExitRequested) {
+    onExitRequested();
+  }
+}
+void SystemCommand::handleRestart() {
+  if (onRestartRequested) {
+    onRestartRequested();
+  }
+}
+void SystemCommand::handleNextGame() {
+  if (onNextGameRequested) {
+    onNextGameRequested();
+  }
+}
+void SystemCommand::handleNextDisplay() {
+  if (onNextDisplayRequested) {
+    onNextDisplayRequested();
+  }
+}
 
 void SystemCommand::handleSystemEvent(Input input) {
   for (auto const& [key, val] : _eventMap) {

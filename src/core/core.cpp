@@ -9,72 +9,65 @@
 #include <iostream>
 
 core::core() {
-  _systemCommand.getOnExitRequested() = [this]() { _running = false; };
-  _systemCommand.getOnMenuRequested() = [this]() { menu(); };
-  _systemCommand.getOnRestartRequested() = [this]() { restart(); };
-  _systemCommand.getOnNextGameRequested() = [this]() {
-    _libManager.nextGame();
-  };
-  _systemCommand.getOnNextDisplayRequested() = [this]() {
-    _libManager.nextDisplay();
-  };
+  _systemCommand.setOnExitRequested([this]() { _running = false; });
+  _systemCommand.setOnMenuRequested([this]() { menu(); });
+  _systemCommand.setOnRestartRequested([this]() { restart(); });
+  _systemCommand.setOnNextGameRequested([this]() { _libManager.nextGame(); });
+  _systemCommand.setOnNextDisplayRequested([this]() { _libManager.nextDisplay(); });
 }
 
-core::~core() {
-  if (_game != nullptr) {
-    _game->stop();
-    delete _game;
-  }
-  if (_display != nullptr) {
-    _display->stop();
-    delete _display;
-  }
-}
+core::~core() = default;
 
 void core::loadDisplay(std::string const& path) {
-  displayLoader.loadLib(path);
-  _display = displayLoader.getInstance("createDisplay");
-  _display->init();
+  _libManager.loadDisplay(path);
 }
 
-void core::loadGame(std::string const& path) {
-  gameLoader.loadLib(path);
-  _game = gameLoader.getInstance("createGame");
-  _game->init();
-}
+void core::loadGame(std::string const& path) { _libManager.loadGame(path); }
 
 void core::menu() {
-  _display->clear();
-  _game->stop();
-  _libManager.loadGame("Menu");
-  _libManager.loadDisplay("Ncurses");
+  if (_libManager.getDisplay() != nullptr) {
+    _libManager.getDisplay()->clear();
+  }
+  if (_libManager.getGame() != nullptr) {
+    _libManager.getGame()->stop();
+  }
+  _libManager.loadGame("./lib/arcade_menu.so");
 }
 
 int core::run(std::filesystem::path const& path) {
-  _libManager.scanLibs(path);
-  if (_display == nullptr) {
+  _libManager.loadDisplay(path.string());
+  _libManager.scanLibs("./lib");
+
+  if (_libManager.getDisplay() == nullptr) {
     std::cerr << "No display library found." << '\n';
     return ERROR;
   }
+  _libManager.loadGame("./lib/arcade_menu.so");
+
   while (_running) {
-    _systemCommand.handleSystemEvent(_display->getEvent());
-    if (_display != nullptr && _game != nullptr) {
-      _display->clear();
-      _display->drawEntity(_game->getEntity());
-      _display->drawText(_game->getText());
-      _display->display();
+    IDisplay* currentDisplay = _libManager.getDisplay();
+    IGame* currentGame = _libManager.getGame();
+
+    if (currentDisplay != nullptr) {
+      Input input = currentDisplay->getEvent();
+      _systemCommand.handleSystemEvent(input);
+
+      if (currentGame != nullptr) {
+        currentGame->update(input, DEFAULT_DELTA_TIME);
+        currentDisplay->clear();
+        currentDisplay->drawEntity(currentGame->getEntity());
+        currentDisplay->drawText(currentGame->getText());
+        currentDisplay->display();
+      }
     }
   }
-  if (_display != nullptr) {
-    _display->stop();
-  }
-  if (_game != nullptr) {
-    _game->stop();
-  }
+
   return 0;
 }
 
 void core::restart() {
-  _game->stop();
-  _game->init();
+  if (_libManager.getGame() != nullptr) {
+    _libManager.getGame()->stop();
+    _libManager.getGame()->init();
+  }
 }

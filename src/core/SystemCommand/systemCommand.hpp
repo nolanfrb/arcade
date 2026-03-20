@@ -23,6 +23,22 @@ class SystemCommand {
 
   void handleSystemEvent(Input input);
 
+  void setOnExitRequested(std::function<void()> callback) {
+    onExitRequested = std::move(callback);
+  }
+  void setOnMenuRequested(std::function<void()> callback) {
+    onMenuRequested = std::move(callback);
+  }
+  void setOnRestartRequested(std::function<void()> callback) {
+    onRestartRequested = std::move(callback);
+  }
+  void setOnNextGameRequested(std::function<void()> callback) {
+    onNextGameRequested = std::move(callback);
+  }
+  void setOnNextDisplayRequested(std::function<void()> callback) {
+    onNextDisplayRequested = std::move(callback);
+  }
+
   [[nodiscard]] std::function<void()> getOnExitRequested() const {
     return onExitRequested;
   }
