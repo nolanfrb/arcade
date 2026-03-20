@@ -6,7 +6,6 @@
 */
 
 #include "core.hpp"
-#include <cstddef>
 #include <filesystem>
 #include <iostream>
 #include <string>
