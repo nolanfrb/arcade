@@ -7,15 +7,22 @@
 
 #pragma once
 
-class menu {
+#include "../../shared/abstract/AGame.hpp"
+
+class menu : public AGame {
  public:
   menu();
-  ~menu();
+  ~menu() override;
 
   menu(const menu& other) = delete;
   menu& operator=(const menu& other) = delete;
   menu(menu&& other) = delete;
   menu& operator=(menu&& other) = delete;
+
+  void init() override;
+  void stop() override;
+  void restart() override;
+  void update(Input input, float deltaTime) override;
 
  private:
 };

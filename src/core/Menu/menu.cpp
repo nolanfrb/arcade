@@ -6,3 +6,11 @@
 */
 
 #include "menu.hpp"
+
+void menu::init() {}
+
+void menu::stop() {}
+
+void menu::restart() {}
+
+void menu::update(Input input, float deltaTime) {}
