@@ -10,32 +10,28 @@
 #include <iostream>
 #include <string>
 
-core::core() {
+Core::Core() {
   _systemCommand.setOnExitRequested([this]() { _running = false; });
   _systemCommand.setOnMenuRequested([this]() { menu(); });
-  _systemCommand.setOnRestartRequested([this]() { restart(); });
   _systemCommand.setOnNextGameRequested([this]() { _libManager.nextGame(); });
   _systemCommand.setOnNextDisplayRequested(
       [this]() { _libManager.nextDisplay(); });
 }
 
-void core::loadDisplay(std::string const& path) {
+void Core::loadDisplay(std::string const& path) {
   _libManager.loadDisplay(path);
 }
 
-void core::loadGame(std::string const& path) { _libManager.loadGame(path); }
+void Core::loadGame(std::string const& path) { _libManager.loadGame(path); }
 
-void core::menu() {
+void Core::menu() {
   if (_libManager.getDisplay() != nullptr) {
     _libManager.getDisplay()->clear();
-  }
-  if (_libManager.getGame() != nullptr) {
-    _libManager.getGame()->stop();
   }
   _libManager.loadGame("./lib/arcade_menu.so");
 }
 
-int core::run(std::filesystem::path const& path) {
+int Core::run(std::filesystem::path const& path) {
   _libManager.loadDisplay(path.string());
   _libManager.scanLibs("./lib");
 
@@ -44,15 +40,15 @@ int core::run(std::filesystem::path const& path) {
     return ERROR;
   }
   _libManager.loadGame("./lib/arcade_menu.so");
-
+  IDisplay* currentDisplay = _libManager.getDisplay();
+  IGame* currentGame = _libManager.getGame();
   while (_running) {
-    IDisplay* currentDisplay = _libManager.getDisplay();
-    IGame* currentGame = _libManager.getGame();
-
     if (currentDisplay != nullptr) {
       Input input = currentDisplay->getEvent();
       _systemCommand.handleSystemEvent(input);
 
+      currentDisplay = _libManager.getDisplay();
+      currentGame = _libManager.getGame();
       if (currentGame != nullptr) {
         currentGame->update(input, DEFAULT_DELTA_TIME);
         currentDisplay->clear();
@@ -62,13 +58,5 @@ int core::run(std::filesystem::path const& path) {
       }
     }
   }
-
   return 0;
-}
-
-void core::restart() {
-  if (_libManager.getGame() != nullptr) {
-    _libManager.getGame()->stop();
-    _libManager.getGame()->init();
-  }
 }

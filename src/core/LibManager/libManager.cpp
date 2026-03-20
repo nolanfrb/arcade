@@ -6,6 +6,7 @@
 */
 
 #include "libManager.hpp"
+#include <algorithm>
 #include <filesystem>
 #include <iostream>
 
@@ -55,11 +56,13 @@ void LibManager::loadGame(const std::string& path) {
     _game->stop();
     delete _game;
     _game = nullptr;
+    _gameLoader.unloadLib();
   }
   _gameLoader.loadLib(path);
   _game = _gameLoader.getInstance("createGame");
   if (_game != nullptr) {
     _game->init();
+    _gameIndex = std::ranges::find(_games, path) - _games.begin();
   }
 }
 
@@ -68,11 +71,13 @@ void LibManager::loadDisplay(const std::string& path) {
     _display->stop();
     delete _display;
     _display = nullptr;
+    _displayLoader.unloadLib();
   }
   _displayLoader.loadLib(path);
   _display = _displayLoader.getInstance("createDisplay");
   if (_display != nullptr) {
     _display->init();
+    _displayIndex = std::ranges::find(_displays, path) - _displays.begin();
   }
 }
 

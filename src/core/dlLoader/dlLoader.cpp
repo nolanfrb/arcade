@@ -13,7 +13,7 @@
 #include "../../shared/interface/IGame.hpp"
 
 template <typename T>
-dlLoader<T>::dlLoader() : handle(nullptr) {}
+dlLoader<T>::dlLoader() = default;
 
 template <typename T>
 dlLoader<T>::~dlLoader() {
@@ -32,6 +32,9 @@ void dlLoader<T>::loadLib(std::filesystem::path const& path) {
 
 template <typename T>
 T* dlLoader<T>::getInstance(std::string const& entryPoint) {
+  if (handle == nullptr) {
+    return nullptr;
+  }
   void* ptr = dlsym(handle, entryPoint.c_str());
   if (ptr == nullptr) {
     return nullptr;
@@ -42,7 +45,12 @@ T* dlLoader<T>::getInstance(std::string const& entryPoint) {
 
 template <typename T>
 void dlLoader<T>::unloadLib() {
-  dlclose(handle);
+  if (handle != nullptr) {
+    if (dlclose(handle) != 0) {
+      std::cerr << "dlclose failed" << "\n";
+    }
+    handle = nullptr;
+  }
 }
 
 template class dlLoader<IGame>;

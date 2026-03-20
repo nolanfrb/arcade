@@ -6,6 +6,6 @@ int main(int argc, char** argv) {
     std::cerr << "Usage: " << argv[0] << " <path>" << '\n';
     return ERROR;
   }
-  core core;
+  Core core;
   return core.run(argv[1]);
 }

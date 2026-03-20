@@ -38,5 +38,5 @@ class dlLoader {
   }
 
  private:
-  void* handle;
+  void* handle = nullptr;
 };

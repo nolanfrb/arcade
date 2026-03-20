@@ -20,11 +20,6 @@ void SystemCommand::handleExit() {
     onExitRequested();
   }
 }
-void SystemCommand::handleRestart() {
-  if (onRestartRequested) {
-    onRestartRequested();
-  }
-}
 void SystemCommand::handleNextGame() {
   if (onNextGameRequested) {
     onNextGameRequested();

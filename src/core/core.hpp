@@ -15,15 +15,15 @@
 constexpr int ERROR = 84;
 constexpr float DEFAULT_DELTA_TIME = 0.016F;
 
-class core {
+class Core {
  public:
-  core();
-  ~core() = default;
+  Core();
+  ~Core() = default;
 
-  core(const core& other) = delete;
-  core& operator=(const core& other) = delete;
-  core(core&& other) = delete;
-  core& operator=(core&& other) = delete;
+  Core(const Core& other) = delete;
+  Core& operator=(const Core& other) = delete;
+  Core(Core&& other) = delete;
+  Core& operator=(Core&& other) = delete;
 
   int run(std::filesystem::path const& path);
   void menu();
