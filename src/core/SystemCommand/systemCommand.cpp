@@ -6,6 +6,7 @@
 */
 
 #include "systemCommand.hpp"
+#include "../../shared/Input.hpp"
 
 SystemCommand::SystemCommand() = default;
 SystemCommand::~SystemCommand() = default;
@@ -35,6 +36,7 @@ void SystemCommand::handleSystemEvent(Input input) {
   for (auto const& [key, val] : _eventMap) {
     if (key == input) {
       (this->*val)();
+      break;
     }
   }
 }

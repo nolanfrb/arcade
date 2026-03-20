@@ -6,9 +6,11 @@
 */
 
 #include "libManager.hpp"
-#include <algorithm>
+#include <cstddef>
 #include <filesystem>
 #include <iostream>
+#include <string>
+#include "../dlLoader/dlLoader.hpp"
 
 LibManager::~LibManager() {
   if (_game != nullptr) {
@@ -62,7 +64,12 @@ void LibManager::loadGame(const std::string& path) {
   _game = _gameLoader.getInstance("createGame");
   if (_game != nullptr) {
     _game->init();
-    _gameIndex = std::ranges::find(_games, path) - _games.begin();
+    for (std::size_t index = 0; index < _games.size(); ++index) {
+      if (_games[index] == path) {
+        _gameIndex = index;
+        break;
+      }
+    }
   }
 }
 
@@ -77,7 +84,12 @@ void LibManager::loadDisplay(const std::string& path) {
   _display = _displayLoader.getInstance("createDisplay");
   if (_display != nullptr) {
     _display->init();
-    _displayIndex = std::ranges::find(_displays, path) - _displays.begin();
+    for (std::size_t index = 0; index < _displays.size(); ++index) {
+      if (_displays[index] == path) {
+        _displayIndex = index;
+        break;
+      }
+    }
   }
 }
 

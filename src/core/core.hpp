@@ -27,7 +27,6 @@ class Core {
 
   int run(std::filesystem::path const& path);
   void menu();
-  void restart();
   void loadGame(std::string const& path);
   void loadDisplay(std::string const& path);
 

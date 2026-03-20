@@ -32,7 +32,7 @@ class dlLoader {
     if (lib == nullptr) {
       return false;
     }
-    bool found = (dlsym(lib, symbol.c_str()) != nullptr);
+    const bool found = (dlsym(lib, symbol.c_str()) != nullptr);
     dlclose(lib);
     return found;
   }

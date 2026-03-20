@@ -6,9 +6,15 @@
 */
 
 #include "core.hpp"
+#include <cstddef>
 #include <filesystem>
 #include <iostream>
 #include <string>
+#include "../shared/Input.hpp"
+#include "../shared/interface/IDisplay.hpp"
+#include "../shared/interface/IGame.hpp"
+#include "LibManager/libManager.hpp"
+#include "SystemCommand/systemCommand.hpp"
 
 Core::Core() {
   _systemCommand.setOnExitRequested([this]() { _running = false; });
@@ -40,22 +46,29 @@ int Core::run(std::filesystem::path const& path) {
     return ERROR;
   }
   _libManager.loadGame("./lib/arcade_menu.so");
-  IDisplay* currentDisplay = _libManager.getDisplay();
-  IGame* currentGame = _libManager.getGame();
+  IDisplay* currentDisplay = nullptr;
+  IGame* currentGame = nullptr;
   while (_running) {
-    if (currentDisplay != nullptr) {
-      Input input = currentDisplay->getEvent();
-      _systemCommand.handleSystemEvent(input);
-
-      currentDisplay = _libManager.getDisplay();
-      currentGame = _libManager.getGame();
-      if (currentGame != nullptr) {
-        currentGame->update(input, DEFAULT_DELTA_TIME);
-        currentDisplay->clear();
-        currentDisplay->drawEntity(currentGame->getEntity());
-        currentDisplay->drawText(currentGame->getText());
-        currentDisplay->display();
-      }
+    currentDisplay = _libManager.getDisplay();
+    if (currentDisplay == nullptr) {
+      std::cerr << "Display library became unavailable." << '\n';
+      return ERROR;
+    }
+    const Input input = currentDisplay->getEvent();
+    _systemCommand.handleSystemEvent(input);
+    currentDisplay = _libManager.getDisplay();
+    currentGame = _libManager.getGame();
+    if (currentDisplay == nullptr) {
+      std::cerr << "Display library became unavailable during execution."
+                << '\n';
+      return ERROR;
+    }
+    if (currentGame != nullptr) {
+      currentGame->update(input, DEFAULT_DELTA_TIME);
+      currentDisplay->clear();
+      currentDisplay->drawEntity(currentGame->getEntity());
+      currentDisplay->drawText(currentGame->getText());
+      currentDisplay->display();
     }
   }
   return 0;

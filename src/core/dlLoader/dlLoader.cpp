@@ -7,8 +7,9 @@
 
 #include "dlLoader.hpp"
 #include <dlfcn.h>
-#include <bit>
+#include <filesystem>
 #include <iostream>
+#include <string>
 #include "../../shared/interface/IDisplay.hpp"
 #include "../../shared/interface/IGame.hpp"
 
@@ -24,6 +25,7 @@ dlLoader<T>::~dlLoader() {
 
 template <typename T>
 void dlLoader<T>::loadLib(std::filesystem::path const& path) {
+  unloadLib();
   handle = dlopen(path.c_str(), RTLD_LAZY);
   if (handle == nullptr) {
     std::cerr << "dlopen failed: " << "\n";
@@ -39,7 +41,8 @@ T* dlLoader<T>::getInstance(std::string const& entryPoint) {
   if (ptr == nullptr) {
     return nullptr;
   }
-  auto createFunc = std::bit_cast<T* (*)()>(ptr);
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+  auto createFunc = reinterpret_cast<T* (*)()>(ptr);
   return createFunc();
 }
 

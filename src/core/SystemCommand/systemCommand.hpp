@@ -9,6 +9,7 @@
 
 #include <array>
 #include <functional>
+#include <utility>
 #include "../../shared/Input.hpp"
 
 class SystemCommand {
@@ -49,7 +50,6 @@ class SystemCommand {
     return onNextDisplayRequested;
   }
 
- protected:
  private:
   using EventHandler = void (SystemCommand::*)();
 
