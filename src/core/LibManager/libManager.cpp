@@ -5,7 +5,7 @@
 ** LibManager
 */
 
-#include "LibManager.hpp"
+#include "libManager.hpp"
 #include <filesystem>
 #include <iostream>
 

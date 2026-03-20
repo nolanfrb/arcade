@@ -5,7 +5,10 @@
 ** SystemCommand
 */
 
-#include "SystemCommand.hpp"
+#include "systemCommand.hpp"
+
+SystemCommand::SystemCommand() = default;
+SystemCommand::~SystemCommand() = default;
 
 void SystemCommand::handleMenu() {
   if (onMenuRequested) {

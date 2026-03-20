@@ -6,17 +6,18 @@
 */
 
 #include "core.hpp"
+#include <filesystem>
 #include <iostream>
+#include <string>
 
 core::core() {
   _systemCommand.setOnExitRequested([this]() { _running = false; });
   _systemCommand.setOnMenuRequested([this]() { menu(); });
   _systemCommand.setOnRestartRequested([this]() { restart(); });
   _systemCommand.setOnNextGameRequested([this]() { _libManager.nextGame(); });
-  _systemCommand.setOnNextDisplayRequested([this]() { _libManager.nextDisplay(); });
+  _systemCommand.setOnNextDisplayRequested(
+      [this]() { _libManager.nextDisplay(); });
 }
-
-core::~core() = default;
 
 void core::loadDisplay(std::string const& path) {
   _libManager.loadDisplay(path);

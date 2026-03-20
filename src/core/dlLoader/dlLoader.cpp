@@ -7,10 +7,20 @@
 
 #include "dlLoader.hpp"
 #include <dlfcn.h>
-#include <iostream>
 #include <bit>
+#include <iostream>
 #include "../../shared/interface/IDisplay.hpp"
 #include "../../shared/interface/IGame.hpp"
+
+template <typename T>
+dlLoader<T>::dlLoader() : handle(nullptr) {}
+
+template <typename T>
+dlLoader<T>::~dlLoader() {
+  if (handle != nullptr) {
+    dlclose(handle);
+  }
+}
 
 template <typename T>
 void dlLoader<T>::loadLib(std::filesystem::path const& path) {

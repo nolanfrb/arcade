@@ -7,19 +7,18 @@
 
 #pragma once
 
-#include <cstddef>
+#include <filesystem>
 #include <string>
-#include "LibManager/LibManager.hpp"
-#include "SystemCommand/SystemCommand.hpp"
+#include "LibManager/libManager.hpp"
+#include "SystemCommand/systemCommand.hpp"
 
-#define ERROR 84
-
+constexpr int ERROR = 84;
 constexpr float DEFAULT_DELTA_TIME = 0.016F;
 
 class core {
  public:
   core();
-  ~core();
+  ~core() = default;
 
   core(const core& other) = delete;
   core& operator=(const core& other) = delete;
