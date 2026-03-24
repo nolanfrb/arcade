@@ -27,7 +27,7 @@ class IGame {
   virtual void stop() = 0;
   virtual void restart() = 0;
 
-  virtual void update(Input input) = 0;
+  virtual void update(Input input, float deltaTime) = 0;
 
   virtual std::vector<Entity> getEntity() = 0;
   virtual std::vector<Text> getText() = 0;

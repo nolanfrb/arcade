@@ -29,7 +29,7 @@ class AGame : public IGame {
   void stop() override = 0;
   void restart() override = 0;
 
-  void update(Input input) override = 0;
+  void update(Input input, float deltaTime) override = 0;
 
   std::vector<Entity> getEntity() override { return _entities; }
   std::vector<Text> getText() override { return _texts; }
