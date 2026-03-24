@@ -10,7 +10,7 @@ on:
 
 env:
   MIRROR_URL: "git@github.com:EpitechPGE2-2025/G-OOP-400-NAN-4-1-tekspice-12.git"
-  EXECUTABLES: "nanotekspice"
+  EXECUTABLES: "arcade"
 
 jobs:
   is_mirror_repo:
