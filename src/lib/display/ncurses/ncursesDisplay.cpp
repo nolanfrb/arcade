@@ -13,11 +13,17 @@
 #include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
 #include "../../../shared/Text.hpp"
+#include "../../../shared/abstract/ADisplay.hpp"
 #include "ncurses/ncurses.hpp"
 
 namespace {
 constexpr int ESC_KEY = 27;
 }  // namespace
+
+namespace gsl {
+template <typename T>
+using owner = T;
+}  // namespace gsl
 
 void ncursesDisplay::init() { ncurses::init(); }
 
@@ -66,3 +72,7 @@ void ncursesDisplay::drawText(const std::vector<Text>& texts) {
 }
 
 void ncursesDisplay::display() { refresh(); }
+
+extern "C" gsl::owner<ADisplay*> createDisplay() {
+  return new ncursesDisplay();
+}
