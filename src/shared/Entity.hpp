@@ -14,14 +14,19 @@
 
 enum class Shape : std::int8_t { RECTANGLE, CIRCLE, TRIANGLE, SPRITE };
 
-class Entity {
+class EntityType {
  public:
   Shape type;
-  Position position;
   float width;
   float height;
   char asciiChar;
   std::array<uint8_t, 4> color;
   std::string spritePath;
   bool isTextInput;
+};
+
+class Entity {
+ public:
+  EntityType type;
+  Position position;
 };

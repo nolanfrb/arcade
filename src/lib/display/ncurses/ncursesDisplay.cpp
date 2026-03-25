@@ -62,7 +62,8 @@ void ncursesDisplay::clear() { ncurses::clear(); }
 void ncursesDisplay::drawEntity(const std::vector<Entity>& entities) {
   for (const auto& entity : entities) {
     ncurses::putItem(static_cast<int8_t>(entity.position.y),
-                     static_cast<int8_t>(entity.position.x), entity.asciiChar);
+                     static_cast<int8_t>(entity.position.x),
+                     entity.type.asciiChar);
   }
 }
 
