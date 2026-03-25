@@ -19,9 +19,12 @@ target_link_libraries(arcade_sdl2 PRIVATE
 
 target_compile_options(arcade_sdl2 PRIVATE
   -Wall -Wextra -Werror
-  -fno-gnu-unique
   -fPIC
 )
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_compile_options(arcade_sdl2 PRIVATE -fno-gnu-unique)
+endif()
 
 set_target_properties(arcade_sdl2 PROPERTIES
   LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib
