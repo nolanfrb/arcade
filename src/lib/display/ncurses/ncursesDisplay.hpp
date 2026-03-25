@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <optional>
+#include <string>
 #include <vector>
 #include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
@@ -26,6 +28,7 @@ class ncursesDisplay : public ADisplay {
   void stop() override;
 
   Input getEvent() override;
+  std::optional<std::string> getTextInput() override;
 
   void clear() override;
   void drawEntity(const std::vector<Entity>& entities) override;

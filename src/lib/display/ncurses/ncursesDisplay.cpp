@@ -9,6 +9,8 @@
 #include <ncurses.h>
 #include <cstddef>
 #include <cstdint>
+#include <optional>
+#include <string>
 #include <vector>
 #include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
@@ -69,6 +71,10 @@ void ncursesDisplay::drawText(const std::vector<Text>& texts) {
           text.content[i]);
     }
   }
+}
+
+std::optional<std::string> ncursesDisplay::getTextInput() {
+  return std::nullopt;
 }
 
 void ncursesDisplay::display() { refresh(); }
