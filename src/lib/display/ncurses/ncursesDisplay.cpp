@@ -20,6 +20,10 @@
 
 namespace {
 constexpr int ESC_KEY = 27;
+constexpr int BACKSPACE_KEY = 127;
+constexpr int CTRL_BACKSPACE_KEY = 8;
+constexpr int PRINTABLE_ASCII_MIN = 32;
+constexpr int PRINTABLE_ASCII_MAX = 126;
 }  // namespace
 
 namespace gsl {
@@ -74,7 +78,22 @@ void ncursesDisplay::drawText(const std::vector<Text>& texts) {
 }
 
 std::optional<std::string> ncursesDisplay::getTextInput() {
-  return std::nullopt;
+  const int input = ncurses::readInput();
+
+  if (input == ERR) {
+    return std::nullopt;
+  }
+  if (input == KEY_BACKSPACE || input == BACKSPACE_KEY ||
+      input == CTRL_BACKSPACE_KEY) {
+    if (!_textInputBuffer.empty()) {
+      _textInputBuffer.pop_back();
+    }
+    return _textInputBuffer;
+  }
+  if (input >= PRINTABLE_ASCII_MIN && input <= PRINTABLE_ASCII_MAX) {
+    _textInputBuffer.push_back(static_cast<char>(input));
+  }
+  return _textInputBuffer;
 }
 
 void ncursesDisplay::display() { refresh(); }

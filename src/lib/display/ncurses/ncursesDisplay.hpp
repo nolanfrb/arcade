@@ -35,4 +35,7 @@ class ncursesDisplay : public ADisplay {
   void drawText(const std::vector<Text>& texts) override;
 
   void display() override;
+
+ private:
+  std::string _textInputBuffer;
 };
