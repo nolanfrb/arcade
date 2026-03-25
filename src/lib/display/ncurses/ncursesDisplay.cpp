@@ -15,6 +15,10 @@
 #include "../../../shared/Text.hpp"
 #include "ncurses/ncurses.hpp"
 
+namespace {
+constexpr int ESC_KEY = 27;
+}  // namespace
+
 void ncursesDisplay::init() { ncurses::init(); }
 
 void ncursesDisplay::stop() { ncurses::stop(); }
@@ -34,6 +38,8 @@ Input ncursesDisplay::getEvent() {
       return Input::ACTION;
     case 'q':
       return Input::EXIT;
+    case ESC_KEY:
+      return Input::MENU;
     default:
       return Input::NONE;
   }
