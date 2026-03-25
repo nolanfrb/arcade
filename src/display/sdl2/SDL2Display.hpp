@@ -9,6 +9,7 @@
 
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 #include "../../shared/Entity.hpp"
@@ -38,6 +39,7 @@ class SDL2Display : public ADisplay {
   void stop() override;
 
   Input getEvent() override;
+  std::optional<std::string> getTextInput() override;
 
   void clear() override;
   void drawEntity(const std::vector<Entity>& entities) override;
@@ -49,7 +51,7 @@ class SDL2Display : public ADisplay {
   std::unique_ptr<SDLWindow> _window;
   std::unique_ptr<SDLRenderer> _renderer;
   std::unique_ptr<SDLFont> _font;
-  SDLEventHandler _events;
+  [[maybe_unused]] SDLEventHandler _events;
   SDLTimer _timer;
 
   std::map<std::string, SDLTexture> _textureCache;

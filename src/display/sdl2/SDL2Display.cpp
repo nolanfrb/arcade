@@ -6,10 +6,12 @@
 */
 
 #include "SDL2Display.hpp"
+#include <SDL2/SDL_events.h>
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_stdinc.h>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -65,6 +67,16 @@ SDLTexture& SDL2Display::loadTexture(const std::string& path) {
       _textureCache.emplace(path, SDLTexture(*_renderer, path));
   (void)success;
   return inserted->second;
+}
+
+std::optional<std::string> SDL2Display::getTextInput() {
+  SDL_Event event;
+  while (SDL_PollEvent(&event) != 0) {
+    if (event.type == SDL_TEXTINPUT) {
+      return std::string(event.text.text);
+    }
+  }
+  return std::nullopt;
 }
 
 void SDL2Display::renderEntity(const Entity& entity) {
