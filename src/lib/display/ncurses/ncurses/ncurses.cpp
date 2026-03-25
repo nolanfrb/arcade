@@ -13,5 +13,5 @@ void ncurses::init() {
   cbreak();
   noecho();
   keypad(stdscr, TRUE);
-  nodelay(stdscr, TRUE);
+  timeout(16);
 }
