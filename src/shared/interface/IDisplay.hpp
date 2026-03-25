@@ -7,9 +7,9 @@
 
 #pragma once
 
+#include <optional>
 #include <string>
 #include <vector>
-#include <optional>
 #include "../Entity.hpp"
 #include "../Input.hpp"
 #include "../Text.hpp"
