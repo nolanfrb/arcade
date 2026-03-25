@@ -7,9 +7,16 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include "../../../shared/Input.hpp"
 #include "../../../shared/abstract/AGame.hpp"
+
+enum class type : std::int8_t {
+  WALL,
+  PACMAN,
+  GHOST,
+};
 
 class Pacman : public AGame {
  public:

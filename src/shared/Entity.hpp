@@ -12,10 +12,21 @@
 #include <string>
 #include "Position.hpp"
 
-struct Entity {
-  Position position;
+enum class Shape : std::int8_t { RECTANGLE, CIRCLE, TRIANGLE, SPRITE };
+
+class EntityType {
+ public:
+  Shape type;
+  float width;
+  float height;
   char asciiChar;
-  std::string texturePath;
   std::array<uint8_t, 4> color;
-  bool isPlayer;
+  std::string spritePath;
+  bool isTextInput;
+};
+
+class Entity {
+ public:
+  EntityType type;
+  Position position;
 };
