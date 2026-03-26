@@ -9,3 +9,5 @@ target_include_directories(core_lib PUBLIC .)
 target_include_directories(core_lib PRIVATE ../shared)
 
 target_link_libraries(core_lib PRIVATE ${CMAKE_DL_LIBS})
+
+target_compile_options(core_lib PRIVATE -fno-gnu-unique)
