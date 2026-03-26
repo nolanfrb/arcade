@@ -10,6 +10,7 @@ if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
 endif()
 
 add_subdirectory(src)
+add_subdirectory(lib)
 
 option(WITH_TESTS "Build unit tests" OFF)
 
