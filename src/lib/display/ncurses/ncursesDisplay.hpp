@@ -15,8 +15,8 @@
 
 class ncursesDisplay : public ADisplay {
  public:
-  ncursesDisplay();
-  ~ncursesDisplay() override;
+  ncursesDisplay() = default;
+  ~ncursesDisplay() override = default;
   ncursesDisplay(const ncursesDisplay&) = default;
   ncursesDisplay& operator=(const ncursesDisplay&) = default;
   ncursesDisplay(ncursesDisplay&&) = default;
