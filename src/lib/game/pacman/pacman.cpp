@@ -7,6 +7,7 @@
 
 #include "pacman.hpp"
 #include <string>
+#include <unordered_map>
 #include "../../../shared/Entity.hpp"
 
 #define WALL_INDEX 0
@@ -15,7 +16,7 @@
 #define SUPERPACGUM_INDEX 3
 #define PACGUM_INDEX 4
 #define FOOD_INDEX 5
-#define CHASSED_GHOST_INDEX 6
+#define CHASED_GHOST_INDEX 6
 #define DEAD_GHOST_INDEX 7
 #define GHOST_DOOR_INDEX 8
 #define EMPTY_INDEX 9
@@ -29,43 +30,20 @@ using owner = T;
 }  // namespace gsl
 
 int Pacman::getTypeIndex(type tile) {
-  int typeIndex = 0;
-  switch (tile) {
-    case type::WALL:
-      typeIndex = WALL_INDEX;
-      break;
-    case type::PACMAN:
-      typeIndex = PACMAN_INDEX;
-      break;
-    case type::GHOST:
-      typeIndex = GHOST_INDEX;
-      break;
-    case type::SUPERPACGUM:
-      typeIndex = SUPERPACGUM_INDEX;
-      break;
-    case type::PACGUM:
-      typeIndex = PACGUM_INDEX;
-      break;
-    case type::FOOD:
-      typeIndex = FOOD_INDEX;
-      break;
-    case type::CHASSED_GHOST:
-      typeIndex = CHASSED_GHOST_INDEX;
-      break;
-    case type::DEAD_GHOST:
-      typeIndex = DEAD_GHOST_INDEX;
-      break;
-    case type::GHOST_DOOR:
-      typeIndex = GHOST_DOOR_INDEX;
-      break;
-    case type::EMPTY:
-      typeIndex = EMPTY_INDEX;
-      break;
-    default:
-      typeIndex = 0;
-      break;
-  }
-  return typeIndex;
+  static const std::unordered_map<type, int> typeToIndex = {
+      {type::WALL, WALL_INDEX},
+      {type::PACMAN, PACMAN_INDEX},
+      {type::GHOST, GHOST_INDEX},
+      {type::SUPERPACGUM, SUPERPACGUM_INDEX},
+      {type::PACGUM, PACGUM_INDEX},
+      {type::FOOD, FOOD_INDEX},
+      {type::CHASED_GHOST, CHASED_GHOST_INDEX},
+      {type::DEAD_GHOST, DEAD_GHOST_INDEX},
+      {type::GHOST_DOOR, GHOST_DOOR_INDEX},
+      {type::EMPTY, EMPTY_INDEX}};
+
+  auto type = typeToIndex.find(tile);
+  return (type != typeToIndex.end()) ? type->second : 0;
 }
 
 void Pacman::init() {
@@ -112,7 +90,7 @@ void Pacman::updateEntities(std::vector<Entity>& entities,
   }
   for (auto ghost : _ghosts) {
     if (_isSuperPacgumActive) {
-      ghost.type = entityTypes[getTypeIndex(type::CHASSED_GHOST)];
+      ghost.type = entityTypes[getTypeIndex(type::CHASED_GHOST)];
     }
     entities.push_back(ghost);
   }

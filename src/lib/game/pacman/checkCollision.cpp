@@ -15,44 +15,36 @@
 void Pacman::checkBordersCollision() {}
 
 void Pacman::checkSuperPacgumCollision() {
-  for (auto& superPacgum : _superPacgums) {
-    if (_player.position.x == superPacgum.position.x &&
-        _player.position.y == superPacgum.position.y) {
+  for (auto it = _superPacgums.begin(); it != _superPacgums.end(); ++it) {
+    if (_player.position.x == it->position.x &&
+        _player.position.y == it->position.y) {
       _score += SUPERPACGUM_SCORE;
       _isSuperPacgumActive = true;
       _superPacgumTimer = 0;
-      std::erase_if(_superPacgums, [&superPacgum](const Entity& entity) {
-        return entity.position.x == superPacgum.position.x &&
-               entity.position.y == superPacgum.position.y;
-      });
+
+      _superPacgums.erase(it);
       break;
     }
   }
 }
 
 void Pacman::checkPacgumCollision() {
-  for (auto& pacgum : _pacgums) {
-    if (_player.position.x == pacgum.position.x &&
-        _player.position.y == pacgum.position.y) {
+  for (auto it = _pacgums.begin(); it != _pacgums.end(); ++it) {
+    if (_player.position.x == it->position.x &&
+        _player.position.y == it->position.y) {
       _score += PACGUM_SCORE;
-      std::erase_if(_pacgums, [&pacgum](const Entity& entity) {
-        return entity.position.x == pacgum.position.x &&
-               entity.position.y == pacgum.position.y;
-      });
+      _pacgums.erase(it);
       break;
     }
   }
 }
 
 void Pacman::checkFoodCollision() {
-  for (auto& food : _foods) {
-    if (_player.position.x == food.position.x &&
-        _player.position.y == food.position.y) {
+  for (auto it = _foods.begin(); it != _foods.end(); ++it) {
+    if (_player.position.x == it->position.x &&
+        _player.position.y == it->position.y) {
       _score += FOOD_SCORE;
-      std::erase_if(_foods, [&food](const Entity& entity) {
-        return entity.position.x == food.position.x &&
-               entity.position.y == food.position.y;
-      });
+      _foods.erase(it);
       break;
     }
   }
@@ -70,8 +62,7 @@ void Pacman::checkGhostCollision() {
         _ghostRespawnTimers.push_back(-1);
         _deadGhosts.push_back(ghost);
         _ghosts.erase(_ghosts.begin() + static_cast<int64_t>(i));
-        _ghostDirections.erase(_ghostDirections.begin() +
-                               static_cast<int64_t>(i));
+        _ghostDirections.erase(_ghostDirections.begin() + static_cast<int>(i));
         continue;
       }
       setIsGameOver(true);

@@ -21,7 +21,7 @@ enum class type : std::int8_t {
   SUPERPACGUM,
   PACGUM,
   FOOD,
-  CHASSED_GHOST,
+  CHASED_GHOST,
   DEAD_GHOST,
 };
 
@@ -65,7 +65,7 @@ class Pacman : public AGame {
   void createEntitiesType();
   type getTile(int xCoordinate, int yCoordinate);
 
-  int getTypeIndex(type tile);
+  static int getTypeIndex(type tile);
 
   Entity _player;
   int _score = 0;
