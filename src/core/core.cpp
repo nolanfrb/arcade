@@ -39,6 +39,7 @@ void Core::menu() {
 int Core::run(std::filesystem::path const& path) {
   _libManager.loadDisplay(path.string());
   _libManager.scanLibs("./lib");
+  _libManager.setContext(&_ctx);
 
   if (_libManager.getDisplay() == nullptr) {
     std::cerr << "No display library found." << '\n';
@@ -64,6 +65,11 @@ int Core::run(std::filesystem::path const& path) {
     }
     if (currentGame != nullptr) {
       currentGame->update(input, DEFAULT_DELTA_TIME);
+      _ctx.applyPending();
+      currentGame = _libManager.getGame();
+      if (currentGame == nullptr) {
+        continue;
+      }
       currentDisplay->clear();
       currentDisplay->drawEntity(currentGame->getEntity());
       currentDisplay->drawText(currentGame->getText());

@@ -13,6 +13,7 @@
 #include "../Input.hpp"
 #include "../Text.hpp"
 #include "../interface/IGame.hpp"
+#include "../interface/IGameContext.hpp"
 
 class AGame : public IGame {
  public:
@@ -30,6 +31,7 @@ class AGame : public IGame {
   void restart() override = 0;
 
   void update(Input input, float deltaTime) override = 0;
+  void setContext(IGameContext* /*ctx*/) override {}
 
   std::vector<Entity> getEntity() override { return _entities; }
   std::vector<Text> getText() override { return _texts; }
