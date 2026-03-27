@@ -5,12 +5,8 @@
 ** checkCollision
 */
 
+#include <cstdint>
 #include "pacman.hpp"
-
-#define SUPERPACGUM_SCORE 10
-#define PACGUM_SCORE 5
-#define FOOD_SCORE 1
-#define GHOST_SCORE 200
 
 void Pacman::checkBordersCollision() {}
 
@@ -18,7 +14,7 @@ void Pacman::checkSuperPacgumCollision() {
   for (auto it = _superPacgums.begin(); it != _superPacgums.end(); ++it) {
     if (_player.position.x == it->position.x &&
         _player.position.y == it->position.y) {
-      _score += SUPERPACGUM_SCORE;
+      _score += static_cast<int>(itemScore::SUPERPACGUM_SCORE);
       _isSuperPacgumActive = true;
       _superPacgumTimer = 0;
 
@@ -32,7 +28,7 @@ void Pacman::checkPacgumCollision() {
   for (auto it = _pacgums.begin(); it != _pacgums.end(); ++it) {
     if (_player.position.x == it->position.x &&
         _player.position.y == it->position.y) {
-      _score += PACGUM_SCORE;
+      _score += static_cast<int>(itemScore::PACGUM_SCORE);
       _pacgums.erase(it);
       break;
     }
@@ -43,7 +39,7 @@ void Pacman::checkFoodCollision() {
   for (auto it = _foods.begin(); it != _foods.end(); ++it) {
     if (_player.position.x == it->position.x &&
         _player.position.y == it->position.y) {
-      _score += FOOD_SCORE;
+      _score += static_cast<int>(itemScore::FOOD_SCORE);
       _foods.erase(it);
       break;
     }
@@ -56,7 +52,7 @@ void Pacman::checkGhostCollision() {
     if (_player.position.x == ghost.position.x &&
         _player.position.y == ghost.position.y) {
       if (_isSuperPacgumActive) {
-        _score += GHOST_SCORE;
+        _score += static_cast<int>(itemScore::GHOST_SCORE);
         ghost.type = getEntityTypes()[getTypeIndex(type::DEAD_GHOST)];
         _ghostSpawnPositions.push_back(ghost.position);
         _ghostRespawnTimers.push_back(-1);

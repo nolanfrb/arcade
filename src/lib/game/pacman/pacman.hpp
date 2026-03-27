@@ -25,6 +25,13 @@ enum class type : std::int8_t {
   DEAD_GHOST,
 };
 
+enum class itemScore : std::uint8_t {
+  SUPERPACGUM_SCORE = 10,
+  PACGUM_SCORE = 5,
+  FOOD_SCORE = 1,
+  GHOST_SCORE = 200
+};
+
 class Pacman : public AGame {
  public:
   Pacman() = default;
