@@ -6,6 +6,9 @@
 */
 
 #include <vector>
+#include "../../../shared/Entity.hpp"
+#include "../../../shared/Input.hpp"
+#include "../../../shared/Position.hpp"
 #include "pacman.hpp"
 
 #define WHITE {255, 255, 255, 255}
