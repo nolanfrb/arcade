@@ -9,7 +9,10 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
+#include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
+#include "../../../shared/Position.hpp"
 #include "../../../shared/abstract/AGame.hpp"
 
 enum class type : std::int8_t {

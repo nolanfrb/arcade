@@ -6,9 +6,6 @@
 */
 
 #include <vector>
-#include "../../../shared/Entity.hpp"
-#include "../../../shared/Input.hpp"
-#include "../../../shared/Position.hpp"
 #include "pacman.hpp"
 
 #define WHITE {255, 255, 255, 255}
@@ -144,8 +141,8 @@ void Pacman::createEntities() {
       Entity entity = Entity();
       const type tile = getTile(xCoordinate, yCoordinate);
       entity.type = entityTypes[getTypeIndex(tile)];
-      entity.position = Position(static_cast<float>(yCoordinate),
-                                 static_cast<float>(xCoordinate));
+      entity.position = Position{.x = static_cast<float>(yCoordinate),
+                                 .y = static_cast<float>(xCoordinate)};
       if (tile == type::PACMAN) {
         _player = entity;
       } else if (tile == type::GHOST) {

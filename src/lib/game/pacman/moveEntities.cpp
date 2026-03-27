@@ -10,7 +10,7 @@
 void Pacman::movePlayer(Input input) {
   float newX = _player.position.x;
   float newY = _player.position.y;
-  int mapHeight = static_cast<int>(_map.size());
+  const int mapHeight = static_cast<int>(_map.size());
 
   switch (input) {
     case Input::UP:
@@ -33,7 +33,7 @@ void Pacman::movePlayer(Input input) {
   } else if (newY >= static_cast<float>(mapHeight)) {
     newY = 0;
   }
-  int mapWidth = static_cast<int>(_map[static_cast<int>(newY)].size());
+  const int mapWidth = static_cast<int>(_map[static_cast<int>(newY)].size());
   if (newX < 0) {
     newX = static_cast<float>(mapWidth - 1);
   } else if (newX >= static_cast<float>(mapWidth)) {

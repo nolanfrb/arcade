@@ -6,23 +6,29 @@
 */
 
 #include "pacman.hpp"
+
+#include <cstdint>
 #include <string>
 #include <unordered_map>
-#include "../../../shared/Entity.hpp"
 
-#define WALL_INDEX 0
-#define PACMAN_INDEX 1
-#define GHOST_INDEX 2
-#define SUPERPACGUM_INDEX 3
-#define PACGUM_INDEX 4
-#define FOOD_INDEX 5
-#define CHASED_GHOST_INDEX 6
-#define DEAD_GHOST_INDEX 7
-#define GHOST_DOOR_INDEX 8
-#define EMPTY_INDEX 9
-#define SUPERPACGUM_DURATION 10
-#define GHOST_RESPAWN_DURATION 5
-#define GHOST_SPEED_DELAY 0.2F
+namespace {
+enum : std::uint8_t {
+  WALL_INDEX = 0,
+  PACMAN_INDEX = 1,
+  GHOST_INDEX = 2,
+  SUPERPACGUM_INDEX = 3,
+  PACGUM_INDEX = 4,
+  FOOD_INDEX = 5,
+  CHASED_GHOST_INDEX = 6,
+  DEAD_GHOST_INDEX = 7,
+  GHOST_DOOR_INDEX = 8,
+  EMPTY_INDEX = 9,
+};
+
+constexpr int SUPERPACGUM_DURATION = 10;
+constexpr int GHOST_RESPAWN_DURATION = 5;
+constexpr float GHOST_SPEED_DELAY = 0.2F;
+}  // namespace
 
 namespace gsl {
 template <typename T>
@@ -124,14 +130,14 @@ void Pacman::update(Input input, float deltaTime) {
       if (_map[xCoordinate][yCoordinate] == type::WALL) {
         Entity wall;
         wall.type = entityTypes[getTypeIndex(type::WALL)];
-        wall.position = Position(static_cast<float>(yCoordinate),
-                                 static_cast<float>(xCoordinate));
+        wall.position = Position{.x = static_cast<float>(yCoordinate),
+                                 .y = static_cast<float>(xCoordinate)};
         entities.push_back(wall);
       } else if (_map[xCoordinate][yCoordinate] == type::GHOST_DOOR) {
         Entity door;
         door.type = entityTypes[getTypeIndex(type::GHOST_DOOR)];
-        door.position = Position(static_cast<float>(yCoordinate),
-                                 static_cast<float>(xCoordinate));
+        door.position = Position{.x = static_cast<float>(yCoordinate),
+                                 .y = static_cast<float>(xCoordinate)};
         entities.push_back(door);
       }
     }

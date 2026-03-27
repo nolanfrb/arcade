@@ -6,8 +6,6 @@
 */
 
 #include <cstddef>
-#include <vector>
-#include "../../../shared/Entity.hpp"
 #include "pacman.hpp"
 
 void Pacman::checkBordersCollision() {}
