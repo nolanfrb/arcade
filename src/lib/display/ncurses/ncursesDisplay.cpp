@@ -14,6 +14,7 @@
 #include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
 #include "../../../shared/Text.hpp"
+#include "../../../shared/interface/IDisplay.hpp"
 #include "ncurses/ncurses.hpp"
 
 namespace {
