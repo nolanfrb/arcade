@@ -81,6 +81,7 @@ class Pacman : public AGame {
   int _score = 0;
   bool _isSuperPacgumActive = false;
   float _superPacgumTimer = 0;
+  float _gameTimer = 0;
   std::vector<Entity> _ghosts;
   std::vector<Input> _ghostDirections;
   float _ghostMovementTimer = 0;

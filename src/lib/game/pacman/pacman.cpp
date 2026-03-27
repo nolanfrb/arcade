@@ -70,6 +70,7 @@ void Pacman::stop() {
   _map.clear();
   _ghostDirections.clear();
   _ghostMovementTimer = 0;
+  _gameTimer = 0;
 }
 
 void Pacman::restart() {
@@ -115,6 +116,7 @@ void Pacman::updateEntities(std::vector<Entity>& entities,
 }
 
 void Pacman::update(Input input, float deltaTime) {
+  _gameTimer += deltaTime;
   checkCollision();
   checkBordersCollision();
   movePlayer(input);

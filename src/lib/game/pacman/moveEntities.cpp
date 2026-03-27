@@ -5,10 +5,12 @@
 ** moveEntities
 */
 
+#include <algorithm>
 #include <vector>
 #include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
 #include "../../../shared/Position.hpp"
+#include "AI/pathfinder.hpp"
 #include "pacman.hpp"
 
 void Pacman::movePlayer(Input input) {
@@ -53,4 +55,35 @@ void Pacman::movePlayer(Input input) {
 
 void Pacman::moveDeadGhosts(float deltaTime) {}
 
-void Pacman::moveGhosts(float deltaTime) { moveDeadGhosts(deltaTime); }
+void Pacman::moveGhosts(float deltaTime) {
+  _ghostMovementTimer += deltaTime;
+  if (_ghostMovementTimer < 0.3) {
+    return;
+  }
+  _ghostMovementTimer = 0;
+
+  bool canPassDoor = _gameTimer >= 3;
+  for (auto& ghost : _ghosts) {
+    if (std::ranges::find_if(_deadGhosts.begin(), _deadGhosts.end(),
+                             [&ghost](const Entity& deadGhost) {
+                               return deadGhost.position.x ==
+                                          ghost.position.x &&
+                                      deadGhost.position.y == ghost.position.y;
+                             }) != _deadGhosts.end()) {
+      continue;
+    }
+    std::vector<Position> path = Pathfinder::aStar(
+        Position((ghost.position.x), (ghost.position.y)), _map,
+        Position((_player.position.x), (_player.position.y)), canPassDoor);
+    if (path.size() > 1) {
+      Position nextPos = path[1];
+      ghost.position.x = nextPos.x;
+      ghost.position.y = nextPos.y;
+    } else if (path.size() == 1) {
+      Position nextPos = path[0];
+      ghost.position.x = nextPos.x;
+      ghost.position.y = nextPos.y;
+    }
+  }
+  moveDeadGhosts(deltaTime);
+}
