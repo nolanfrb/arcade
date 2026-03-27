@@ -5,7 +5,6 @@
 ** checkCollision
 */
 
-#include <cstdint>
 #include "pacman.hpp"
 
 void Pacman::checkBordersCollision() {}
@@ -47,7 +46,7 @@ void Pacman::checkFoodCollision() {
 }
 
 void Pacman::checkGhostCollision() {
-  for (size_t i = 0; i < _ghosts.size();) {
+  for (std::size_t i = 0; i < _ghosts.size();) {
     auto& ghost = _ghosts[i];
     if (_player.position.x == ghost.position.x &&
         _player.position.y == ghost.position.y) {
@@ -57,7 +56,7 @@ void Pacman::checkGhostCollision() {
         _ghostSpawnPositions.push_back(ghost.position);
         _ghostRespawnTimers.push_back(-1);
         _deadGhosts.push_back(ghost);
-        _ghosts.erase(_ghosts.begin() + static_cast<int64_t>(i));
+        _ghosts.erase(_ghosts.begin() + static_cast<int>(i));
         _ghostDirections.erase(_ghostDirections.begin() + static_cast<int>(i));
         continue;
       }
