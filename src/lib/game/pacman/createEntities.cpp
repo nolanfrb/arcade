@@ -14,6 +14,8 @@
 #define WHITE {255, 255, 255, 255}
 #define BLUE {0, 0, 255, 255}
 #define RED {255, 0, 0, 255}
+#define ORANGE {255, 165, 0, 255}
+#define PINK {255, 192, 203, 255}
 
 namespace {
 EntityType createWallType() {
@@ -65,7 +67,7 @@ EntityType createPinkGhostType() {
   ghost.type = Shape::RECTANGLE;
   ghost.width = 1;
   ghost.height = 1;
-  ghost.color = {255, 192, 203, 255};
+  ghost.color = PINK;
   ghost.asciiChar = '^';
   ghost.isTextInput = false;
   ghost.spritePath = "assets/pacman/ghost.png";
@@ -76,7 +78,7 @@ EntityType createOrangeGhostType() {
   ghost.type = Shape::RECTANGLE;
   ghost.width = 1;
   ghost.height = 1;
-  ghost.color = {255, 165, 0, 255};
+  ghost.color = ORANGE;
   ghost.asciiChar = '^';
   ghost.isTextInput = false;
   ghost.spritePath = "assets/pacman/ghost.png";
