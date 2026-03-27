@@ -3,6 +3,7 @@ add_executable(arcade
 )
 
 add_subdirectory(core)
+add_subdirectory(lib)
 
 target_link_libraries(arcade PRIVATE core_lib)
 

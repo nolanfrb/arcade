@@ -48,12 +48,19 @@ class AGame : public IGame {
   void setEntities(const std::vector<Entity>& entities) {
     _entities = entities;
   }
+  void setEntityTypes(const std::vector<EntityType>& entityTypes) {
+    _entityTypes = entityTypes;
+  }
+  [[nodiscard]] const std::vector<EntityType>& getEntityTypes() const {
+    return _entityTypes;
+  }
 
   void clearEntities() { _entities.clear(); }
   void clearTexts() { _texts.clear(); }
 
  private:
   std::vector<Entity> _entities;
+  std::vector<EntityType> _entityTypes;
   std::vector<Text> _texts;
   int _score = 0;
   bool _isGameOver = false;

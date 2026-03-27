@@ -12,8 +12,11 @@
 #include <string>
 #include "Position.hpp"
 
-struct Text {
+class Text {
+ public:
+  std::string content;
   Position position;
-  std::string text;
   std::array<uint8_t, 4> color;
+  std::string fontPath;
+  int fontSize;
 };
