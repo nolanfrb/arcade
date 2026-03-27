@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <optional>
 #include <string>
 #include <vector>
 #include "../Entity.hpp"
@@ -29,6 +30,7 @@ class ADisplay : public IDisplay {
 
   std::string getName() override { return _name; }
   Input getEvent() override = 0;
+  std::optional<std::string> getTextInput() override = 0;
 
   void clear() override = 0;
   void drawEntity(const std::vector<Entity>& entities) override = 0;

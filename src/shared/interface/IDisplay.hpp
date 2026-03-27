@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <optional>
 #include <string>
 #include <vector>
 #include "../Entity.hpp"
@@ -23,6 +24,7 @@ class IDisplay {
   virtual std::string getName() = 0;
 
   virtual Input getEvent() = 0;
+  virtual std::optional<std::string> getTextInput() = 0;
 
   virtual void clear() = 0;
   virtual void drawEntity(const std::vector<Entity>& entities) = 0;
