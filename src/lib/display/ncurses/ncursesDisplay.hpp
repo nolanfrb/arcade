@@ -15,14 +15,14 @@
 #include "../../../shared/Text.hpp"
 #include "../../../shared/abstract/ADisplay.hpp"
 
-class ncursesDisplay : public ADisplay {
+class NcursesDisplay : public ADisplay {
  public:
-  ncursesDisplay();
-  ~ncursesDisplay() override;
-  ncursesDisplay(const ncursesDisplay&) = default;
-  ncursesDisplay& operator=(const ncursesDisplay&) = default;
-  ncursesDisplay(ncursesDisplay&&) = default;
-  ncursesDisplay& operator=(ncursesDisplay&&) = default;
+  NcursesDisplay() { setName("ncurses"); }
+  ~NcursesDisplay() override = default;
+  NcursesDisplay(const NcursesDisplay&) = default;
+  NcursesDisplay& operator=(const NcursesDisplay&) = default;
+  NcursesDisplay(NcursesDisplay&&) = default;
+  NcursesDisplay& operator=(NcursesDisplay&&) = default;
 
   void init() override;
   void stop() override;
@@ -37,5 +37,11 @@ class ncursesDisplay : public ADisplay {
   void display() override;
 
  private:
+  int readPendingInput();
+  void clearPendingInput();
+
+  std::optional<int> _pendingInput;
+  bool _eventConsumed{false};
+  bool _textConsumed{false};
   std::string _textInputBuffer;
 };

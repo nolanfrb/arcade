@@ -9,15 +9,15 @@
 
 #include <ncurses.h>
 
-class ncurses {
+class Ncurses {
  public:
-  ncurses();
-  ~ncurses();
+  Ncurses() = default;
+  ~Ncurses() = default;
 
-  ncurses(const ncurses&) = delete;
-  ncurses& operator=(const ncurses&) = delete;
-  ncurses(ncurses&&) = delete;
-  ncurses& operator=(ncurses&&) = delete;
+  Ncurses(const Ncurses&) = delete;
+  Ncurses& operator=(const Ncurses&) = delete;
+  Ncurses(Ncurses&&) = delete;
+  Ncurses& operator=(Ncurses&&) = delete;
 
   static void init();
   static void stop() { endwin(); }

@@ -8,7 +8,7 @@
 #include "ncurses.hpp"
 #include <ncurses.h>
 
-void ncurses::init() {
+void Ncurses::init() {
   initscr();
   cbreak();
   noecho();
