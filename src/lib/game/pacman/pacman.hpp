@@ -20,7 +20,10 @@ enum class type : std::int8_t {
   GHOST_DOOR,
   EMPTY,
   PACMAN,
-  GHOST,
+  RED_GHOST,
+  PINK_GHOST,
+  BLUE_GHOST,
+  ORANGE_GHOST,
   SUPERPACGUM,
   PACGUM,
   FOOD,
@@ -34,6 +37,10 @@ enum class itemScore : std::uint8_t {
   FOOD_SCORE = 1,
   GHOST_SCORE = 200
 };
+
+constexpr float GHOST_SPEED_DEAD = 0.2F;
+constexpr float GHOST_SPEED_NORMAL = 0.3F;
+constexpr float GHOST_SPEED_FRIGHTENED = 0.5F;
 
 class Pacman : public AGame {
  public:
@@ -56,7 +63,8 @@ class Pacman : public AGame {
 
   void movePlayer(Input input);
   void moveGhosts(float deltaTime);
-  void moveDeadGhosts(float deltaTime);
+  void moveAliveGhosts(Position target, bool canPassDoor);
+  void moveDeadGhosts(Entity& ghost);
 
   bool loadMap(const std::string& filePath);
 
@@ -84,7 +92,8 @@ class Pacman : public AGame {
   float _gameTimer = 0;
   std::vector<Entity> _ghosts;
   std::vector<Input> _ghostDirections;
-  float _ghostMovementTimer = 0;
+  float _aliveGhostMovementTimer = 0;
+  float _deadGhostMovementTimer = 0;
   std::vector<Entity> _chassedGhosts;
   std::vector<Entity> _deadGhosts;
   std::vector<Position> _ghostSpawnPositions;
@@ -92,6 +101,7 @@ class Pacman : public AGame {
   std::vector<Entity> _superPacgums;
   std::vector<Entity> _pacgums;
   std::vector<Entity> _foods;
+  float _ghostSpeed = GHOST_SPEED_NORMAL;
 
   std::vector<std::vector<type>> _map;
 };

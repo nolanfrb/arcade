@@ -30,6 +30,7 @@ std::vector<Position> createPath(Node current,
   std::ranges::reverse(path);
   return path;
 }
+
 bool checkNeighbor(const Node& neighbor, const std::vector<Node>& closedSet,
                    const std::vector<std::vector<type>>& map,
                    bool canPassDoor) {

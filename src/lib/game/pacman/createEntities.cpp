@@ -38,12 +38,45 @@ EntityType createPacmanType() {
   pacman.spritePath = "assets/pacman/pacman.png";
   return pacman;
 }
-EntityType createGhostType() {
+EntityType createRedGhostType() {
   EntityType ghost = EntityType();
   ghost.type = Shape::RECTANGLE;
   ghost.width = 1;
   ghost.height = 1;
-  ghost.color = WHITE;
+  ghost.color = RED;
+  ghost.asciiChar = '^';
+  ghost.isTextInput = false;
+  ghost.spritePath = "assets/pacman/ghost.png";
+  return ghost;
+}
+EntityType createBlueGhostType() {
+  EntityType ghost = EntityType();
+  ghost.type = Shape::RECTANGLE;
+  ghost.width = 1;
+  ghost.height = 1;
+  ghost.color = BLUE;
+  ghost.asciiChar = '^';
+  ghost.isTextInput = false;
+  ghost.spritePath = "assets/pacman/ghost.png";
+  return ghost;
+}
+EntityType createPinkGhostType() {
+  EntityType ghost = EntityType();
+  ghost.type = Shape::RECTANGLE;
+  ghost.width = 1;
+  ghost.height = 1;
+  ghost.color = {255, 192, 203, 255};
+  ghost.asciiChar = '^';
+  ghost.isTextInput = false;
+  ghost.spritePath = "assets/pacman/ghost.png";
+  return ghost;
+}
+EntityType createOrangeGhostType() {
+  EntityType ghost = EntityType();
+  ghost.type = Shape::RECTANGLE;
+  ghost.width = 1;
+  ghost.height = 1;
+  ghost.color = {255, 165, 0, 255};
   ghost.asciiChar = '^';
   ghost.isTextInput = false;
   ghost.spritePath = "assets/pacman/ghost.png";
@@ -125,7 +158,10 @@ void Pacman::createEntitiesType() {
   std::vector<EntityType> entityTypes;
   entityTypes.push_back(createWallType());
   entityTypes.push_back(createPacmanType());
-  entityTypes.push_back(createGhostType());
+  entityTypes.push_back(createRedGhostType());
+  entityTypes.push_back(createBlueGhostType());
+  entityTypes.push_back(createPinkGhostType());
+  entityTypes.push_back(createOrangeGhostType());
   entityTypes.push_back(createSuperPacgumType());
   entityTypes.push_back(createPacgumType());
   entityTypes.push_back(createFoodType());
@@ -148,9 +184,11 @@ void Pacman::createEntities() {
                                  .y = static_cast<float>(xCoordinate)};
       if (tile == type::PACMAN) {
         _player = entity;
-      } else if (tile == type::GHOST) {
+      } else if (tile == type::RED_GHOST || tile == type::PINK_GHOST ||
+                 tile == type::BLUE_GHOST || tile == type::ORANGE_GHOST) {
         _ghosts.push_back(entity);
         _ghostDirections.push_back(Input::UP);
+        _ghostSpawnPositions.push_back(entity.position);
       } else if (tile == type::SUPERPACGUM) {
         _superPacgums.push_back(entity);
       } else if (tile == type::PACGUM) {

@@ -54,7 +54,6 @@ void Pacman::checkGhostCollision() {
       if (_isSuperPacgumActive) {
         _score += static_cast<int>(itemScore::GHOST_SCORE);
         ghost.type = getEntityTypes()[getTypeIndex(type::DEAD_GHOST)];
-        _ghostSpawnPositions.push_back(ghost.position);
         _ghostRespawnTimers.push_back(-1);
         _deadGhosts.push_back(ghost);
         _ghosts.erase(_ghosts.begin() + static_cast<int>(i));
