@@ -5,6 +5,10 @@
 ** moveEntities
 */
 
+#include <vector>
+#include "../../../shared/Entity.hpp"
+#include "../../../shared/Input.hpp"
+#include "../../../shared/Position.hpp"
 #include "pacman.hpp"
 
 void Pacman::movePlayer(Input input) {

@@ -9,6 +9,11 @@
 #include <cstdint>
 #include <string>
 #include <unordered_map>
+#include <vector>
+#include "../../../shared/Entity.hpp"
+#include "../../../shared/Input.hpp"
+#include "../../../shared/Position.hpp"
+#include "../../../shared/interface/IGame.hpp"
 
 namespace {
 enum : std::uint8_t {

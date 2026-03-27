@@ -4,9 +4,10 @@
 ** File description:
 ** map
 */
-
+#include <cstddef>
 #include <fstream>
 #include <string>
+#include <vector>
 #include "pacman.hpp"
 
 namespace {
@@ -40,7 +41,7 @@ bool Pacman::loadMap(const std::string& filePath) {
   std::string line;
   while (std::getline(file, line)) {
     std::vector<type> row;
-    for (char character : line) {
+    for (const char character : line) {
       row.emplace_back(translateTile(character));
     }
     _map.emplace_back(row);
@@ -58,8 +59,8 @@ type Pacman::getTile(int xCoordinate, int yCoordinate) {
 }
 
 bool Pacman::checkMap() {
-  size_t pacmanCount = 0;
-  size_t ghostCount = 0;
+  std::size_t pacmanCount = 0;
+  std::size_t ghostCount = 0;
   for (int xCoordinate = 0; xCoordinate < _map.size(); xCoordinate++) {
     for (int yCoordinate = 0; yCoordinate < _map[xCoordinate].size();
          yCoordinate++) {
