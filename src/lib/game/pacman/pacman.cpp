@@ -123,7 +123,7 @@ void Pacman::update(Input input, float deltaTime) {
   checkCollision();
   checkBordersCollision();
   movePlayer(input);
-  moveGhosts(deltaTime);
+  moveGhosts(deltaTime, input);
   setScore(_score);
   if (isGameOver()) {
     stop();

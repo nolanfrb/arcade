@@ -5,12 +5,16 @@
 ** moveEntities
 */
 
+#include <array>
+#include <random>
 #include <vector>
 #include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
 #include "../../../shared/Position.hpp"
 #include "AI/pathfinder.hpp"
 #include "pacman.hpp"
+
+constexpr int ORANGE_SAFE_DISTANCE = 8;
 
 namespace {
 bool isWalkableTile(type tile, bool canPassDoor) {
@@ -44,6 +48,58 @@ Position findFarthestPoint(const std::vector<std::vector<type>>& map,
     }
   }
   return bestTarget;
+}
+
+int randomNumber(int min, int max) {
+  static std::random_device randomDevice;
+  static std::mt19937 generator(randomDevice());
+  std::uniform_int_distribution<int> distribution(min, max);
+  return distribution(generator);
+}
+
+bool hasColor(const Entity& ghost, const std::array<uint8_t, 4>& color) {
+  return ghost.type.color == color;
+}
+
+Position movePinkGhostTarget(Position target, Input playerInput) {
+  if (playerInput == Input::UP) {
+    target.y -= 4;
+  } else if (playerInput == Input::DOWN) {
+    target.y += 4;
+  } else if (playerInput == Input::LEFT) {
+    target.x -= 4;
+  } else if (playerInput == Input::RIGHT) {
+    target.x += 4;
+  }
+  return Position(target.x, target.y);
+}
+
+Position moveBlueGhostTarget(Position target, const Entity& redGhost,
+                             Input playerInput) {
+  Position pivotPoint = target;
+  if (playerInput == Input::UP) {
+    pivotPoint.y -= 2;
+  } else if (playerInput == Input::DOWN) {
+    pivotPoint.y += 2;
+  } else if (playerInput == Input::LEFT) {
+    pivotPoint.x -= 2;
+  } else if (playerInput == Input::RIGHT) {
+    pivotPoint.x += 2;
+  }
+  target.x = pivotPoint.x + (pivotPoint.x - redGhost.position.x);
+  target.y = pivotPoint.y + (pivotPoint.y - redGhost.position.y);
+  return Position(target.x, target.y);
+}
+
+Position moveOrangeGhostTarget(const Entity& ghost, Position target) {
+  int distanceToPlayer =
+      std::abs(static_cast<int>(ghost.position.x - target.x)) +
+      std::abs(static_cast<int>(ghost.position.y - target.y));
+  if (distanceToPlayer < ORANGE_SAFE_DISTANCE) {
+    target.x = 0;
+    target.y = 0;
+  }
+  return Position(target.x, target.y);
 }
 
 }  // namespace
@@ -89,17 +145,16 @@ void Pacman::movePlayer(Input input) {
 }
 
 void Pacman::moveDeadGhosts(Entity& ghost) {
-  if (_deadGhostMovementTimer < GHOST_SPEED_DEAD) {
-    return;
-  }
-  _deadGhostMovementTimer = 0;
-  _ghostSpeed = GHOST_SPEED_DEAD;
   if (_ghostSpawnPositions.empty()) {
     return;
   }
   std::vector<Position> path = Pathfinder::aStar(
       Position((ghost.position.x), (ghost.position.y)), _map,
-      Position((_ghostSpawnPositions[0].x), (_ghostSpawnPositions[0].y)), true);
+      Position(
+          (_ghostSpawnPositions[0].x + static_cast<float>(randomNumber(0, 3))),
+          (_ghostSpawnPositions[0].y +
+           static_cast<float>(randomNumber(-1, 2)))),
+      true);
   if (path.size() > 1) {
     Position nextPos = path[1];
     ghost.position.x = nextPos.x;
@@ -111,17 +166,35 @@ void Pacman::moveDeadGhosts(Entity& ghost) {
   }
 }
 
-void Pacman::moveAliveGhosts(Position target, bool canPassDoor) {
+void Pacman::moveAliveGhosts(Position target, bool canPassDoor,
+                             Input playerInput) {
+  _ghostSpeed =
+      _isSuperPacgumActive ? GHOST_SPEED_FRIGHTENED : GHOST_SPEED_NORMAL;
   if (_aliveGhostMovementTimer < _ghostSpeed) {
     return;
   }
   _aliveGhostMovementTimer = 0;
-  _ghostSpeed =
-      _isSuperPacgumActive ? GHOST_SPEED_FRIGHTENED : GHOST_SPEED_NORMAL;
   for (auto& ghost : _ghosts) {
+    Position ghostTarget = target;
+    if (hasColor(ghost, PINK)) {
+      ghostTarget = movePinkGhostTarget(target, playerInput);
+    } else if (hasColor(ghost, BLUE)) {
+      Entity redGhost = ghost;
+      for (const auto& currentGhost : _ghosts) {
+        if (hasColor(currentGhost, RED)) {
+          redGhost = currentGhost;
+          break;
+        }
+      }
+      ghostTarget = moveBlueGhostTarget(target, redGhost, playerInput);
+    } else if (hasColor(ghost, ORANGE)) {
+      ghostTarget = moveOrangeGhostTarget(ghost, target);
+    }
+
     std::vector<Position> path =
         Pathfinder::aStar(Position((ghost.position.x), (ghost.position.y)),
-                          _map, Position((target.x), (target.y)), canPassDoor);
+                          _map, ghostTarget, canPassDoor);
+
     if (path.size() > 1) {
       Position nextPos = path[1];
       ghost.position.x = nextPos.x;
@@ -134,7 +207,7 @@ void Pacman::moveAliveGhosts(Position target, bool canPassDoor) {
   }
 }
 
-void Pacman::moveGhosts(float deltaTime) {
+void Pacman::moveGhosts(float deltaTime, Input playerInput) {
   _aliveGhostMovementTimer += deltaTime;
   _deadGhostMovementTimer += deltaTime;
 
@@ -145,8 +218,11 @@ void Pacman::moveGhosts(float deltaTime) {
     target = findFarthestPoint(
         _map, Position(_player.position.x, _player.position.y));
   }
-  moveAliveGhosts(target, canPassDoor);
-  for (auto& deadGhost : _deadGhosts) {
-    moveDeadGhosts(deadGhost);
+  moveAliveGhosts(target, canPassDoor, playerInput);
+  if (_deadGhostMovementTimer >= GHOST_SPEED_DEAD) {
+    _deadGhostMovementTimer = 0;
+    for (auto& deadGhost : _deadGhosts) {
+      moveDeadGhosts(deadGhost);
+    }
   }
 }

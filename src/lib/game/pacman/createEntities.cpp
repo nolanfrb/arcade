@@ -11,12 +11,6 @@
 #include "../../../shared/Position.hpp"
 #include "pacman.hpp"
 
-#define WHITE {255, 255, 255, 255}
-#define BLUE {0, 0, 255, 255}
-#define RED {255, 0, 0, 255}
-#define ORANGE {255, 165, 0, 255}
-#define PINK {255, 192, 203, 255}
-
 namespace {
 EntityType createWallType() {
   EntityType wall = EntityType();
@@ -46,7 +40,7 @@ EntityType createRedGhostType() {
   ghost.width = 1;
   ghost.height = 1;
   ghost.color = RED;
-  ghost.asciiChar = '^';
+  ghost.asciiChar = 'R';
   ghost.isTextInput = false;
   ghost.spritePath = "assets/pacman/ghost.png";
   return ghost;
@@ -57,7 +51,7 @@ EntityType createBlueGhostType() {
   ghost.width = 1;
   ghost.height = 1;
   ghost.color = BLUE;
-  ghost.asciiChar = '^';
+  ghost.asciiChar = 'B';
   ghost.isTextInput = false;
   ghost.spritePath = "assets/pacman/ghost.png";
   return ghost;
@@ -68,7 +62,7 @@ EntityType createPinkGhostType() {
   ghost.width = 1;
   ghost.height = 1;
   ghost.color = PINK;
-  ghost.asciiChar = '^';
+  ghost.asciiChar = 'P';
   ghost.isTextInput = false;
   ghost.spritePath = "assets/pacman/ghost.png";
   return ghost;
@@ -79,7 +73,7 @@ EntityType createOrangeGhostType() {
   ghost.width = 1;
   ghost.height = 1;
   ghost.color = ORANGE;
-  ghost.asciiChar = '^';
+  ghost.asciiChar = 'N';
   ghost.isTextInput = false;
   ghost.spritePath = "assets/pacman/ghost.png";
   return ghost;

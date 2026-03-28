@@ -42,6 +42,12 @@ constexpr float GHOST_SPEED_DEAD = 0.2F;
 constexpr float GHOST_SPEED_NORMAL = 0.3F;
 constexpr float GHOST_SPEED_FRIGHTENED = 0.5F;
 
+#define WHITE {255, 255, 255, 255}
+#define BLUE {0, 0, 255, 255}
+#define RED {255, 0, 0, 255}
+#define ORANGE {255, 165, 0, 255}
+#define PINK {255, 192, 203, 255}
+
 class Pacman : public AGame {
  public:
   Pacman() = default;
@@ -62,8 +68,8 @@ class Pacman : public AGame {
                       const std::vector<EntityType>& entityTypes);
 
   void movePlayer(Input input);
-  void moveGhosts(float deltaTime);
-  void moveAliveGhosts(Position target, bool canPassDoor);
+  void moveGhosts(float deltaTime, Input playerInput);
+  void moveAliveGhosts(Position target, bool canPassDoor, Input playerInput);
   void moveDeadGhosts(Entity& ghost);
 
   bool loadMap(const std::string& filePath);
@@ -75,14 +81,14 @@ class Pacman : public AGame {
   void checkPacgumCollision();
   void checkFoodCollision();
   void checkGhostCollision();
-  void checkSuperPacgumTimer(float deltaTime);
-
   void checkBordersCollision();
+
+  void checkSuperPacgumTimer(float deltaTime);
 
   void createEntities();
   void createEntitiesType();
-  type getTile(int xCoordinate, int yCoordinate);
 
+  type getTile(int xCoordinate, int yCoordinate);
   static int getTypeIndex(type tile);
 
   Entity _player;
