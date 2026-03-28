@@ -1,4 +1,4 @@
-add_library(arcade_pacman MODULE pacman.cpp checkCollision.cpp createEntities.cpp moveEntities.cpp map.cpp AI/pathfinder.cpp)
+add_library(arcade_pacman MODULE pacman.cpp checkCollision.cpp createEntities.cpp moveEntities.cpp map.cpp AI/ghostMovement/ghostMovement.cpp AI/pathfinder/pathfinder.cpp AI/ghostMovement/ghostMovement.cpp utils/utils.cpp movePlayer.cpp)
 
 set_target_properties(arcade_pacman PROPERTIES
     PREFIX ""

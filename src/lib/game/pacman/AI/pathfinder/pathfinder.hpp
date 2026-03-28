@@ -8,8 +8,8 @@
 #pragma once
 
 #include <vector>
-#include "../../../../shared/Position.hpp"
-#include "../pacman.hpp"
+#include "../../../../../shared/Position.hpp"
+#include "../../pacman.hpp"
 
 class Pathfinder {
  public:

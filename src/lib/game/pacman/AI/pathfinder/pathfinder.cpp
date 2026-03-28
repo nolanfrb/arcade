@@ -8,8 +8,8 @@
 #include "pathfinder.hpp"
 #include <algorithm>
 #include <vector>
-#include "../../../../shared/Position.hpp"
-#include "../pacman.hpp"
+#include "../../../../../shared/Position.hpp"
+#include "../../pacman.hpp"
 #include "node.hpp"
 
 namespace {
