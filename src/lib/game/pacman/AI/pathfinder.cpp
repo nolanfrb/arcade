@@ -89,26 +89,11 @@ void setNeighbor(Node& neighbor, const Node& current,
   }
 }
 
-Position clampPosition(Position target, int mapWidth, int mapHeight) {
-  if (target.x < 0) {
-    target.x = 0;
-  } else if (target.x >= static_cast<float>(mapWidth)) {
-    target.x = static_cast<float>(mapWidth - 1);
-  }
-  if (target.y < 0) {
-    target.y = 0;
-  } else if (target.y >= static_cast<float>(mapHeight)) {
-    target.y = static_cast<float>(mapHeight - 1);
-  }
-  return target;
-}
 }  // namespace
 
 std::vector<Position> Pathfinder::aStar(
     Position start, const std::vector<std::vector<type>>& map, Position target,
     bool canPassDoor) {
-  target = clampPosition(target, static_cast<int>(map[0].size()),
-                         static_cast<int>(map.size()));
   std::vector<Node> openSet;
   std::vector<Node> closedSet;
   Node startNode(static_cast<int>(start.x), static_cast<int>(start.y));

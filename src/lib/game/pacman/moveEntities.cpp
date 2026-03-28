@@ -61,6 +61,38 @@ bool hasColor(const Entity& ghost, const std::array<uint8_t, 4>& color) {
   return ghost.type.color == color;
 }
 
+Position clampToMap(const std::vector<std::vector<type>>& map,
+                    Position target) {
+  if (map.empty()) {
+    return Position(0, 0);
+  }
+  if (target.y < 0) {
+    target.y = 0;
+  } else if (target.y >= static_cast<float>(map.size())) {
+    target.y = static_cast<float>(map.size() - 1);
+  }
+  const int rowIndex = static_cast<int>(target.y);
+  if (target.x < 0) {
+    target.x = 0;
+  } else if (target.x >= static_cast<float>(map[rowIndex].size())) {
+    target.x = static_cast<float>(map[rowIndex].size() - 1);
+  }
+  return target;
+}
+
+Position moveBlueGhostPivotTarget(Position target, Input playerInput) {
+  if (playerInput == Input::UP) {
+    target.y -= 2;
+  } else if (playerInput == Input::DOWN) {
+    target.y += 2;
+  } else if (playerInput == Input::LEFT) {
+    target.x -= 2;
+  } else if (playerInput == Input::RIGHT) {
+    target.x += 2;
+  }
+  return Position(target.x, target.y);
+}
+
 Position movePinkGhostTarget(Position target, Input playerInput) {
   if (playerInput == Input::UP) {
     target.y -= 4;
@@ -76,28 +108,19 @@ Position movePinkGhostTarget(Position target, Input playerInput) {
 
 Position moveBlueGhostTarget(Position target, const Entity& redGhost,
                              Input playerInput) {
-  Position pivotPoint = target;
-  if (playerInput == Input::UP) {
-    pivotPoint.y -= 2;
-  } else if (playerInput == Input::DOWN) {
-    pivotPoint.y += 2;
-  } else if (playerInput == Input::LEFT) {
-    pivotPoint.x -= 2;
-  } else if (playerInput == Input::RIGHT) {
-    pivotPoint.x += 2;
-  }
+  Position pivotPoint = moveBlueGhostPivotTarget(target, playerInput);
   target.x = pivotPoint.x + (pivotPoint.x - redGhost.position.x);
   target.y = pivotPoint.y + (pivotPoint.y - redGhost.position.y);
   return Position(target.x, target.y);
 }
 
-Position moveOrangeGhostTarget(const Entity& ghost, Position target) {
+Position moveOrangeGhostTarget(const Entity& ghost, Position target,
+                               std::vector<std::vector<type>> map) {
   int distanceToPlayer =
       std::abs(static_cast<int>(ghost.position.x - target.x)) +
       std::abs(static_cast<int>(ghost.position.y - target.y));
   if (distanceToPlayer < ORANGE_SAFE_DISTANCE) {
-    target.x = 0;
-    target.y = 0;
+    target = clampToMap(map, target);
   }
   return Position(target.x, target.y);
 }
@@ -176,9 +199,11 @@ void Pacman::moveAliveGhosts(Position target, bool canPassDoor,
   _aliveGhostMovementTimer = 0;
   for (auto& ghost : _ghosts) {
     Position ghostTarget = target;
+    bool isBlueGhost = false;
     if (hasColor(ghost, PINK)) {
       ghostTarget = movePinkGhostTarget(target, playerInput);
     } else if (hasColor(ghost, BLUE)) {
+      isBlueGhost = true;
       Entity redGhost = ghost;
       for (const auto& currentGhost : _ghosts) {
         if (hasColor(currentGhost, RED)) {
@@ -188,12 +213,21 @@ void Pacman::moveAliveGhosts(Position target, bool canPassDoor,
       }
       ghostTarget = moveBlueGhostTarget(target, redGhost, playerInput);
     } else if (hasColor(ghost, ORANGE)) {
-      ghostTarget = moveOrangeGhostTarget(ghost, target);
+      ghostTarget = moveOrangeGhostTarget(ghost, target, _map);
     }
+
+    ghostTarget = clampToMap(_map, ghostTarget);
 
     std::vector<Position> path =
         Pathfinder::aStar(Position((ghost.position.x), (ghost.position.y)),
                           _map, ghostTarget, canPassDoor);
+
+    if (path.empty() && isBlueGhost) {
+      Position pivotTarget = moveBlueGhostPivotTarget(target, playerInput);
+      pivotTarget = clampToMap(_map, pivotTarget);
+      path = Pathfinder::aStar(Position((ghost.position.x), (ghost.position.y)),
+                               _map, pivotTarget, canPassDoor);
+    }
 
     if (path.size() > 1) {
       Position nextPos = path[1];
