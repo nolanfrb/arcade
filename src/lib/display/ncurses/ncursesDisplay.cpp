@@ -56,6 +56,10 @@ void NcursesDisplay::clearPendingInput() {
 }
 
 Input NcursesDisplay::getEvent() {
+  if (_eventConsumed && _pendingInput.has_value() && !_textConsumed) {
+    _pendingInput.reset();
+    _eventConsumed = false;
+  }
   if (_eventConsumed && _pendingInput.has_value()) {
     clearPendingInput();
   }

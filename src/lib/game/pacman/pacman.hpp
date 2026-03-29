@@ -108,6 +108,7 @@ class Pacman : public AGame {
   float _aliveGhostMovementTimer = 0;
   float _deadGhostMovementTimer = 0;
   float _playerMovementTimer = 0;
+  Input _lastPlayerInput = Input::NONE;
   std::vector<Entity> _chassedGhosts;
   std::vector<Entity> _deadGhosts;
   std::vector<Position> _ghostSpawnPositions;

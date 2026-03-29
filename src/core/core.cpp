@@ -6,6 +6,7 @@
 */
 
 #include "core.hpp"
+#include <chrono>
 #include <filesystem>
 #include <iostream>
 #include <string>
@@ -44,9 +45,10 @@ int Core::run(std::filesystem::path const& path) {
     std::cerr << "No display library found." << '\n';
     return ERROR;
   }
-  _libManager.loadGame("./lib/arcade_menu.so");
+  _libManager.loadGame("./lib/arcade_pacman.so");
   IDisplay* currentDisplay = nullptr;
   IGame* currentGame = nullptr;
+  auto lastFrameTime = std::chrono::steady_clock::now();
   while (_running) {
     currentDisplay = _libManager.getDisplay();
     if (currentDisplay == nullptr) {
@@ -63,7 +65,19 @@ int Core::run(std::filesystem::path const& path) {
       return ERROR;
     }
     if (currentGame != nullptr) {
-      currentGame->update(input, DEFAULT_DELTA_TIME);
+      const auto currentFrameTime = std::chrono::steady_clock::now();
+      float deltaTime =
+          std::chrono::duration<float>(currentFrameTime - lastFrameTime)
+              .count();
+      lastFrameTime = currentFrameTime;
+
+      if (deltaTime <= 0) {
+        deltaTime = DEFAULT_DELTA_TIME;
+      } else if (deltaTime > MAX_DELTA_TIME) {
+        deltaTime = MAX_DELTA_TIME;
+      }
+
+      currentGame->update(input, deltaTime);
       currentDisplay->clear();
       currentDisplay->drawEntity(currentGame->getEntity());
       currentDisplay->drawText(currentGame->getText());
