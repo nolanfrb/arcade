@@ -73,6 +73,7 @@ void Pacman::stop() {
   _map.clear();
   _ghostDirections.clear();
   _gameTimer = 0;
+  _playerMovementTimer = 0;
 }
 
 void Pacman::restart() {
@@ -130,6 +131,7 @@ void Pacman::checkVictory() {
 
 void Pacman::update(Input input, float deltaTime) {
   _gameTimer += deltaTime;
+  _playerMovementTimer += deltaTime;
   checkCollision();
   checkBordersCollision();
   movePlayer(input);

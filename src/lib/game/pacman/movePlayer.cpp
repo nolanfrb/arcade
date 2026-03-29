@@ -11,6 +11,15 @@
 #include "pacman.hpp"
 
 void Pacman::movePlayer(Input input) {
+  if (input != Input::UP && input != Input::DOWN && input != Input::LEFT &&
+      input != Input::RIGHT) {
+    return;
+  }
+  if (_playerMovementTimer < PLAYER_MOVE_DELAY) {
+    return;
+  }
+  _playerMovementTimer -= PLAYER_MOVE_DELAY;
+
   float newX = _player.position.x;
   float newY = _player.position.y;
   const int mapHeight = static_cast<int>(_map.size());

@@ -44,6 +44,7 @@ constexpr float GHOST_SPEED_FRIGHTENED = 0.5F;
 constexpr float GHOST_RESPAWN_DELAY = 5.F;
 constexpr float GHOST_SPAWN_DELAY = 10.F;
 constexpr float LEVEL_UP_SPEED_INCREASE = 0.25F;
+constexpr float PLAYER_MOVE_DELAY = 0.15F;
 
 #define WHITE {255, 255, 255, 255}
 #define BLUE {0, 0, 255, 255}
@@ -105,6 +106,7 @@ class Pacman : public AGame {
   std::vector<Input> _ghostDirections;
   float _aliveGhostMovementTimer = 0;
   float _deadGhostMovementTimer = 0;
+  float _playerMovementTimer = 0;
   std::vector<Entity> _chassedGhosts;
   std::vector<Entity> _deadGhosts;
   std::vector<Position> _ghostSpawnPositions;

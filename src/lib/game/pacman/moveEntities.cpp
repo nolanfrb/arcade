@@ -67,7 +67,7 @@ void Pacman::moveAliveGhosts(Position target, bool canPassDoor,
                              Input playerInput) {
   float ghostSpeed =
       _isSuperPacgumActive ? GHOST_SPEED_FRIGHTENED : GHOST_SPEED_NORMAL;
-  ghostSpeed *= _ghostSpeedMultiplier;
+  ghostSpeed /= _ghostSpeedMultiplier;
   if (_aliveGhostMovementTimer < ghostSpeed) {
     return;
   }
