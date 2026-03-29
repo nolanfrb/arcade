@@ -121,6 +121,13 @@ void Pacman::updateEntities(std::vector<Entity>& entities,
   setEntities(entities);
 }
 
+void Pacman::checkVictory() {
+  if (_pacgums.empty() && _superPacgums.empty()) {
+    _ghostSpeedMultiplier += LEVEL_UP_SPEED_INCREASE;
+    restart();
+  }
+}
+
 void Pacman::update(Input input, float deltaTime) {
   _gameTimer += deltaTime;
   checkCollision();
@@ -128,6 +135,7 @@ void Pacman::update(Input input, float deltaTime) {
   movePlayer(input);
   moveGhosts(deltaTime, input);
   setScore(_score);
+  checkVictory();
   if (isGameOver()) {
     stop();
     return;

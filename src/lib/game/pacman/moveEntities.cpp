@@ -65,9 +65,10 @@ void Pacman::moveDeadGhosts(Entity& ghost) {
 
 void Pacman::moveAliveGhosts(Position target, bool canPassDoor,
                              Input playerInput) {
-  _ghostSpeed =
+  float ghostSpeed =
       _isSuperPacgumActive ? GHOST_SPEED_FRIGHTENED : GHOST_SPEED_NORMAL;
-  if (_aliveGhostMovementTimer < _ghostSpeed) {
+  ghostSpeed *= _ghostSpeedMultiplier;
+  if (_aliveGhostMovementTimer < ghostSpeed) {
     return;
   }
   _aliveGhostMovementTimer = 0;
@@ -117,7 +118,7 @@ void Pacman::moveGhosts(float deltaTime, Input playerInput) {
   _aliveGhostMovementTimer += deltaTime;
   _deadGhostMovementTimer += deltaTime;
 
-  bool canPassDoor = _gameTimer >= 3;
+  bool canPassDoor = _gameTimer >= GHOST_SPAWN_DELAY;
   Position target(_player.position.x, _player.position.y);
   if (_isSuperPacgumActive) {
     canPassDoor = false;

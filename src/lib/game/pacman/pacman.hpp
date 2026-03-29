@@ -42,6 +42,8 @@ constexpr float GHOST_SPEED_DEAD = 0.2F;
 constexpr float GHOST_SPEED_NORMAL = 0.3F;
 constexpr float GHOST_SPEED_FRIGHTENED = 0.5F;
 constexpr float GHOST_RESPAWN_DELAY = 5.F;
+constexpr float GHOST_SPAWN_DELAY = 10.F;
+constexpr float LEVEL_UP_SPEED_INCREASE = 0.25F;
 
 #define WHITE {255, 255, 255, 255}
 #define BLUE {0, 0, 255, 255}
@@ -84,6 +86,7 @@ class Pacman : public AGame {
   void checkFoodCollision();
   void checkGhostCollision();
   void checkBordersCollision();
+  void checkVictory();
 
   void checkSuperPacgumTimer(float deltaTime);
 
@@ -109,7 +112,7 @@ class Pacman : public AGame {
   std::vector<Entity> _superPacgums;
   std::vector<Entity> _pacgums;
   std::vector<Entity> _foods;
-  float _ghostSpeed = GHOST_SPEED_NORMAL;
+  float _ghostSpeedMultiplier = 1;
 
   std::vector<std::vector<type>> _map;
 };
