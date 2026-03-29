@@ -14,6 +14,33 @@
 #include "pacman.hpp"
 #include "utils/utils.hpp"
 
+namespace {
+void respawnGhosts(float deltaTime, std::vector<Entity>& deadGhosts,
+                   std::vector<float>& ghostRespawnTimers,
+                   std::vector<Entity>& ghosts,
+                   std::vector<Input>& ghostDirections,
+                   const std::vector<Position>& ghostSpawnPositions) {
+  for (std::size_t i = 0;
+       i < deadGhosts.size() && i < ghostRespawnTimers.size();) {
+    ghostRespawnTimers[i] += deltaTime;
+    if (ghostRespawnTimers[i] >= GHOST_RESPAWN_DELAY) {
+      if (!ghostSpawnPositions.empty()) {
+        deadGhosts[i].position = ghostSpawnPositions[0];
+      }
+      ghosts.push_back(deadGhosts[i]);
+      ghostDirections.push_back(Input::UP);
+      deadGhosts.erase(deadGhosts.begin() +
+                       static_cast<std::vector<Entity>::difference_type>(i));
+      ghostRespawnTimers.erase(
+          ghostRespawnTimers.begin() +
+          static_cast<std::vector<float>::difference_type>(i));
+      continue;
+    }
+    ++i;
+  }
+}
+}  // namespace
+
 void Pacman::moveDeadGhosts(Entity& ghost) {
   if (_ghostSpawnPositions.empty()) {
     return;
@@ -104,4 +131,6 @@ void Pacman::moveGhosts(float deltaTime, Input playerInput) {
       moveDeadGhosts(deadGhost);
     }
   }
+  respawnGhosts(deltaTime, _deadGhosts, _ghostRespawnTimers, _ghosts,
+                _ghostDirections, _ghostSpawnPositions);
 }

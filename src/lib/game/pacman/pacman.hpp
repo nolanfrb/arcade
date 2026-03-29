@@ -41,6 +41,7 @@ enum class itemScore : std::uint8_t {
 constexpr float GHOST_SPEED_DEAD = 0.2F;
 constexpr float GHOST_SPEED_NORMAL = 0.3F;
 constexpr float GHOST_SPEED_FRIGHTENED = 0.5F;
+constexpr float GHOST_RESPAWN_DELAY = 5.F;
 
 #define WHITE {255, 255, 255, 255}
 #define BLUE {0, 0, 255, 255}
@@ -65,7 +66,8 @@ class Pacman : public AGame {
 
  private:
   void updateEntities(std::vector<Entity>& entities,
-                      const std::vector<EntityType>& entityTypes);
+                      const std::vector<EntityType>& entityTypes,
+                      float deltaTime);
 
   void movePlayer(Input input);
   void moveGhosts(float deltaTime, Input playerInput);

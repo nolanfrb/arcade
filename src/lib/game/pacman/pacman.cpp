@@ -32,7 +32,6 @@ enum : std::uint8_t {
 };
 
 constexpr int SUPERPACGUM_DURATION = 10;
-constexpr int GHOST_RESPAWN_DURATION = 5;
 constexpr float GHOST_SPEED_DELAY = 0.2F;
 }  // namespace
 
@@ -92,7 +91,9 @@ void Pacman::checkSuperPacgumTimer(float deltaTime) {
 }
 
 void Pacman::updateEntities(std::vector<Entity>& entities,
-                            const std::vector<EntityType>& entityTypes) {
+                            const std::vector<EntityType>& entityTypes,
+                            float deltaTime) {
+  (void)deltaTime;
   for (const auto& item : _foods) {
     entities.push_back(item);
   }
@@ -109,7 +110,9 @@ void Pacman::updateEntities(std::vector<Entity>& entities,
     entities.push_back(ghost);
   }
   for (const auto& ghost : _deadGhosts) {
-    entities.push_back(ghost);
+    Entity deadGhostEntity = ghost;
+    deadGhostEntity.type = entityTypes[getTypeIndex(type::DEAD_GHOST)];
+    entities.push_back(deadGhostEntity);
   }
   for (const auto& ghost : _chassedGhosts) {
     entities.push_back(ghost);
@@ -151,7 +154,7 @@ void Pacman::update(Input input, float deltaTime) {
       }
     }
   }
-  updateEntities(entities, entityTypes);
+  updateEntities(entities, entityTypes, deltaTime);
 }
 
 extern "C" gsl::owner<IGame*> createGame() { return new Pacman(); }
