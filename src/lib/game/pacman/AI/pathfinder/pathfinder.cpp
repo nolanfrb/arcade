@@ -7,6 +7,7 @@
 
 #include "pathfinder.hpp"
 #include <algorithm>
+#include <cmath>
 #include <vector>
 #include "../../../../../shared/Position.hpp"
 #include "../../pacman.hpp"
@@ -18,7 +19,7 @@ std::vector<Position> createPath(Node current,
   std::vector<Position> path;
   path.emplace_back(current.getX(), current.getY());
   while (current.getParentX() != -1 && current.getParentY() != -1) {
-    Node target(current.getParentX(), current.getParentY());
+    const Node target(current.getParentX(), current.getParentY());
     auto parent = std::ranges::find(closedSet, target);
     if (parent != closedSet.end()) {
       path.emplace_back(parent->getX(), parent->getY());
@@ -44,7 +45,7 @@ bool checkNeighbor(const Node& neighbor, const std::vector<Node>& closedSet,
       neighbor.getX() >= static_cast<int>(map[neighbor.getY()].size())) {
     return false;
   }
-  type nodeType = map[neighbor.getY()][neighbor.getX()];
+  const type nodeType = map[neighbor.getY()][neighbor.getX()];
   if (nodeType == type::WALL) {
     return false;
   }
@@ -76,15 +77,16 @@ void setNeighbor(Node& neighbor, const Node& current,
       existingIt->setParentX(current.getX());
       existingIt->setParentY(current.getY());
       existingIt->setGCost(tentativeGCost);
-      existingIt->setHCost(abs(neighbor.getX() - static_cast<int>(target.x)) +
-                           abs(neighbor.getY() - static_cast<int>(target.y)));
+      existingIt->setHCost(
+          std::abs(neighbor.getX() - static_cast<int>(target.x)) +
+          std::abs(neighbor.getY() - static_cast<int>(target.y)));
     }
   } else {
     neighbor.setParentX(current.getX());
     neighbor.setParentY(current.getY());
     neighbor.setGCost(tentativeGCost);
-    neighbor.setHCost(abs(neighbor.getX() - static_cast<int>(target.x)) +
-                      abs(neighbor.getY() - static_cast<int>(target.y)));
+    neighbor.setHCost(std::abs(neighbor.getX() - static_cast<int>(target.x)) +
+                      std::abs(neighbor.getY() - static_cast<int>(target.y)));
     openSet.push_back(neighbor);
   }
 }
@@ -98,8 +100,8 @@ std::vector<Position> Pathfinder::aStar(
   std::vector<Node> closedSet;
   Node startNode(static_cast<int>(start.x), static_cast<int>(start.y));
   startNode.setGCost(0);
-  startNode.setHCost(abs(static_cast<int>(start.x - target.x)) +
-                     abs(static_cast<int>(start.y - target.y)));
+  startNode.setHCost(std::abs(static_cast<int>(start.x - target.x)) +
+                     std::abs(static_cast<int>(start.y - target.y)));
   openSet.push_back(startNode);
   while (!openSet.empty()) {
     Node current = findLowerFCostNode(openSet);
