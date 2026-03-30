@@ -16,6 +16,62 @@
 #include "utils/utils.hpp"
 
 namespace {
+float getAliveGhostSpeed(bool isSuperPacgumActive, float ghostSpeedMultiplier) {
+  float ghostSpeed =
+      isSuperPacgumActive ? GHOST_SPEED_FRIGHTENED : GHOST_SPEED_NORMAL;
+  ghostSpeed /= ghostSpeedMultiplier;
+  return ghostSpeed;
+}
+
+Entity findRedGhost(const std::vector<Entity>& ghosts, const Entity& fallback) {
+  for (const auto& currentGhost : ghosts) {
+    if (Utils::hasColor(currentGhost, RED)) {
+      return currentGhost;
+    }
+  }
+  return fallback;
+}
+
+Position getGhostTarget(const Entity& ghost, Position defaultTarget,
+                        Input playerInput,
+                        const std::vector<std::vector<type>>& map,
+                        const std::vector<Entity>& ghosts, bool& isBlueGhost) {
+  if (Utils::hasColor(ghost, PINK)) {
+    return ghostMovement::movePinkGhostTarget(defaultTarget, playerInput);
+  }
+  if (Utils::hasColor(ghost, BLUE)) {
+    isBlueGhost = true;
+    const Entity redGhost = findRedGhost(ghosts, ghost);
+    return ghostMovement::moveBlueGhostTarget(defaultTarget, redGhost,
+                                              playerInput);
+  }
+  if (Utils::hasColor(ghost, ORANGE)) {
+    return ghostMovement::moveOrangeGhostTarget(ghost, defaultTarget, map);
+  }
+  return defaultTarget;
+}
+
+std::vector<Position> getGhostPath(const Entity& ghost, Position ghostTarget,
+                                   bool canPassDoor,
+                                   const std::vector<std::vector<type>>& map) {
+  ghostTarget = Utils::clampToMap(map, ghostTarget);
+  return Pathfinder::aStar(
+      Position{.x = (ghost.position.x), .y = (ghost.position.y)}, map,
+      ghostTarget, canPassDoor);
+}
+
+void moveGhostWithPath(Entity& ghost, const std::vector<Position>& path) {
+  if (path.size() > 1) {
+    const Position nextPos = path[1];
+    ghost.position.x = nextPos.x;
+    ghost.position.y = nextPos.y;
+  } else if (path.size() == 1) {
+    const Position nextPos = path[0];
+    ghost.position.x = nextPos.x;
+    ghost.position.y = nextPos.y;
+  }
+}
+
 void respawnGhosts(float deltaTime, std::vector<Entity>& deadGhosts,
                    std::vector<float>& ghostRespawnTimers,
                    std::vector<Entity>& ghosts,
@@ -66,53 +122,24 @@ void Pacman::moveDeadGhosts(Entity& ghost) {
 
 void Pacman::moveAliveGhosts(Position target, bool canPassDoor,
                              Input playerInput) {
-  float ghostSpeed =
-      _isSuperPacgumActive ? GHOST_SPEED_FRIGHTENED : GHOST_SPEED_NORMAL;
-  ghostSpeed /= _ghostSpeedMultiplier;
+  const float ghostSpeed =
+      getAliveGhostSpeed(_isSuperPacgumActive, _ghostSpeedMultiplier);
   if (_aliveGhostMovementTimer < ghostSpeed) {
     return;
   }
   _aliveGhostMovementTimer = 0;
   for (auto& ghost : _ghosts) {
-    Position ghostTarget = target;
     bool isBlueGhost = false;
-    if (Utils::hasColor(ghost, PINK)) {
-      ghostTarget = ghostMovement::movePinkGhostTarget(target, playerInput);
-    } else if (Utils::hasColor(ghost, BLUE)) {
-      isBlueGhost = true;
-      Entity redGhost = ghost;
-      for (const auto& currentGhost : _ghosts) {
-        if (Utils::hasColor(currentGhost, RED)) {
-          redGhost = currentGhost;
-          break;
-        }
-      }
-      ghostTarget =
-          ghostMovement::moveBlueGhostTarget(target, redGhost, playerInput);
-    } else if (Utils::hasColor(ghost, ORANGE)) {
-      ghostTarget = ghostMovement::moveOrangeGhostTarget(ghost, target, _map);
-    }
-    ghostTarget = Utils::clampToMap(_map, ghostTarget);
-    std::vector<Position> path = Pathfinder::aStar(
-        Position{.x = (ghost.position.x), .y = (ghost.position.y)}, _map,
-        ghostTarget, canPassDoor);
+    const Position ghostTarget =
+        getGhostTarget(ghost, target, playerInput, _map, _ghosts, isBlueGhost);
+    std::vector<Position> path =
+        getGhostPath(ghost, ghostTarget, canPassDoor, _map);
     if (path.empty() && isBlueGhost) {
       Position pivotTarget =
           ghostMovement::moveBlueGhostPivotTarget(target, playerInput);
-      pivotTarget = Utils::clampToMap(_map, pivotTarget);
-      path = Pathfinder::aStar(
-          Position{.x = (ghost.position.x), .y = (ghost.position.y)}, _map,
-          pivotTarget, canPassDoor);
+      path = getGhostPath(ghost, pivotTarget, canPassDoor, _map);
     }
-    if (path.size() > 1) {
-      const Position nextPos = path[1];
-      ghost.position.x = nextPos.x;
-      ghost.position.y = nextPos.y;
-    } else if (path.size() == 1) {
-      const Position nextPos = path[0];
-      ghost.position.x = nextPos.x;
-      ghost.position.y = nextPos.y;
-    }
+    moveGhostWithPath(ghost, path);
   }
 }
 
