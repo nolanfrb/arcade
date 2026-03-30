@@ -16,6 +16,23 @@
 #include "LibManager/libManager.hpp"
 #include "SystemCommand/systemCommand.hpp"
 
+namespace {
+float getDeltaTime(std::chrono::steady_clock::time_point& lastFrameTime) {
+  const auto currentFrameTime = std::chrono::steady_clock::now();
+  float deltaTime =
+      std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
+  lastFrameTime = currentFrameTime;
+
+  if (deltaTime <= 0) {
+    return DEFAULT_DELTA_TIME;
+  }
+  if (deltaTime > MAX_DELTA_TIME) {
+    return MAX_DELTA_TIME;
+  }
+  return deltaTime;
+}
+}  // namespace
+
 Core::Core() {
   _systemCommand.setOnExitRequested([this]() { _running = false; });
   _systemCommand.setOnMenuRequested([this]() { menu(); });
@@ -65,17 +82,7 @@ int Core::run(std::filesystem::path const& path) {
       return ERROR;
     }
     if (currentGame != nullptr) {
-      const auto currentFrameTime = std::chrono::steady_clock::now();
-      float deltaTime =
-          std::chrono::duration<float>(currentFrameTime - lastFrameTime)
-              .count();
-      lastFrameTime = currentFrameTime;
-
-      if (deltaTime <= 0) {
-        deltaTime = DEFAULT_DELTA_TIME;
-      } else if (deltaTime > MAX_DELTA_TIME) {
-        deltaTime = MAX_DELTA_TIME;
-      }
+      const float deltaTime = getDeltaTime(lastFrameTime);
 
       currentGame->update(input, deltaTime);
       currentDisplay->clear();
