@@ -26,10 +26,11 @@ constexpr Color BLUE = {0, 0, 255, 255};
 constexpr Color BLACK = {0, 0, 0, 255};
 }  // namespace Colors
 
+constexpr int DEFAULT_FONT_SIZE = 16.0;
 class Scene {
  public:
   Scene& label(const std::string& content, Position pos,
-               Color color = Colors::WHITE, int fontSize = 16) {
+               Color color = Colors::WHITE, int fontSize = DEFAULT_FONT_SIZE) {
     Text text;
     text.content = content;
     text.position = pos;
@@ -41,41 +42,41 @@ class Scene {
 
   Scene& box(Position pos, float width, float height,
              Color color = Colors::WHITE, char asciiChar = '#') {
-    Entity e;
-    e.position = pos;
-    e.type = {.type = Shape::RECTANGLE,
-              .width = width,
-              .height = height,
-              .asciiChar = asciiChar,
-              .color = color};
-    _entities.push_back(e);
+    Entity entity;
+    entity.position = pos;
+    entity.type = {.type = Shape::RECTANGLE,
+                   .width = width,
+                   .height = height,
+                   .asciiChar = asciiChar,
+                   .color = color};
+    _entities.push_back(entity);
     return *this;
   }
 
   Scene& sprite(Position pos, const std::string& spritePath, float width = 1,
                 float height = 1, char asciiChar = '?') {
-    Entity e;
-    e.position = pos;
-    e.type = {.type = Shape::SPRITE,
-              .width = width,
-              .height = height,
-              .asciiChar = asciiChar,
-              .color = Colors::WHITE,
-              .spritePath = spritePath};
-    _entities.push_back(e);
+    Entity entity;
+    entity.position = pos;
+    entity.type = {.type = Shape::SPRITE,
+                   .width = width,
+                   .height = height,
+                   .asciiChar = asciiChar,
+                   .color = Colors::WHITE,
+                   .spritePath = spritePath};
+    _entities.push_back(entity);
     return *this;
   }
 
   Scene& circle(Position pos, float radius, Color color = Colors::WHITE,
                 char asciiChar = 'O') {
-    Entity e;
-    e.position = pos;
-    e.type = {.type = Shape::CIRCLE,
-              .width = radius * 2,
-              .height = radius * 2,
-              .asciiChar = asciiChar,
-              .color = color};
-    _entities.push_back(e);
+    Entity entity;
+    entity.position = pos;
+    entity.type = {.type = Shape::CIRCLE,
+                   .width = radius * 2,
+                   .height = radius * 2,
+                   .asciiChar = asciiChar,
+                   .color = color};
+    _entities.push_back(entity);
     return *this;
   }
 
@@ -88,7 +89,8 @@ class Scene {
       bool sel = (i == selectedIndex);
       Text text;
       text.content = (sel ? selectedPrefix : prefix) + items[i];
-      text.position = {.x = pos.x, .y = pos.y + (static_cast<float>(i) * spacing)};
+      text.position = {.x = pos.x,
+                       .y = pos.y + (static_cast<float>(i) * spacing)};
       text.color = sel ? selectedColor : color;
       _texts.push_back(text);
     }
