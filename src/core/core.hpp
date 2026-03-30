@@ -15,6 +15,7 @@
 
 constexpr int ERROR = 84;
 constexpr float DEFAULT_DELTA_TIME = 0.016F;
+constexpr float MAX_DELTA_TIME = 0.1F;
 
 class Core {
  public:

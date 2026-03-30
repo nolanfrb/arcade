@@ -19,18 +19,19 @@ namespace {
 enum : std::uint8_t {
   WALL_INDEX = 0,
   PACMAN_INDEX = 1,
-  GHOST_INDEX = 2,
-  SUPERPACGUM_INDEX = 3,
-  PACGUM_INDEX = 4,
-  FOOD_INDEX = 5,
-  CHASED_GHOST_INDEX = 6,
-  DEAD_GHOST_INDEX = 7,
-  GHOST_DOOR_INDEX = 8,
-  EMPTY_INDEX = 9,
+  RED_GHOST_INDEX = 2,
+  BLUE_GHOST_INDEX = 3,
+  PINK_GHOST_INDEX = 4,
+  ORANGE_GHOST_INDEX = 5,
+  SUPERPACGUM_INDEX = 6,
+  PACGUM_INDEX = 7,
+  FOOD_INDEX = 8,
+  CHASED_GHOST_INDEX = 9,
+  DEAD_GHOST_INDEX = 10,
+  GHOST_DOOR_INDEX = 11,
 };
 
 constexpr int SUPERPACGUM_DURATION = 10;
-constexpr int GHOST_RESPAWN_DURATION = 5;
 constexpr float GHOST_SPEED_DELAY = 0.2F;
 }  // namespace
 
@@ -43,14 +44,16 @@ int Pacman::getTypeIndex(type tile) {
   static const std::unordered_map<type, int> typeToIndex = {
       {type::WALL, WALL_INDEX},
       {type::PACMAN, PACMAN_INDEX},
-      {type::GHOST, GHOST_INDEX},
+      {type::RED_GHOST, RED_GHOST_INDEX},
+      {type::BLUE_GHOST, BLUE_GHOST_INDEX},
+      {type::PINK_GHOST, PINK_GHOST_INDEX},
+      {type::ORANGE_GHOST, ORANGE_GHOST_INDEX},
       {type::SUPERPACGUM, SUPERPACGUM_INDEX},
       {type::PACGUM, PACGUM_INDEX},
       {type::FOOD, FOOD_INDEX},
       {type::CHASED_GHOST, CHASED_GHOST_INDEX},
       {type::DEAD_GHOST, DEAD_GHOST_INDEX},
-      {type::GHOST_DOOR, GHOST_DOOR_INDEX},
-      {type::EMPTY, EMPTY_INDEX}};
+      {type::GHOST_DOOR, GHOST_DOOR_INDEX}};
 
   auto type = typeToIndex.find(tile);
   return (type != typeToIndex.end()) ? type->second : 0;
@@ -69,7 +72,10 @@ void Pacman::init() {
 void Pacman::stop() {
   _map.clear();
   _ghostDirections.clear();
-  _ghostMovementTimer = 0;
+  _gameTimer = 0;
+  _playerMovementTimer = 0;
+  _gameTimer = 0;
+  _playerMovementTimer = 0;
 }
 
 void Pacman::restart() {
@@ -88,7 +94,9 @@ void Pacman::checkSuperPacgumTimer(float deltaTime) {
 }
 
 void Pacman::updateEntities(std::vector<Entity>& entities,
-                            const std::vector<EntityType>& entityTypes) {
+                            const std::vector<EntityType>& entityTypes,
+                            float deltaTime) {
+  (void)deltaTime;
   for (const auto& item : _foods) {
     entities.push_back(item);
   }
@@ -105,7 +113,9 @@ void Pacman::updateEntities(std::vector<Entity>& entities,
     entities.push_back(ghost);
   }
   for (const auto& ghost : _deadGhosts) {
-    entities.push_back(ghost);
+    Entity deadGhostEntity = ghost;
+    deadGhostEntity.type = entityTypes[getTypeIndex(type::DEAD_GHOST)];
+    entities.push_back(deadGhostEntity);
   }
   for (const auto& ghost : _chassedGhosts) {
     entities.push_back(ghost);
@@ -114,12 +124,22 @@ void Pacman::updateEntities(std::vector<Entity>& entities,
   setEntities(entities);
 }
 
+void Pacman::checkVictory() {
+  if (_pacgums.empty() && _superPacgums.empty()) {
+    _ghostSpeedMultiplier += LEVEL_UP_SPEED_INCREASE;
+    restart();
+  }
+}
+
 void Pacman::update(Input input, float deltaTime) {
+  _gameTimer += deltaTime;
+  _playerMovementTimer += deltaTime;
   checkCollision();
   checkBordersCollision();
   movePlayer(input);
-  moveGhosts(deltaTime);
+  moveGhosts(deltaTime, input);
   setScore(_score);
+  checkVictory();
   if (isGameOver()) {
     stop();
     return;
@@ -146,7 +166,7 @@ void Pacman::update(Input input, float deltaTime) {
       }
     }
   }
-  updateEntities(entities, entityTypes);
+  updateEntities(entities, entityTypes, deltaTime);
 }
 
 extern "C" gsl::owner<IGame*> createGame() { return new Pacman(); }

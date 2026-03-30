@@ -6,6 +6,7 @@
 */
 
 #include "core.hpp"
+#include <chrono>
 #include <filesystem>
 #include <iostream>
 #include <string>
@@ -14,6 +15,23 @@
 #include "../shared/interface/IGame.hpp"
 #include "LibManager/libManager.hpp"
 #include "SystemCommand/systemCommand.hpp"
+
+namespace {
+float getDeltaTime(std::chrono::steady_clock::time_point& lastFrameTime) {
+  const auto currentFrameTime = std::chrono::steady_clock::now();
+  const float deltaTime =
+      std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
+  lastFrameTime = currentFrameTime;
+
+  if (deltaTime <= 0) {
+    return DEFAULT_DELTA_TIME;
+  }
+  if (deltaTime > MAX_DELTA_TIME) {
+    return MAX_DELTA_TIME;
+  }
+  return deltaTime;
+}
+}  // namespace
 
 Core::Core() {
   _systemCommand.setOnExitRequested([this]() { _running = false; });
@@ -48,6 +66,7 @@ int Core::run(std::filesystem::path const& path) {
   _libManager.loadGame("./lib/arcade_menu.so");
   IDisplay* currentDisplay = nullptr;
   IGame* currentGame = nullptr;
+  auto lastFrameTime = std::chrono::steady_clock::now();
   while (_running) {
     currentDisplay = _libManager.getDisplay();
     if (currentDisplay == nullptr) {
@@ -64,12 +83,14 @@ int Core::run(std::filesystem::path const& path) {
       return ERROR;
     }
     if (currentGame != nullptr) {
-      currentGame->update(input, DEFAULT_DELTA_TIME);
+      const float deltaTime = getDeltaTime(lastFrameTime);
+      currentGame->update(input, deltaTime);
       _ctx.applyPending();
       currentGame = _libManager.getGame();
       if (currentGame == nullptr) {
         continue;
       }
+
       currentDisplay->clear();
       currentDisplay->drawEntity(currentGame->getEntity());
       currentDisplay->drawText(currentGame->getText());

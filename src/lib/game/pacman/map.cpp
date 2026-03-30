@@ -15,10 +15,16 @@ type translateTile(char character) {
   switch (character) {
     case '#':
       return type::WALL;
-    case 'P':
+    case 'C':
       return type::PACMAN;
-    case 'G':
-      return type::GHOST;
+    case 'R':
+      return type::RED_GHOST;
+    case 'P':
+      return type::PINK_GHOST;
+    case 'B':
+      return type::BLUE_GHOST;
+    case 'O':
+      return type::ORANGE_GHOST;
     case 'S':
       return type::SUPERPACGUM;
     case '.':
@@ -66,7 +72,10 @@ bool Pacman::checkMap() {
          yCoordinate++) {
       if (getTile(xCoordinate, yCoordinate) == type::PACMAN) {
         pacmanCount++;
-      } else if (getTile(xCoordinate, yCoordinate) == type::GHOST) {
+      } else if (getTile(xCoordinate, yCoordinate) == type::RED_GHOST ||
+                 getTile(xCoordinate, yCoordinate) == type::PINK_GHOST ||
+                 getTile(xCoordinate, yCoordinate) == type::BLUE_GHOST ||
+                 getTile(xCoordinate, yCoordinate) == type::ORANGE_GHOST) {
         ghostCount++;
       }
     }
