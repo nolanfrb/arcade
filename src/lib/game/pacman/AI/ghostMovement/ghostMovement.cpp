@@ -6,6 +6,8 @@
 */
 
 #include "ghostMovement.hpp"
+#include <cmath>
+#include <vector>
 #include "../../../../../shared/Entity.hpp"
 #include "../../../../../shared/Input.hpp"
 #include "../../../../../shared/Position.hpp"
@@ -14,7 +16,7 @@
 
 Position ghostMovement::findFarthestPoint(
     const std::vector<std::vector<type>>& map, Position player) {
-  Position bestTarget(player.x, player.y);
+  Position bestTarget{.x = player.x, .y = player.y};
   int maxDistance = -1;
 
   for (int rowIndex = 0; rowIndex < static_cast<int>(map.size()); ++rowIndex) {
@@ -28,8 +30,8 @@ Position ghostMovement::findFarthestPoint(
                            std::abs(rowIndex - static_cast<int>(player.y));
       if (distance > maxDistance) {
         maxDistance = distance;
-        bestTarget = Position(static_cast<float>(colIndex),
-                              static_cast<float>(rowIndex));
+        bestTarget = Position{.x = static_cast<float>(colIndex),
+                              .y = static_cast<float>(rowIndex)};
       }
     }
   }
@@ -47,7 +49,7 @@ Position ghostMovement::moveBlueGhostPivotTarget(Position target,
   } else if (playerInput == Input::RIGHT) {
     target.x += 2;
   }
-  return Position(target.x, target.y);
+  return Position{.x = target.x, .y = target.y};
 }
 
 Position ghostMovement::movePinkGhostTarget(Position target,
@@ -61,26 +63,26 @@ Position ghostMovement::movePinkGhostTarget(Position target,
   } else if (playerInput == Input::RIGHT) {
     target.x += 4;
   }
-  return Position(target.x, target.y);
+  return Position{.x = target.x, .y = target.y};
 }
 
 Position ghostMovement::moveBlueGhostTarget(Position target,
                                             const Entity& redGhost,
                                             Input playerInput) {
-  Position pivotPoint = moveBlueGhostPivotTarget(target, playerInput);
+  const Position pivotPoint = moveBlueGhostPivotTarget(target, playerInput);
   target.x = pivotPoint.x + (pivotPoint.x - redGhost.position.x);
   target.y = pivotPoint.y + (pivotPoint.y - redGhost.position.y);
-  return Position(target.x, target.y);
+  return Position{.x = target.x, .y = target.y};
 }
 
 Position ghostMovement::moveOrangeGhostTarget(
     const Entity& ghost, Position target,
     const std::vector<std::vector<type>>& map) {
-  int distanceToPlayer =
+  const int distanceToPlayer =
       std::abs(static_cast<int>(ghost.position.x - target.x)) +
       std::abs(static_cast<int>(ghost.position.y - target.y));
   if (distanceToPlayer < ORANGE_SAFE_DISTANCE) {
     target = Utils::clampToMap(map, target);
   }
-  return Position(target.x, target.y);
+  return Position{.x = target.x, .y = target.y};
 }

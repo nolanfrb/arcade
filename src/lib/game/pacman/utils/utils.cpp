@@ -36,7 +36,7 @@ bool Utils::isWalkableTile(type tile, bool canPassDoor) {
 Position Utils::clampToMap(const std::vector<std::vector<type>>& map,
                            Position target) {
   if (map.empty()) {
-    return Position(0, 0);
+    return Position{.x = 0, .y = 0};
   }
   if (target.y < 0) {
     target.y = 0;

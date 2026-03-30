@@ -46,11 +46,11 @@ void Pacman::moveDeadGhosts(Entity& ghost) {
     return;
   }
   std::vector<Position> path = Pathfinder::aStar(
-      Position((ghost.position.x), (ghost.position.y)), _map,
-      Position((_ghostSpawnPositions[0].x +
-                static_cast<float>(Utils::randomNumber(0, 3))),
-               (_ghostSpawnPositions[0].y +
-                static_cast<float>(Utils::randomNumber(-1, 2)))),
+    Position{.x = (ghost.position.x), .y = (ghost.position.y)}, _map,
+    Position{.x = (_ghostSpawnPositions[0].x +
+           static_cast<float>(Utils::randomNumber(0, 3))),
+         .y = (_ghostSpawnPositions[0].y +
+           static_cast<float>(Utils::randomNumber(-1, 2)))},
       true);
   if (path.size() > 1) {
     Position nextPos = path[1];
@@ -93,14 +93,16 @@ void Pacman::moveAliveGhosts(Position target, bool canPassDoor,
     }
     ghostTarget = Utils::clampToMap(_map, ghostTarget);
     std::vector<Position> path =
-        Pathfinder::aStar(Position((ghost.position.x), (ghost.position.y)),
-                          _map, ghostTarget, canPassDoor);
+      Pathfinder::aStar(
+        Position{.x = (ghost.position.x), .y = (ghost.position.y)}, _map,
+        ghostTarget, canPassDoor);
     if (path.empty() && isBlueGhost) {
       Position pivotTarget =
           ghostMovement::moveBlueGhostPivotTarget(target, playerInput);
       pivotTarget = Utils::clampToMap(_map, pivotTarget);
-      path = Pathfinder::aStar(Position((ghost.position.x), (ghost.position.y)),
-                               _map, pivotTarget, canPassDoor);
+        path = Pathfinder::aStar(
+          Position{.x = (ghost.position.x), .y = (ghost.position.y)}, _map,
+          pivotTarget, canPassDoor);
     }
     if (path.size() > 1) {
       Position nextPos = path[1];
@@ -119,11 +121,11 @@ void Pacman::moveGhosts(float deltaTime, Input playerInput) {
   _deadGhostMovementTimer += deltaTime;
 
   bool canPassDoor = _gameTimer >= GHOST_SPAWN_DELAY;
-  Position target(_player.position.x, _player.position.y);
+    Position target{.x = _player.position.x, .y = _player.position.y};
   if (_isSuperPacgumActive) {
     canPassDoor = false;
     target = ghostMovement::findFarthestPoint(
-        _map, Position(_player.position.x, _player.position.y));
+      _map, Position{.x = _player.position.x, .y = _player.position.y});
   }
   moveAliveGhosts(target, canPassDoor, playerInput);
   if (_deadGhostMovementTimer >= GHOST_SPEED_DEAD) {
