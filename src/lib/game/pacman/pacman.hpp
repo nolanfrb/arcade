@@ -46,11 +46,11 @@ constexpr float GHOST_SPAWN_DELAY = 10.F;
 constexpr float LEVEL_UP_SPEED_INCREASE = 0.25F;
 constexpr float PLAYER_MOVE_DELAY = 0.15F;
 
-#define WHITE {255, 255, 255, 255}
-#define BLUE {0, 0, 255, 255}
-#define RED {255, 0, 0, 255}
-#define ORANGE {255, 165, 0, 255}
-#define PINK {255, 192, 203, 255}
+constexpr std::array<std::uint8_t, 4> WHITE = {255, 255, 255, 255};
+constexpr std::array<std::uint8_t, 4> BLUE = {0, 0, 255, 255};
+constexpr std::array<std::uint8_t, 4> RED = {255, 0, 0, 255};
+constexpr std::array<std::uint8_t, 4> ORANGE = {255, 165, 0, 255};
+constexpr std::array<std::uint8_t, 4> PINK = {255, 192, 203, 255};
 
 class Pacman : public AGame {
  public:

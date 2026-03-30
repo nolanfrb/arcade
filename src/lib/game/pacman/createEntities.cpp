@@ -96,7 +96,7 @@ EntityType createDeadGhostType() {
   deadGhost.type = Shape::RECTANGLE;
   deadGhost.width = 1;
   deadGhost.height = 1;
-  deadGhost.color = RED;
+  deadGhost.color = BLUE;
   deadGhost.asciiChar = 'X';
   deadGhost.isTextInput = false;
   deadGhost.spritePath = "assets/pacman/deadGhost.png";

@@ -74,6 +74,8 @@ void Pacman::stop() {
   _ghostDirections.clear();
   _gameTimer = 0;
   _playerMovementTimer = 0;
+  _gameTimer = 0;
+  _playerMovementTimer = 0;
 }
 
 void Pacman::restart() {
