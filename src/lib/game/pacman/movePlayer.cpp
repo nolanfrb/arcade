@@ -10,11 +10,35 @@
 #include "../../../shared/Position.hpp"
 #include "pacman.hpp"
 
+namespace {
+const std::string& getPacmanSpritePath(Input input) {
+  static const std::string defaultPath = "assets/pacman/pacman_move_right.png";
+  static const std::string upPath = "assets/pacman/pacman_move_top.png";
+  static const std::string downPath = "assets/pacman/pacman_move_bottom.png";
+  static const std::string leftPath = "assets/pacman/pacman_move_left.png";
+  static const std::string rightPath = "assets/pacman/pacman_move_right.png";
+
+  switch (input) {
+    case Input::UP:
+      return upPath;
+    case Input::DOWN:
+      return downPath;
+    case Input::LEFT:
+      return leftPath;
+    case Input::RIGHT:
+      return rightPath;
+    default:
+      return defaultPath;
+  }
+}
+}  // namespace
+
 void Pacman::movePlayer(Input input) {
   if (input != Input::UP && input != Input::DOWN && input != Input::LEFT &&
       input != Input::RIGHT) {
     return;
   }
+  _player.type.spritePath = getPacmanSpritePath(input);
   if (_playerMovementTimer < PLAYER_MOVE_DELAY) {
     return;
   }
