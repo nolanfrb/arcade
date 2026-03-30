@@ -26,7 +26,7 @@ EntityType createWallType() {
   wall.color = WHITE;
   wall.asciiChar = '#';
   wall.isTextInput = false;
-  wall.spritePath = "";
+  wall.spritePath = "assets/pacman/pacman_border.png";
   return wall;
 }
 EntityType createPacmanType() {
@@ -128,7 +128,7 @@ EntityType createPacgumType() {
   pacgum.color = WHITE;
   pacgum.asciiChar = '.';
   pacgum.isTextInput = false;
-  pacgum.spritePath = "";
+  pacgum.spritePath = "assets/pacman/pacman_pacgum.png";
   return pacgum;
 }
 EntityType createFoodType() {
