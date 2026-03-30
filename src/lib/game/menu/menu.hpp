@@ -8,10 +8,12 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 #include <vector>
 #include "../../../shared/Input.hpp"
 #include "../../../shared/abstract/AGame.hpp"
+#include "../../../shared/interface/IGame.hpp"
 #include "../../../shared/interface/IGameContext.hpp"
 
 enum class MenuState : std::int8_t {

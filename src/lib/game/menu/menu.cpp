@@ -2,9 +2,9 @@
 #include <filesystem>
 #include <string>
 #include "../../../shared/Input.hpp"
+#include "../../../shared/interface/IGame.hpp"
 #include "../../../shared/interface/IGameContext.hpp"
-#include "../Scene.hpp"
-
+#include "scene.hpp"
 namespace {
 constexpr float MENU_LEFT_MARGIN = 5.0F;
 constexpr float SCOREBOARD_Y = 1.0F;

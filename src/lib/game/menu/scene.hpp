@@ -12,8 +12,9 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include "../../shared/Entity.hpp"
-#include "../../shared/Text.hpp"
+#include "../../../shared/Entity.hpp"
+#include "../../../shared/Position.hpp"
+#include "../../../shared/Text.hpp"
 
 using Color = std::array<uint8_t, 4>;
 
@@ -28,6 +29,14 @@ constexpr Color BLACK = {0, 0, 0, 255};
 
 constexpr int DEFAULT_FONT_SIZE = 16;
 constexpr float DEFAULT_LIST_SPACING = 2.0F;
+
+struct ListOptions {
+  float spacing = DEFAULT_LIST_SPACING;
+  Color color = Colors::WHITE;
+  Color selectedColor = Colors::YELLOW;
+  std::string prefix = "  ";
+  std::string selectedPrefix = "> ";
+};
 
 class Scene {
  public:
@@ -84,17 +93,14 @@ class Scene {
 
   Scene& list(const std::vector<std::string>& items, Position pos,
               std::size_t selectedIndex,
-              float spacing = DEFAULT_LIST_SPACING,
-              Color color = Colors::WHITE, Color selectedColor = Colors::YELLOW,
-              const std::string& prefix = "  ",
-              const std::string& selectedPrefix = "> ") {
+              const ListOptions& opts = ListOptions{}) {
     for (std::size_t i = 0; i < items.size(); i++) {
       const bool sel = (i == selectedIndex);
       Text text;
-      text.content = (sel ? selectedPrefix : prefix) + items[i];
+      text.content = (sel ? opts.selectedPrefix : opts.prefix) + items[i];
       text.position = {.x = pos.x,
-                       .y = pos.y + (static_cast<float>(i) * spacing)};
-      text.color = sel ? selectedColor : color;
+                       .y = pos.y + (static_cast<float>(i) * opts.spacing)};
+      text.color = sel ? opts.selectedColor : opts.color;
       _texts.push_back(text);
     }
     return *this;
