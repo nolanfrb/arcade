@@ -21,7 +21,7 @@ std::vector<Position> createPath(Node current,
                           .y = static_cast<float>(current.getY())});
   while (current.getParentX() != -1 && current.getParentY() != -1) {
     const Node target(current.getParentX(), current.getParentY());
-    auto parent = std::ranges::find(closedSet, target);
+    auto parent = std::find(closedSet.begin(), closedSet.end(), target);
     if (parent != closedSet.end()) {
       path.push_back(Position{.x = static_cast<float>(parent->getX()),
                               .y = static_cast<float>(parent->getY())});
@@ -30,14 +30,15 @@ std::vector<Position> createPath(Node current,
       break;
     }
   }
-  std::ranges::reverse(path);
+  std::reverse(path.begin(), path.end());
   return path;
 }
 
 bool checkNeighbor(const Node& neighbor, const std::vector<Node>& closedSet,
                    const std::vector<std::vector<type>>& map,
                    bool canPassDoor) {
-  if (closedSet.end() != std::ranges::find(closedSet, neighbor)) {
+  if (closedSet.end() !=
+      std::find(closedSet.begin(), closedSet.end(), neighbor)) {
     return false;
   }
   if (neighbor.getY() < 0 || neighbor.getY() >= static_cast<int>(map.size())) {
@@ -73,7 +74,7 @@ void setNeighbor(Node& neighbor, const Node& current,
     return;
   }
   int tentativeGCost = current.getGCost() + 1;
-  auto existingIt = std::ranges::find(openSet, neighbor);
+  auto existingIt = std::find(openSet.begin(), openSet.end(), neighbor);
   if (existingIt != openSet.end()) {
     if (tentativeGCost < existingIt->getGCost()) {
       existingIt->setParentX(current.getX());
@@ -107,7 +108,7 @@ std::vector<Position> Pathfinder::aStar(
   openSet.push_back(startNode);
   while (!openSet.empty()) {
     const Node current = findLowerFCostNode(openSet);
-    openSet.erase(std::ranges::find(openSet, current));
+    openSet.erase(std::find(openSet.begin(), openSet.end(), current));
 
     if (current.getX() == static_cast<int>(target.x) &&
         current.getY() == static_cast<int>(target.y)) {
