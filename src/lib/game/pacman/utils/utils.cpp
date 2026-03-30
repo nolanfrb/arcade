@@ -6,6 +6,8 @@
 */
 
 #include "utils.hpp"
+#include <array>
+#include <cstdint>
 #include <random>
 #include <vector>
 #include "../../../../shared/Entity.hpp"
