@@ -5,6 +5,7 @@
 ** moveEntities
 */
 
+#include <cstddef>
 #include <vector>
 #include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
@@ -53,11 +54,11 @@ void Pacman::moveDeadGhosts(Entity& ghost) {
                      static_cast<float>(Utils::randomNumber(-1, 2)))},
       true);
   if (path.size() > 1) {
-    Position nextPos = path[1];
+    const Position nextPos = path[1];
     ghost.position.x = nextPos.x;
     ghost.position.y = nextPos.y;
   } else if (path.size() == 1) {
-    Position nextPos = path[0];
+    const Position nextPos = path[0];
     ghost.position.x = nextPos.x;
     ghost.position.y = nextPos.y;
   }
@@ -104,11 +105,11 @@ void Pacman::moveAliveGhosts(Position target, bool canPassDoor,
           pivotTarget, canPassDoor);
     }
     if (path.size() > 1) {
-      Position nextPos = path[1];
+      const Position nextPos = path[1];
       ghost.position.x = nextPos.x;
       ghost.position.y = nextPos.y;
     } else if (path.size() == 1) {
-      Position nextPos = path[0];
+      const Position nextPos = path[0];
       ghost.position.x = nextPos.x;
       ghost.position.y = nextPos.y;
     }
