@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <vector>
 #include "../../../../../shared/Entity.hpp"
 #include "../../../../../shared/Input.hpp"
 #include "../../../../../shared/Position.hpp"

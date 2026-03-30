@@ -17,12 +17,14 @@ namespace {
 std::vector<Position> createPath(Node current,
                                  const std::vector<Node>& closedSet) {
   std::vector<Position> path;
-  path.emplace_back(current.getX(), current.getY());
+  path.push_back(Position{.x = static_cast<float>(current.getX()),
+                          .y = static_cast<float>(current.getY())});
   while (current.getParentX() != -1 && current.getParentY() != -1) {
     const Node target(current.getParentX(), current.getParentY());
     auto parent = std::ranges::find(closedSet, target);
     if (parent != closedSet.end()) {
-      path.emplace_back(parent->getX(), parent->getY());
+      path.push_back(Position{.x = static_cast<float>(parent->getX()),
+                              .y = static_cast<float>(parent->getY())});
       current = *parent;
     } else {
       break;
@@ -104,7 +106,7 @@ std::vector<Position> Pathfinder::aStar(
                      std::abs(static_cast<int>(start.y - target.y)));
   openSet.push_back(startNode);
   while (!openSet.empty()) {
-    Node current = findLowerFCostNode(openSet);
+    const Node current = findLowerFCostNode(openSet);
     openSet.erase(std::ranges::find(openSet, current));
 
     if (current.getX() == static_cast<int>(target.x) &&
@@ -112,7 +114,7 @@ std::vector<Position> Pathfinder::aStar(
       return createPath(current, closedSet);
     }
     closedSet.push_back(current);
-    std::vector<Node> neighbors = {
+    const std::vector<Node> neighbors = {
         Node(current.getX() + 1, current.getY()),
         Node(current.getX() - 1, current.getY()),
         Node(current.getX(), current.getY() + 1),
