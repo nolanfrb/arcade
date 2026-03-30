@@ -7,6 +7,7 @@
 
 #include "pathfinder.hpp"
 #include <cmath>
+#include <cstddef>
 #include <vector>
 #include "../../../../../shared/Position.hpp"
 #include "../../pacman.hpp"
@@ -34,7 +35,7 @@ std::vector<Node>::iterator findNode(std::vector<Node>& nodes,
 
 void reversePath(std::vector<Position>& path) {
   for (std::size_t left = 0, right = path.size(); left < right / 2; ++left) {
-    Position tmp = path[left];
+    const Position tmp = path[left];
     path[left] = path[right - 1 - left];
     path[right - 1 - left] = tmp;
   }
