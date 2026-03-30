@@ -44,7 +44,7 @@ int Core::run(std::filesystem::path const& path) {
     std::cerr << "No display library found." << '\n';
     return ERROR;
   }
-  _libManager.loadGame("./lib/arcade_pacman.so");
+  _libManager.loadGame("./lib/arcade_menu.so");
   IDisplay* currentDisplay = nullptr;
   IGame* currentGame = nullptr;
   while (_running) {
