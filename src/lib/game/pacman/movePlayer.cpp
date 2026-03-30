@@ -5,6 +5,7 @@
 ** movePlayer
 */
 
+#include <string>
 #include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
 #include "../../../shared/Position.hpp"
