@@ -19,7 +19,7 @@
 namespace {
 float getDeltaTime(std::chrono::steady_clock::time_point& lastFrameTime) {
   const auto currentFrameTime = std::chrono::steady_clock::now();
-  float deltaTime =
+  const float deltaTime =
       std::chrono::duration<float>(currentFrameTime - lastFrameTime).count();
   lastFrameTime = currentFrameTime;
 
@@ -62,7 +62,7 @@ int Core::run(std::filesystem::path const& path) {
     std::cerr << "No display library found." << '\n';
     return ERROR;
   }
-  _libManager.loadGame("./lib/arcade_pacman.so");
+  _libManager.loadGame("./lib/arcade_menu.so");
   IDisplay* currentDisplay = nullptr;
   IGame* currentGame = nullptr;
   auto lastFrameTime = std::chrono::steady_clock::now();

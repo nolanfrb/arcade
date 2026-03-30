@@ -6,7 +6,6 @@
 */
 
 #include "pathfinder.hpp"
-#include <algorithm>
 #include <cmath>
 #include <vector>
 #include "../../../../../shared/Position.hpp"
@@ -14,6 +13,33 @@
 #include "node.hpp"
 
 namespace {
+const Node* findNode(const std::vector<Node>& nodes, const Node& target) {
+  for (const Node& node : nodes) {
+    if (node == target) {
+      return &node;
+    }
+  }
+  return nullptr;
+}
+
+std::vector<Node>::iterator findNode(std::vector<Node>& nodes,
+                                     const Node& target) {
+  for (auto it = nodes.begin(); it != nodes.end(); ++it) {
+    if (*it == target) {
+      return it;
+    }
+  }
+  return nodes.end();
+}
+
+void reversePath(std::vector<Position>& path) {
+  for (std::size_t left = 0, right = path.size(); left < right / 2; ++left) {
+    Position tmp = path[left];
+    path[left] = path[right - 1 - left];
+    path[right - 1 - left] = tmp;
+  }
+}
+
 std::vector<Position> createPath(Node current,
                                  const std::vector<Node>& closedSet) {
   std::vector<Position> path;
@@ -21,8 +47,8 @@ std::vector<Position> createPath(Node current,
                           .y = static_cast<float>(current.getY())});
   while (current.getParentX() != -1 && current.getParentY() != -1) {
     const Node target(current.getParentX(), current.getParentY());
-    auto parent = std::find(closedSet.begin(), closedSet.end(), target);
-    if (parent != closedSet.end()) {
+    const Node* parent = findNode(closedSet, target);
+    if (parent != nullptr) {
       path.push_back(Position{.x = static_cast<float>(parent->getX()),
                               .y = static_cast<float>(parent->getY())});
       current = *parent;
@@ -30,15 +56,14 @@ std::vector<Position> createPath(Node current,
       break;
     }
   }
-  std::reverse(path.begin(), path.end());
+  reversePath(path);
   return path;
 }
 
 bool checkNeighbor(const Node& neighbor, const std::vector<Node>& closedSet,
                    const std::vector<std::vector<type>>& map,
                    bool canPassDoor) {
-  if (closedSet.end() !=
-      std::find(closedSet.begin(), closedSet.end(), neighbor)) {
+  if (findNode(closedSet, neighbor) != nullptr) {
     return false;
   }
   if (neighbor.getY() < 0 || neighbor.getY() >= static_cast<int>(map.size())) {
@@ -73,8 +98,8 @@ void setNeighbor(Node& neighbor, const Node& current,
   if (!checkNeighbor(neighbor, closedSet, map, canPassDoor)) {
     return;
   }
-  int tentativeGCost = current.getGCost() + 1;
-  auto existingIt = std::find(openSet.begin(), openSet.end(), neighbor);
+  const int tentativeGCost = current.getGCost() + 1;
+  auto existingIt = findNode(openSet, neighbor);
   if (existingIt != openSet.end()) {
     if (tentativeGCost < existingIt->getGCost()) {
       existingIt->setParentX(current.getX());
@@ -108,7 +133,10 @@ std::vector<Position> Pathfinder::aStar(
   openSet.push_back(startNode);
   while (!openSet.empty()) {
     const Node current = findLowerFCostNode(openSet);
-    openSet.erase(std::find(openSet.begin(), openSet.end(), current));
+    const auto currentIt = findNode(openSet, current);
+    if (currentIt != openSet.end()) {
+      openSet.erase(currentIt);
+    }
 
     if (current.getX() == static_cast<int>(target.x) &&
         current.getY() == static_cast<int>(target.y)) {

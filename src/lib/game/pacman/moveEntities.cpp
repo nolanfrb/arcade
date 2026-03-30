@@ -135,7 +135,7 @@ void Pacman::moveAliveGhosts(Position target, bool canPassDoor,
     std::vector<Position> path =
         getGhostPath(ghost, ghostTarget, canPassDoor, _map);
     if (path.empty() && isBlueGhost) {
-      Position pivotTarget =
+      const Position pivotTarget =
           ghostMovement::moveBlueGhostPivotTarget(target, playerInput);
       path = getGhostPath(ghost, pivotTarget, canPassDoor, _map);
     }
