@@ -8,9 +8,9 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
 #include <cstdint>
 #include <string>
-#include <utility>
 #include <vector>
 #include "../../shared/Entity.hpp"
 #include "../../shared/Text.hpp"
@@ -26,7 +26,9 @@ constexpr Color BLUE = {0, 0, 255, 255};
 constexpr Color BLACK = {0, 0, 0, 255};
 }  // namespace Colors
 
-constexpr int DEFAULT_FONT_SIZE = 16.0;
+constexpr int DEFAULT_FONT_SIZE = 16;
+constexpr float DEFAULT_LIST_SPACING = 2.0F;
+
 class Scene {
  public:
   Scene& label(const std::string& content, Position pos,
@@ -81,12 +83,13 @@ class Scene {
   }
 
   Scene& list(const std::vector<std::string>& items, Position pos,
-              std::size_t selectedIndex, float spacing = 2.0F,
+              std::size_t selectedIndex,
+              float spacing = DEFAULT_LIST_SPACING,
               Color color = Colors::WHITE, Color selectedColor = Colors::YELLOW,
               const std::string& prefix = "  ",
               const std::string& selectedPrefix = "> ") {
     for (std::size_t i = 0; i < items.size(); i++) {
-      bool sel = (i == selectedIndex);
+      const bool sel = (i == selectedIndex);
       Text text;
       text.content = (sel ? selectedPrefix : prefix) + items[i];
       text.position = {.x = pos.x,

@@ -9,12 +9,13 @@
 
 #include <optional>
 #include <string>
+#include <vector>
 #include "../shared/interface/IGameContext.hpp"
 #include "LibManager/libManager.hpp"
 
 class CoreContext : public IGameContext {
  public:
-  explicit CoreContext(LibManager& lm) : _lm(lm) {}
+  explicit CoreContext(LibManager& libManager) : _lm(libManager) {}
   ~CoreContext() override = default;
 
   CoreContext(const CoreContext&) = delete;

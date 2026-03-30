@@ -1,6 +1,15 @@
 #include "menu.hpp"
 #include <filesystem>
+#include <string>
+#include "../../../shared/Input.hpp"
+#include "../../../shared/interface/IGameContext.hpp"
 #include "../Scene.hpp"
+
+namespace {
+constexpr float MENU_LEFT_MARGIN = 5.0F;
+constexpr float SCOREBOARD_Y = 1.0F;
+constexpr float GAME_LIST_Y = 3.0F;
+}  // namespace
 
 namespace gsl {
 template <typename T>
@@ -38,11 +47,14 @@ void Menu::update(Input input, float /*deltaTime*/) {
 }
 
 void Menu::handleBrowsing(Input input) {
+  if (_gameList.empty()) {
+    return;
+  }
   if (input == Input::UP && _selectedIndex > 0) {
     _selectedIndex--;
-  } else if (input == Input::DOWN && _selectedIndex < _gameList.size() - 1) {
+  } else if (input == Input::DOWN && _selectedIndex + 1 < _gameList.size()) {
     _selectedIndex++;
-  } else if (input == Input::ACTION && _ctx != nullptr && !_gameList.empty()) {
+  } else if (input == Input::ACTION && _ctx != nullptr) {
     _ctx->loadGame(_gameList[_selectedIndex]);
   }
 }
@@ -53,8 +65,9 @@ void Menu::buildScene() {
   Scene scene;
   scene
       .label("Scoreboard: " + std::to_string(0) + " entries",
-             {.x = 5, .y = 1.0F})
-      .list(_gameList, {.x = 5, .y = 3.0F}, _selectedIndex);
+             {.x = MENU_LEFT_MARGIN, .y = SCOREBOARD_Y})
+      .list(_gameList, {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y},
+            _selectedIndex);
 
   clearTexts();
   clearEntities();
