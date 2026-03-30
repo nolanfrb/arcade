@@ -36,12 +36,10 @@ class Menu : public AGame {
   void setContext(IGameContext* ctx) override;
 
  private:
-  void buildEntities();
-  void buildTexts();
+  void buildScene();
 
   void handleBrowsing(Input input);
   void handleUsernameInput(Input input);
-
   IGameContext* _ctx = nullptr;
   std::vector<std::string> _gameList;
   std::vector<std::string> _displayList;

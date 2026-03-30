@@ -1,6 +1,6 @@
 #include "menu.hpp"
-#include <array>
 #include <filesystem>
+#include "../Scene.hpp"
 
 namespace gsl {
 template <typename T>
@@ -34,7 +34,7 @@ void Menu::update(Input input, float /*deltaTime*/) {
   } else {
     handleUsernameInput(input);
   }
-  buildTexts();
+  buildScene();
 }
 
 void Menu::handleBrowsing(Input input) {
@@ -49,18 +49,20 @@ void Menu::handleBrowsing(Input input) {
 
 void Menu::handleUsernameInput(Input /*input*/) {}
 
-void Menu::buildEntities() {}
+void Menu::buildScene() {
+  Scene scene;
+  scene
+      .label("Scoreboard: " + std::to_string(0) + " entries",
+             {.x = 5, .y = 1.0F})
+      .list(_gameList, {.x = 5, .y = 3.0F}, _selectedIndex);
 
-void Menu::buildTexts() {
   clearTexts();
-  for (std::size_t i = 0; i < _gameList.size(); i++) {
-    Text t;
-    t.content = (i == _selectedIndex ? "> " : "  ") + _gameList[i];
-    t.position = {.x = 5, .y = 3.0F + (static_cast<float>(i) * 2)};
-    t.color = (i == _selectedIndex)
-                  ? std::array<uint8_t, 4>{255, 255, 0, 255}
-                  : std::array<uint8_t, 4>{255, 255, 255, 255};
-    addText(t);
+  clearEntities();
+  for (const auto& text : scene.texts()) {
+    addText(text);
+  }
+  for (const auto& entity : scene.entities()) {
+    addEntity(entity);
   }
 }
 
