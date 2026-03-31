@@ -2,4 +2,5 @@ CompileFlags:
   Add:
     - -I.
     - -Iinclude
+    - -I/usr/local/include
     - -std=c++20
