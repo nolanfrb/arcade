@@ -10,6 +10,7 @@
 #include <SFML/Window.hpp>
 #include <stdexcept>
 #include <string>
+#include "../../../../shared/Input.hpp"
 #include "../constants/sfmlConstants.hpp"
 
 void SfmlRenderer::init(unsigned int width, unsigned int height,
@@ -66,10 +67,10 @@ char SfmlRenderer::mapTextEvent(const sf::Event& event) {
     return '\0';
   }
   sf::Uint32 unicode = event.text.unicode;
-  if (unicode >= 32 && unicode <= 126) {
+  if (unicode >= sfml::PRINTABLE_MIN && unicode <= sfml::PRINTABLE_MAX) {
     return static_cast<char>(unicode);
   }
-  if (unicode == 8) {
+  if (unicode == sfml::BACKSPACE_CODE) {
     return '\b';
   }
   return '\0';
