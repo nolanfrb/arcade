@@ -13,6 +13,7 @@
 #include "../../../../shared/Input.hpp"
 #include "../constants/sfmlConstants.hpp"
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void SfmlRenderer::init(unsigned int width, unsigned int height,
                         const std::string& title) {
   _window.create(sf::VideoMode(width, height), title,

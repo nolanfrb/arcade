@@ -10,7 +10,7 @@
 #include <optional>
 #include <string>
 #include "../../../shared/Input.hpp"
-#include "constants/sfmlConstants.hpp"
+#include "constants/sfmlConstants.hpp"  // NOLINT(misc-include-cleaner)
 namespace gsl {
 template <typename T>
 using owner = T;
@@ -52,7 +52,7 @@ Input SfmlDisplay::getEvent() {
     return Input::NONE;
   }
   _eventConsumed = true;
-  Input result{*_pendingEvent};
+  Input result{*_pendingEvent};  // NOLINT(cppcoreguidelines-init-variables)
   _pendingEvent.reset();
   _pendingText.reset();
   _textConsumed = true;
@@ -68,7 +68,7 @@ std::optional<std::string> SfmlDisplay::getTextInput() {
     return std::nullopt;
   }
   _textConsumed = true;
-  char input{*_pendingText};
+  char input{*_pendingText};  // NOLINT(cppcoreguidelines-init-variables)
   _pendingText.reset();
   _pendingEvent.reset();
   _eventConsumed = true;
