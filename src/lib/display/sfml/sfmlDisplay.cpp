@@ -7,9 +7,11 @@
 
 #include "sfmlDisplay.hpp"
 #include <SFML/Window/Event.hpp>
+#include <optional>
+#include <string>
+#include "../../../shared/Input.hpp"
 #include "../../../shared/interface/IDisplay.hpp"
 #include "constants/sfmlConstants.hpp"
-
 namespace gsl {
 template <typename T>
 using owner = T;

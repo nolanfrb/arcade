@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <stdexcept>
+#include <string>
 #include "../constants/sfmlConstants.hpp"
 
 void SfmlRenderer::init(unsigned int width, unsigned int height,
@@ -135,10 +136,10 @@ void SfmlRenderer::drawSprite(const Entity& entity) {
     sprite.setTextureRect(sf::IntRect(0, 0, frameW, frameH));
     sprite.setPosition(entity.position.x * sfml::TILE_SIZE,
                        entity.position.y * sfml::TILE_SIZE);
-    float scaleX = (entity.type.width * sfml::TILE_SIZE) /
-                   static_cast<float>(frameW);
-    float scaleY = (entity.type.height * sfml::TILE_SIZE) /
-                   static_cast<float>(frameH);
+    float scaleX =
+        (entity.type.width * sfml::TILE_SIZE) / static_cast<float>(frameW);
+    float scaleY =
+        (entity.type.height * sfml::TILE_SIZE) / static_cast<float>(frameH);
     sprite.setScale(scaleX, scaleY);
     _window.draw(sprite);
   } catch (const std::runtime_error&) {
