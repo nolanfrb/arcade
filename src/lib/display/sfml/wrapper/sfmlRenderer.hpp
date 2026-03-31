@@ -8,6 +8,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <string>
+#include <unordered_map>
 #include "../../../../shared/Entity.hpp"
 #include "../../../../shared/Input.hpp"
 #include "../../../../shared/Text.hpp"
