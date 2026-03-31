@@ -12,6 +12,7 @@
 #include "../Entity.hpp"
 #include "../Input.hpp"
 #include "../Text.hpp"
+#include "IGameContext.hpp"
 
 class IGame {
  public:
@@ -28,6 +29,7 @@ class IGame {
   virtual void restart() = 0;
 
   virtual void update(Input input, float deltaTime) = 0;
+  virtual void setContext(IGameContext* ctx) = 0;
 
   virtual std::vector<Entity> getEntity() = 0;
   virtual std::vector<Text> getText() = 0;

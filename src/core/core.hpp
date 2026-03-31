@@ -9,6 +9,7 @@
 
 #include <filesystem>
 #include <string>
+#include "CoreContext.hpp"
 #include "LibManager/libManager.hpp"
 #include "SystemCommand/systemCommand.hpp"
 
@@ -36,4 +37,5 @@ class Core {
 
   SystemCommand _systemCommand;
   LibManager _libManager;
+  CoreContext _ctx{_libManager};
 };
