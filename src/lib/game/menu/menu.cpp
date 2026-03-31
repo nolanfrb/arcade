@@ -9,6 +9,27 @@ namespace {
 constexpr float MENU_LEFT_MARGIN = 5.0F;
 constexpr float SCOREBOARD_Y = 1.0F;
 constexpr float GAME_LIST_Y = 3.0F;
+
+std::string formatLibName(const std::string& path) {
+  std::string filename = std::filesystem::path(path).stem().string();
+  const std::string prefix = "arcade_";
+  if (filename.starts_with(prefix)) {
+    filename = filename.substr(prefix.size());
+  }
+  if (!filename.empty()) {
+    filename[0] = static_cast<char>(std::toupper(filename[0]));
+  }
+  return filename;
+}
+
+std::vector<std::string> formatLibNames(const std::vector<std::string>& paths) {
+  std::vector<std::string> names;
+  names.reserve(paths.size());
+  for (const auto& path : paths) {
+    names.push_back(formatLibName(path));
+  }
+  return names;
+}
 }  // namespace
 
 namespace gsl {
@@ -93,15 +114,17 @@ void Menu::buildScene() {
     scene
         .label("Select a game:", {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y},
                Colors::GREEN)
-        .list(_gameList, {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y + 2},
+        .list(formatLibNames(_gameList),
+              {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y + 2},
               _selectedGameIndex);
   } else if (_state == MenuState::SELECTING_DISPLAY) {
     scene
-        .label("Game: " + _gameList[_selectedGameIndex],
+        .label("Game: " + formatLibName(_gameList[_selectedGameIndex]),
                {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y}, Colors::YELLOW)
         .label("Select a display library:",
                {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y + 2}, Colors::GREEN)
-        .list(_displayList, {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y + 4},
+        .list(formatLibNames(_displayList),
+              {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y + 4},
               _selectedDisplayIndex);
   }
 

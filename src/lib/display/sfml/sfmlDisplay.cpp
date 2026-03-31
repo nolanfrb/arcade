@@ -7,12 +7,6 @@
 
 #include "sfmlDisplay.hpp"
 #include <SFML/Window/Event.hpp>
-#include <optional>
-#include <string>
-#include <vector>
-#include "../../../shared/Entity.hpp"
-#include "../../../shared/Input.hpp"
-#include "../../../shared/Text.hpp"
 #include "../../../shared/interface/IDisplay.hpp"
 #include "constants/sfmlConstants.hpp"
 
@@ -57,7 +51,7 @@ Input SfmlDisplay::getEvent() {
     return Input::NONE;
   }
   _eventConsumed = true;
-  Input result = *_pendingEvent;
+  Input result{*_pendingEvent};
   _pendingEvent.reset();
   _pendingText.reset();
   _textConsumed = true;
@@ -73,7 +67,7 @@ std::optional<std::string> SfmlDisplay::getTextInput() {
     return std::nullopt;
   }
   _textConsumed = true;
-  char input = *_pendingText;
+  char input{*_pendingText};
   _pendingText.reset();
   _pendingEvent.reset();
   _eventConsumed = true;
