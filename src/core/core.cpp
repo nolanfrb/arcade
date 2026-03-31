@@ -86,8 +86,9 @@ int Core::run(std::filesystem::path const& path) {
       const float deltaTime = getDeltaTime(lastFrameTime);
       currentGame->update(input, deltaTime);
       _ctx.applyPending();
+      currentDisplay = _libManager.getDisplay();
       currentGame = _libManager.getGame();
-      if (currentGame == nullptr) {
+      if (currentGame == nullptr || currentDisplay == nullptr) {
         continue;
       }
 

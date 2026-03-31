@@ -17,7 +17,8 @@
 #include "../../../shared/interface/IGameContext.hpp"
 
 enum class MenuState : std::int8_t {
-  BROWSING,
+  SELECTING_GAME,
+  SELECTING_DISPLAY,
   ENTERING_USERNAME,
 };
 
@@ -40,14 +41,16 @@ class Menu : public AGame {
  private:
   void buildScene();
 
-  void handleBrowsing(Input input);
+  void handleGameSelection(Input input);
+  void handleDisplaySelection(Input input);
   void handleUsernameInput(Input input);
   IGameContext* _ctx = nullptr;
   std::vector<std::string> _gameList;
   std::vector<std::string> _displayList;
-  std::size_t _selectedIndex = 0;
+  std::size_t _selectedGameIndex = 0;
+  std::size_t _selectedDisplayIndex = 0;
   std::string _username;
-  MenuState _state = MenuState::BROWSING;
+  MenuState _state = MenuState::SELECTING_GAME;
 };
 
 extern "C" IGame* createGame();
