@@ -101,6 +101,7 @@ class Scene {
       text.position = {.x = pos.x,
                        .y = pos.y + (static_cast<float>(i) * opts.spacing)};
       text.color = sel ? opts.selectedColor : opts.color;
+      text.fontSize = DEFAULT_FONT_SIZE;
       _texts.push_back(text);
     }
     return *this;
