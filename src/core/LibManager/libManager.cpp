@@ -63,6 +63,7 @@ void LibManager::loadGame(const std::string& path) {
   _game = _gameLoader.getInstance("createGame");
   if (_game != nullptr) {
     _game->init();
+    _game->setContext(_ctx);
     for (int index = 0; index < _games.size(); ++index) {
       if (std::filesystem::equivalent(_games[index], path)) {
         _gameIndex = index;

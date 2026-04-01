@@ -9,11 +9,13 @@
 
 #include <filesystem>
 #include <string>
+#include "CoreContext.hpp"
 #include "LibManager/libManager.hpp"
 #include "SystemCommand/systemCommand.hpp"
 
 constexpr int ERROR = 84;
 constexpr float DEFAULT_DELTA_TIME = 0.016F;
+constexpr float MAX_DELTA_TIME = 0.1F;
 
 class Core {
  public:
@@ -35,4 +37,5 @@ class Core {
 
   SystemCommand _systemCommand;
   LibManager _libManager;
+  CoreContext _ctx{_libManager};
 };

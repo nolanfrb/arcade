@@ -12,6 +12,7 @@
 #include <vector>
 #include "../../shared/interface/IDisplay.hpp"
 #include "../../shared/interface/IGame.hpp"
+#include "../../shared/interface/IGameContext.hpp"
 #include "../dlLoader/dlLoader.hpp"
 
 class LibManager {
@@ -32,8 +33,14 @@ class LibManager {
   void nextGame();
   void nextDisplay();
 
+  void setContext(IGameContext* ctx) { _ctx = ctx; }
+
   [[nodiscard]] IGame* getGame() const { return _game; }
   [[nodiscard]] IDisplay* getDisplay() const { return _display; }
+  [[nodiscard]] std::vector<std::string> getGames() const { return _games; }
+  [[nodiscard]] std::vector<std::string> getDisplays() const {
+    return _displays;
+  }
 
  private:
   void checkAndAddLib(const std::string& filepath);
@@ -43,6 +50,7 @@ class LibManager {
 
   IGame* _game = nullptr;
   IDisplay* _display = nullptr;
+  IGameContext* _ctx = nullptr;
 
   std::vector<std::string> _games;
   std::vector<std::string> _displays;
