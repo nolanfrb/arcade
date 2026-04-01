@@ -13,6 +13,19 @@
 #include "../../shared/interface/IDisplay.hpp"
 #include "../../shared/interface/IGame.hpp"
 
+namespace {
+void logDlError(const std::string& context) {
+  // NOLINTNEXTLINE(concurrency-mt-unsafe)
+  const char* error = dlerror();
+
+  if (error != nullptr) {
+    std::cerr << context << ": " << error << "\n";
+  } else {
+    std::cerr << context << ": unknown dynamic loader error\n";
+  }
+}
+}  // namespace
+
 template <typename T>
 DlLoader<T>::DlLoader() = default;
 
@@ -26,9 +39,11 @@ DlLoader<T>::~DlLoader() {
 template <typename T>
 void DlLoader<T>::loadLib(std::filesystem::path const& path) {
   unloadLib();
+  // NOLINTNEXTLINE(concurrency-mt-unsafe)
+  dlerror();
   handle = dlopen(path.c_str(), RTLD_LAZY);
   if (handle == nullptr) {
-    std::cerr << "dlopen failed: " << "\n";
+    logDlError("dlopen failed");
   }
 }
 
@@ -37,10 +52,22 @@ T* DlLoader<T>::getInstance(std::string const& entryPoint) {
   if (handle == nullptr) {
     return nullptr;
   }
+
+  // NOLINTNEXTLINE(concurrency-mt-unsafe)
+  dlerror();
   void* ptr = dlsym(handle, entryPoint.c_str());
+  // NOLINTNEXTLINE(concurrency-mt-unsafe)
+  const char* error = dlerror();
+
+  if (error != nullptr) {
+    std::cerr << "dlsym failed: " << error << "\n";
+    return nullptr;
+  }
+
   if (ptr == nullptr) {
     return nullptr;
   }
+
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
   auto createFunc = reinterpret_cast<T* (*)()>(ptr);
   return createFunc();
@@ -50,7 +77,7 @@ template <typename T>
 void DlLoader<T>::unloadLib() {
   if (handle != nullptr) {
     if (dlclose(handle) != 0) {
-      std::cerr << "dlclose failed" << "\n";
+      logDlError("dlclose failed");
     }
     handle = nullptr;
   }
