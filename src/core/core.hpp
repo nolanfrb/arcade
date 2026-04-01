@@ -7,8 +7,12 @@
 
 #pragma once
 
+#include <chrono>
 #include <filesystem>
 #include <string>
+#include "../shared/Input.hpp"
+#include "../shared/interface/IDisplay.hpp"
+#include "../shared/interface/IGame.hpp"
 #include "CoreContext.hpp"
 #include "LibManager/libManager.hpp"
 #include "SystemCommand/systemCommand.hpp"
