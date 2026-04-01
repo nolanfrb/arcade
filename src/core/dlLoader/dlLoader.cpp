@@ -43,7 +43,7 @@ void DlLoader<T>::loadLib(std::filesystem::path const& path) {
   dlerror();
   handle = dlopen(path.c_str(), RTLD_LAZY);
   if (handle == nullptr) {
-    logDlError("dlopen failed");
+    logDlError("dlopen failed" + path.string());
   }
 }
 
@@ -65,6 +65,7 @@ T* DlLoader<T>::getInstance(std::string const& entryPoint) {
   }
 
   if (ptr == nullptr) {
+    logDlError("dlsym failed for entry point '" + entryPoint + "'");
     return nullptr;
   }
 
