@@ -71,7 +71,15 @@ void Pacman::init() {
 
 void Pacman::stop() {
   _map.clear();
+  _foods.clear();
+  _pacgums.clear();
+  _superPacgums.clear();
+  _ghosts.clear();
+  _deadGhosts.clear();
+  _chassedGhosts.clear();
   _ghostDirections.clear();
+  _isSuperPacgumActive = false;
+  _ghostSpeedMultiplier = 1.0F;
   _gameTimer = 0;
   _playerMovementTimer = 0;
   _gameTimer = 0;
