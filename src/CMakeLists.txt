@@ -18,5 +18,3 @@ target_link_libraries(arcade PRIVATE
 target_compile_options(arcade PRIVATE
   -Wall -Wextra -Werror
 )
-
-add_subdirectory(display/sdl2)
