@@ -7,6 +7,7 @@
 
 #include "SDL2Display.hpp"
 #include <SDL2/SDL_events.h>
+#include <optional>
 #include <string>
 #include <vector>
 #include "../../../shared/Entity.hpp"
@@ -14,7 +15,6 @@
 #include "../../../shared/Text.hpp"
 #include "../../../shared/interface/IDisplay.hpp"
 #include "constants/SDL2Constants.hpp"
-#include <optional>
 #include "wrapper/SDL2Renderer.hpp"
 
 namespace gsl {
