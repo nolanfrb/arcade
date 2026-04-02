@@ -100,6 +100,7 @@ Input SDL2Renderer::mapEvent(const SDL_Event& event) {
     case SDLK_SPACE:
       return Input::ACTION;
     case SDLK_ESCAPE:
+      return Input::MENU;
     case SDLK_q:
       return Input::EXIT;
     case SDLK_r:
