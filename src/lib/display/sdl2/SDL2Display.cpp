@@ -14,7 +14,7 @@
 #include "../../../shared/Text.hpp"
 #include "../../../shared/interface/IDisplay.hpp"
 #include "constants/SDL2Constants.hpp"
-#include "optional"
+#include <optional>
 #include "wrapper/SDL2Renderer.hpp"
 
 namespace gsl {
