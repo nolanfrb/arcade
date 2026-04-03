@@ -13,10 +13,9 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_surface.h>
+#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
-#include <array>
 #include <stdexcept>
-#include <string>
 #include "../../../../shared/Entity.hpp"
 #include "../../../../shared/Input.hpp"
 #include "../../../../shared/Text.hpp"
@@ -49,11 +48,19 @@ void SDL2Renderer::init(int width, int height, const std::string& title) {
   }
 
   IMG_Init(IMG_INIT_PNG);
+  TTF_Init();
 }
 
 SDL2Renderer::~SDL2Renderer() { close(); }
 
 void SDL2Renderer::close() {
+  for (auto& fontPair : _fonts) {
+    if (fontPair.second != nullptr) {
+      TTF_CloseFont(fontPair.second);
+    }
+  }
+  _fonts.clear();
+
   for (auto& texturePair : _textures) {
     if (texturePair.second != nullptr) {
       SDL_DestroyTexture(texturePair.second);
@@ -72,6 +79,7 @@ void SDL2Renderer::close() {
   }
 
   IMG_Quit();
+  TTF_Quit();
   SDL_Quit();
 }
 
@@ -133,86 +141,134 @@ void SDL2Renderer::clear() {
   SDL_RenderClear(_renderer);
 }
 
-void SDL2Renderer::drawEntity(const Entity& entity) {
-  if (entity.type.type == Shape::SPRITE && !entity.type.spritePath.empty()) {
-    SDL_Texture* texture = loadTexture(entity.type.spritePath);
+void SDL2Renderer::drawSprite(const Entity& entity) {
+  SDL_Texture* texture = loadTexture(entity.type.spritePath);
 
-    if (texture == nullptr) {
-      return;
-    }
+  if (texture == nullptr) {
+    return;
+  }
 
-    int textureWidth = 0;
-    int textureHeight = 0;
-    SDL_QueryTexture(texture, nullptr, nullptr, &textureWidth, &textureHeight);
+  int textureWidth = 0;
+  int textureHeight = 0;
+  SDL_QueryTexture(texture, nullptr, nullptr, &textureWidth, &textureHeight);
 
-    const float posX = entity.position.x * sdl2::TILE_SIZE;
-    const float posY = entity.position.y * sdl2::TILE_SIZE;
-    const float width = entity.type.width * sdl2::TILE_SIZE;
-    const float height = entity.type.height * sdl2::TILE_SIZE;
+  const float posX = entity.position.x * sdl2::TILE_SIZE;
+  const float posY = entity.position.y * sdl2::TILE_SIZE;
+  const float width = entity.type.width * sdl2::TILE_SIZE;
+  const float height = entity.type.height * sdl2::TILE_SIZE;
 
-    const SDL_Rect srcRect{
-        .x = 0, .y = 0, .w = textureWidth, .h = textureHeight};
-    const SDL_Rect destRect{.x = static_cast<int>(posX),
-                            .y = static_cast<int>(posY),
-                            .w = static_cast<int>(width),
-                            .h = static_cast<int>(height)};
-
-    SDL_RenderCopy(_renderer, texture, &srcRect, &destRect);
-  } else {
-    SDL_SetRenderDrawColor(_renderer, entity.type.color[0],
-                           entity.type.color[1], entity.type.color[2],
-                           MAX_ALPHA);
-
-    const float posX = entity.position.x * sdl2::TILE_SIZE;
-    const float posY = entity.position.y * sdl2::TILE_SIZE;
-    const float width = entity.type.width * sdl2::TILE_SIZE;
-    const float height = entity.type.height * sdl2::TILE_SIZE;
-
-    if (entity.type.type == Shape::CIRCLE) {
-      const float radius = width / DIAMETER_DIVISOR;
-      const int radiusInt = static_cast<int>(radius);
-
-      for (int widthIdx = 0; widthIdx < radiusInt * DIAMETER_MULTIPLIER;
-           widthIdx++) {
-        for (int heightIdx = 0; heightIdx < radiusInt * DIAMETER_MULTIPLIER;
-             heightIdx++) {
-          const int deltaX = radiusInt - widthIdx;
-          const int deltaY = radiusInt - heightIdx;
-
-          if (((deltaX * deltaX) + (deltaY * deltaY)) <=
-              (radiusInt * radiusInt)) {
-            SDL_RenderDrawPoint(_renderer, static_cast<int>(posX) + widthIdx,
-                                static_cast<int>(posY) + heightIdx);
-          }
-        }
-      }
-    } else if (entity.type.type == Shape::TRIANGLE) {
-      const int posXInt = static_cast<int>(posX);
-      const int posYInt = static_cast<int>(posY);
-      const int widthInt = static_cast<int>(width);
-      const int heightInt = static_cast<int>(height);
-
-      const SDL_Point point1{.x = posXInt, .y = posYInt};
-      const SDL_Point point2{.x = posXInt + widthInt, .y = posYInt + heightInt};
-      const SDL_Point point3{.x = posXInt - widthInt, .y = posYInt + heightInt};
-      const std::array<SDL_Point, 3> points = {{point1, point2, point3}};
-
-      SDL_RenderDrawLines(_renderer, points.data(),
-                          static_cast<int>(points.size()));
-      SDL_RenderDrawLine(_renderer, points[2].x, points[2].y, points[0].x,
-                         points[0].y);
-    } else {
-      const SDL_Rect rect{.x = static_cast<int>(posX),
+  const SDL_Rect srcRect{.x = 0, .y = 0, .w = textureWidth, .h = textureHeight};
+  const SDL_Rect destRect{.x = static_cast<int>(posX),
                           .y = static_cast<int>(posY),
                           .w = static_cast<int>(width),
                           .h = static_cast<int>(height)};
 
-      SDL_RenderFillRect(_renderer, &rect);
+  SDL_RenderCopy(_renderer, texture, &srcRect, &destRect);
+}
+
+void SDL2Renderer::drawCircle(const Entity& entity) {
+  const float posX = entity.position.x * sdl2::TILE_SIZE;
+  const float posY = entity.position.y * sdl2::TILE_SIZE;
+  const float width = entity.type.width * sdl2::TILE_SIZE;
+
+  const float radius = width / DIAMETER_DIVISOR;
+  const int radiusInt = static_cast<int>(radius);
+
+  for (int widthIdx = 0; widthIdx < radiusInt * DIAMETER_MULTIPLIER;
+       widthIdx++) {
+    for (int heightIdx = 0; heightIdx < radiusInt * DIAMETER_MULTIPLIER;
+         heightIdx++) {
+      const int deltaX = radiusInt - widthIdx;
+      const int deltaY = radiusInt - heightIdx;
+
+      if (((deltaX * deltaX) + (deltaY * deltaY)) <= (radiusInt * radiusInt)) {
+        SDL_RenderDrawPoint(_renderer, static_cast<int>(posX) + widthIdx,
+                            static_cast<int>(posY) + heightIdx);
+      }
     }
   }
 }
 
-void SDL2Renderer::drawText(const Text& /*text*/) {}
+void SDL2Renderer::drawTriangle(const Entity& entity) {
+  const int posX = static_cast<int>(entity.position.x * sdl2::TILE_SIZE);
+  const int posY = static_cast<int>(entity.position.y * sdl2::TILE_SIZE);
+  const int width = static_cast<int>(entity.type.width * sdl2::TILE_SIZE);
+  const int height = static_cast<int>(entity.type.height * sdl2::TILE_SIZE);
+
+  const SDL_Point point1{.x = posX, .y = posY};
+  const SDL_Point point2{.x = posX + width, .y = posY + height};
+  const SDL_Point point3{.x = posX - width, .y = posY + height};
+  const std::array<SDL_Point, 3> points = {{point1, point2, point3}};
+
+  SDL_RenderDrawLines(_renderer, points.data(),
+                      static_cast<int>(points.size()));
+  SDL_RenderDrawLine(_renderer, points[2].x, points[2].y, points[0].x,
+                     points[0].y);
+}
+
+void SDL2Renderer::drawRectangle(const Entity& entity) {
+  const SDL_Rect rect{
+      .x = static_cast<int>(entity.position.x * sdl2::TILE_SIZE),
+      .y = static_cast<int>(entity.position.y * sdl2::TILE_SIZE),
+      .w = static_cast<int>(entity.type.width * sdl2::TILE_SIZE),
+      .h = static_cast<int>(entity.type.height * sdl2::TILE_SIZE)};
+
+  SDL_RenderFillRect(_renderer, &rect);
+}
+
+void SDL2Renderer::drawEntity(const Entity& entity) {
+  if (entity.type.type == Shape::SPRITE && !entity.type.spritePath.empty()) {
+    drawSprite(entity);
+    return;
+  }
+
+  SDL_SetRenderDrawColor(_renderer, entity.type.color[0], entity.type.color[1],
+                         entity.type.color[2], MAX_ALPHA);
+
+  if (entity.type.type == Shape::CIRCLE) {
+    drawCircle(entity);
+  } else if (entity.type.type == Shape::TRIANGLE) {
+    drawTriangle(entity);
+  } else {
+    drawRectangle(entity);
+  }
+}
+
+void SDL2Renderer::drawText(const Text& text) {
+  if (text.content.empty()) {
+    return;
+  }
+  const std::string& fontPath =
+      text.fontPath.empty() ? sdl2::DEFAULT_FONT : text.fontPath;
+  TTF_Font* font = loadFont(fontPath, sdl2::DEFAULT_FONT_SIZE);
+  if (font == nullptr) {
+    return;
+  }
+  const SDL_Color sdlColor{.r = text.color[0],
+                           .g = text.color[1],
+                           .b = text.color[2],
+                           .a = text.color[3]};
+  SDL_Surface* surface =
+      TTF_RenderUTF8_Blended(font, text.content.c_str(), sdlColor);
+  if (surface == nullptr) {
+    return;
+  }
+  const int surfaceW = surface->w;
+  const int surfaceH = surface->h;
+  SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
+  SDL_FreeSurface(surface);
+  if (texture == nullptr) {
+    return;
+  }
+  const SDL_Rect destRect{
+      .x = static_cast<int>(text.position.x * sdl2::TILE_SIZE),
+      .y = static_cast<int>(text.position.y * sdl2::TILE_SIZE),
+      .w = surfaceW,
+      .h = surfaceH};
+
+  SDL_RenderCopy(_renderer, texture, nullptr, &destRect);
+  SDL_DestroyTexture(texture);
+}
 
 void SDL2Renderer::display() { SDL_RenderPresent(_renderer); }
 
@@ -238,4 +294,22 @@ SDL_Texture* SDL2Renderer::loadTexture(const std::string& path) {
 
   _textures[path] = texture;
   return texture;
+}
+
+TTF_Font* SDL2Renderer::loadFont(const std::string& path, int size) {
+  const std::string key = path + "@" + std::to_string(size);
+  auto iterator = _fonts.find(key);
+
+  if (iterator != _fonts.end()) {
+    return iterator->second;
+  }
+
+  TTF_Font* font = TTF_OpenFont(path.c_str(), size);
+
+  if (font == nullptr) {
+    throw std::runtime_error("Failed to load font: " + path);
+  }
+
+  _fonts[key] = font;
+  return font;
 }

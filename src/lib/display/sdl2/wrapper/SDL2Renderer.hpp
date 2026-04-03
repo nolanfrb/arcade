@@ -9,6 +9,7 @@
 
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_render.h>
+#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
 #include <string>
 #include <unordered_map>
@@ -43,6 +44,13 @@ class SDL2Renderer {
   SDL_Window* _window = nullptr;
   SDL_Renderer* _renderer = nullptr;
   std::unordered_map<std::string, SDL_Texture*> _textures;
+  std::unordered_map<std::string, TTF_Font*> _fonts;
 
   SDL_Texture* loadTexture(const std::string& path);
+  TTF_Font* loadFont(const std::string& path, int size);
+
+  void drawSprite(const Entity& entity);
+  void drawCircle(const Entity& entity);
+  void drawTriangle(const Entity& entity);
+  void drawRectangle(const Entity& entity);
 };
