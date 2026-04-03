@@ -9,13 +9,7 @@
 #include <SDL2/SDL_events.h>
 #include <optional>
 #include <string>
-#include <vector>
-#include "../../../shared/Entity.hpp"
-#include "../../../shared/Input.hpp"
-#include "../../../shared/Text.hpp"
 #include "../../../shared/interface/IDisplay.hpp"
-#include "constants/SDL2Constants.hpp"
-#include "wrapper/SDL2Renderer.hpp"
 
 namespace gsl {
 template <typename T>
@@ -58,7 +52,7 @@ Input SDL2Display::getEvent() {
     return Input::NONE;
   }
   _eventConsumed = true;
-  const Input result{*_pendingEvent};
+  const Input result = *_pendingEvent;
   _pendingEvent.reset();
   _pendingText.reset();
   _textConsumed = true;
@@ -74,7 +68,7 @@ std::optional<std::string> SDL2Display::getTextInput() {
     return std::nullopt;
   }
   _textConsumed = true;
-  const char input{*_pendingText};
+  const char input = *_pendingText;
   _pendingText.reset();
   _pendingEvent.reset();
   _eventConsumed = true;
