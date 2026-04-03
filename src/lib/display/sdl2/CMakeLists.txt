@@ -8,8 +8,40 @@ set_target_properties(arcade_sdl2 PROPERTIES
 target_include_directories(arcade_sdl2 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../../shared)
 
 find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
 
-target_include_directories(arcade_sdl2 PRIVATE ${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS})
+# Apple Silicon fix
+if(APPLE)
+    if(EXISTS /opt/homebrew)
+        set(HOMEBREW_PREFIX /opt/homebrew)
+    else()
+        set(HOMEBREW_PREFIX /usr/local)
+    endif()
 
-target_link_libraries(arcade_sdl2 PRIVATE ${SDL2_LIBRARIES} SDL2_image)
+    find_library(SDL2_IMAGE_LIBRARY
+        NAMES SDL2_image
+        HINTS ${HOMEBREW_PREFIX}/lib
+        REQUIRED
+    )
+
+    target_include_directories(arcade_sdl2 PRIVATE
+        ${SDL2_INCLUDE_DIRS}
+        ${HOMEBREW_PREFIX}/include
+    )
+
+    target_link_libraries(arcade_sdl2 PRIVATE
+        ${SDL2_LIBRARIES}
+        ${SDL2_IMAGE_LIBRARY}
+    )
+else()
+    find_package(SDL2_image REQUIRED)
+
+    target_include_directories(arcade_sdl2 PRIVATE
+        ${SDL2_INCLUDE_DIRS}
+        ${SDL2_IMAGE_INCLUDE_DIRS}
+    )
+
+    target_link_libraries(arcade_sdl2 PRIVATE
+        ${SDL2_LIBRARIES}
+        SDL2_image
+    )
+endif()
