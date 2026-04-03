@@ -9,7 +9,8 @@
 
 #include <optional>
 #include <string>
-
+#include <vector>
+#include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
 #include "../../../shared/Text.hpp"
 #include "../../../shared/abstract/ADisplay.hpp"

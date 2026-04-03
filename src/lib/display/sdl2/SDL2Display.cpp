@@ -9,7 +9,12 @@
 #include <SDL2/SDL_events.h>
 #include <optional>
 #include <string>
+#include "../../../shared/Input.hpp"
+#include "../../../shared/Text.hpp"
+#include "../../../shared/abstract/ADisplay.hpp"
 #include "../../../shared/interface/IDisplay.hpp"
+#include "constants/SDL2Constants.hpp"
+#include "wrapper/SDL2Renderer.hpp"
 
 namespace gsl {
 template <typename T>
