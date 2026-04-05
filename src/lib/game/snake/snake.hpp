@@ -9,10 +9,10 @@
 
 #include <array>
 #include <cstdint>
+#include <ctime>
+#include <deque>
 #include <string>
 #include <vector>
-#include <deque>
-#include <ctime>
 #include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
 #include "../../../shared/Position.hpp"

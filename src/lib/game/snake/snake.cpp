@@ -11,16 +11,15 @@
 #include <cstdlib>
 #include <sstream>
 
-extern "C" IGame* createGame() {
-  return new Snake();
-}
+extern "C" IGame* createGame() { return new Snake(); }
 
 void Snake::createBorders() {
   for (int x = 0; x < MAP_WIDTH; ++x) {
     for (int y = 0; y < MAP_HEIGHT; ++y) {
       if (x == 0 || x == MAP_WIDTH - 1 || y == 0 || y == MAP_HEIGHT - 1) {
         Entity border;
-        border.position = Position{static_cast<float>(x), static_cast<float>(y)};
+        border.position =
+            Position{static_cast<float>(x), static_cast<float>(y)};
         border.type.type = Shape::RECTANGLE;
         border.type.width = TILE_SIZE;
         border.type.height = TILE_SIZE;
@@ -58,10 +57,14 @@ void Snake::init() {
   const float startX = static_cast<float>(PLAY_AREA_X + PLAY_AREA_WIDTH / 2);
   const float startY = static_cast<float>(PLAY_AREA_Y + PLAY_AREA_HEIGHT / 2);
 
-  _snake.push_back({Position{startX, startY}, EntityTypeSnake::SNAKE_HEAD_RIGHT});
-  _snake.push_back({Position{startX - 1.F, startY}, EntityTypeSnake::SNAKE_BODY});
-  _snake.push_back({Position{startX - 2.F, startY}, EntityTypeSnake::SNAKE_BODY});
-  _snake.push_back({Position{startX - 3.F, startY}, EntityTypeSnake::SNAKE_TAIL});
+  _snake.push_back(
+      {Position{startX, startY}, EntityTypeSnake::SNAKE_HEAD_RIGHT});
+  _snake.push_back(
+      {Position{startX - 1.F, startY}, EntityTypeSnake::SNAKE_BODY});
+  _snake.push_back(
+      {Position{startX - 2.F, startY}, EntityTypeSnake::SNAKE_BODY});
+  _snake.push_back(
+      {Position{startX - 3.F, startY}, EntityTypeSnake::SNAKE_TAIL});
 
   spawnFood();
   updateEntities();
@@ -165,8 +168,8 @@ void Snake::moveSnake(float deltaTime) {
         setScore(getScore() + score);
         _foodEaten++;
 
-        _currentSpeed = std::max(
-            MAX_SPEED, INITIAL_SPEED - (_foodEaten * SPEED_INCREMENT));
+        _currentSpeed =
+            std::max(MAX_SPEED, INITIAL_SPEED - (_foodEaten * SPEED_INCREMENT));
 
         _foods.erase(_foods.begin() + i);
         foodEaten = true;
