@@ -222,6 +222,7 @@ void Snake::spawnBonusFood() {
   Position newFood;
   bool valid = false;
   const int maxAttempts = PLAY_AREA_WIDTH * PLAY_AREA_HEIGHT;
+  const int maxAttempts = PLAY_AREA_WIDTH * PLAY_AREA_HEIGHT;
 
   for (int attempt = 0; attempt < maxAttempts && !valid; ++attempt) {
     newFood.x = static_cast<float>(PLAY_AREA_X + (rand() % PLAY_AREA_WIDTH));
@@ -229,6 +230,9 @@ void Snake::spawnBonusFood() {
     valid = !isPositionOccupied(newFood, true);
   }
 
+  if (!valid) {
+    return;
+  }
   if (!valid) {
     return;
   }
