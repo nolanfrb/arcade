@@ -201,11 +201,16 @@ void Snake::moveSnake(float deltaTime) {
 void Snake::spawnFood() {
   Position newFood;
   bool valid = false;
+  const int maxAttempts = PLAY_AREA_WIDTH * PLAY_AREA_HEIGHT;
 
-  while (!valid) {
+  for (int attempt = 0; attempt < maxAttempts && !valid; ++attempt) {
     newFood.x = static_cast<float>(PLAY_AREA_X + (rand() % PLAY_AREA_WIDTH));
     newFood.y = static_cast<float>(PLAY_AREA_Y + (rand() % PLAY_AREA_HEIGHT));
     valid = !isPositionOccupied(newFood, true);
+  }
+
+  if (!valid) {
+    return;
   }
 
   _foods.push_back({newFood, false, 0.F});
@@ -214,13 +219,17 @@ void Snake::spawnFood() {
 void Snake::spawnBonusFood() {
   Position newFood;
   bool valid = false;
+  const int maxAttempts = PLAY_AREA_WIDTH * PLAY_AREA_HEIGHT;
 
-  while (!valid) {
+  for (int attempt = 0; attempt < maxAttempts && !valid; ++attempt) {
     newFood.x = static_cast<float>(PLAY_AREA_X + (rand() % PLAY_AREA_WIDTH));
     newFood.y = static_cast<float>(PLAY_AREA_Y + (rand() % PLAY_AREA_HEIGHT));
     valid = !isPositionOccupied(newFood, true);
   }
 
+  if (!valid) {
+    return;
+  }
   _foods.push_back({newFood, true, BONUS_FOOD_DURATION});
 }
 
