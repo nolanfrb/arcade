@@ -273,7 +273,7 @@ void Snake::updateGameOverText() {
   addText(gameOverText);
 
   Text restartText;
-  restartText.content = "Press R to Restart or G for Menu";
+  restartText.content = "Press R to Restart or ESC for Menu";
   restartText.position = Position{5.F, 12.F};
   restartText.color = WHITE;
   restartText.fontPath = "";
