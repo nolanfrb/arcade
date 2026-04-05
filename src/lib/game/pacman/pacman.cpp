@@ -79,7 +79,6 @@ void Pacman::stop() {
   _chassedGhosts.clear();
   _ghostDirections.clear();
   _isSuperPacgumActive = false;
-  _ghostSpeedMultiplier = 1.0F;
   _gameTimer = 0;
   _playerMovementTimer = 0;
   _gameTimer = 0;
