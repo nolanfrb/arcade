@@ -36,10 +36,8 @@ void Snake::createBorders() {
 void Snake::init() {
   srand(static_cast<unsigned>(time(nullptr)));
   setName("Snake");
-
   clearEntities();
   clearTexts();
-
   _snake.clear();
   _foods.clear();
   _currentDirection = Input::RIGHT;
@@ -51,12 +49,9 @@ void Snake::init() {
   _foodEaten = 0;
   setScore(0);
   setIsGameOver(false);
-
   createBorders();
-
   const float startX = static_cast<float>(PLAY_AREA_X + PLAY_AREA_WIDTH / 2);
   const float startY = static_cast<float>(PLAY_AREA_Y + PLAY_AREA_HEIGHT / 2);
-
   _snake.push_back(
       {Position{startX, startY}, EntityTypeSnake::SNAKE_HEAD_RIGHT});
   _snake.push_back(
@@ -65,7 +60,6 @@ void Snake::init() {
       {Position{startX - 2.F, startY}, EntityTypeSnake::SNAKE_BODY});
   _snake.push_back(
       {Position{startX - 3.F, startY}, EntityTypeSnake::SNAKE_TAIL});
-
   spawnFood();
   updateEntities();
 }
@@ -222,7 +216,6 @@ void Snake::spawnBonusFood() {
   Position newFood;
   bool valid = false;
   const int maxAttempts = PLAY_AREA_WIDTH * PLAY_AREA_HEIGHT;
-  const int maxAttempts = PLAY_AREA_WIDTH * PLAY_AREA_HEIGHT;
 
   for (int attempt = 0; attempt < maxAttempts && !valid; ++attempt) {
     newFood.x = static_cast<float>(PLAY_AREA_X + (rand() % PLAY_AREA_WIDTH));
@@ -233,9 +226,7 @@ void Snake::spawnBonusFood() {
   if (!valid) {
     return;
   }
-  if (!valid) {
-    return;
-  }
+
   _foods.push_back({newFood, true, BONUS_FOOD_DURATION});
 }
 
