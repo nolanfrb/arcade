@@ -187,8 +187,10 @@ void Snake::moveSnake(float deltaTime) {
       }
     } else {
       if (!_snake.empty()) {
-        _snake.back().type = EntityTypeSnake::SNAKE_TAIL;
         _snake.pop_back();
+        if (!_snake.empty()) {
+          _snake.back().type = EntityTypeSnake::SNAKE_TAIL;
+        }
       }
     }
 
