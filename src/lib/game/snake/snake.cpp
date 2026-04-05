@@ -132,9 +132,9 @@ bool Snake::isPositionOccupied(const Position& pos, bool includeBody) {
     return false;
   }
 
-  for (size_t i = 0; i < _snake.size() - 1; ++i) {
-    if (std::abs(_snake[i].position.x - pos.x) < 0.1F &&
-        std::abs(_snake[i].position.y - pos.y) < 0.1F) {
+  for (const auto& segment : _snake) {
+    if (std::abs(segment.position.x - pos.x) < 0.1F &&
+        std::abs(segment.position.y - pos.y) < 0.1F) {
       return true;
     }
   }
