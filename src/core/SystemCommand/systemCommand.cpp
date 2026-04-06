@@ -31,6 +31,11 @@ void SystemCommand::handleNextDisplay() {
     onNextDisplayRequested();
   }
 }
+void SystemCommand::handleRestart() {
+  if (onRestartRequested) {
+    onRestartRequested();
+  }
+}
 
 void SystemCommand::handleSystemEvent(Input input) {
   for (auto const& [key, val] : _eventMap) {

@@ -7,8 +7,12 @@
 
 #pragma once
 
+#include <chrono>
 #include <filesystem>
 #include <string>
+#include "../shared/Input.hpp"
+#include "../shared/interface/IDisplay.hpp"
+#include "../shared/interface/IGame.hpp"
 #include "CoreContext.hpp"
 #include "LibManager/libManager.hpp"
 #include "SystemCommand/systemCommand.hpp"
@@ -27,6 +31,9 @@ class Core {
   Core(Core&& other) = delete;
   Core& operator=(Core&& other) = delete;
 
+  int initCore(std::filesystem::path const& path);
+  void updateGame(IGame* currentGame, IDisplay* currentDisplay, Input input,
+                  std::chrono::steady_clock::time_point& lastFrameTime);
   int run(std::filesystem::path const& path);
   void menu();
   void loadGame(std::string const& path);

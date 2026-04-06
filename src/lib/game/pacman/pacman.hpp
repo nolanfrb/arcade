@@ -34,8 +34,8 @@ enum class type : std::int8_t {
 
 enum class itemScore : std::uint8_t {
   SUPERPACGUM_SCORE = 10,
-  PACGUM_SCORE = 5,
-  FOOD_SCORE = 1,
+  PACGUM_SCORE = 1,
+  FOOD_SCORE = 20,
   GHOST_SCORE = 200
 };
 

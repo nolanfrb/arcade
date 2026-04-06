@@ -23,6 +23,7 @@ constexpr int BACKSPACE_KEY = 127;
 constexpr int CTRL_BACKSPACE_KEY = 8;
 constexpr int PRINTABLE_ASCII_MIN = 32;
 constexpr int PRINTABLE_ASCII_MAX = 126;
+constexpr int TOP_INTERFACE_HEIGHT = 2;
 }  // namespace
 
 namespace gsl {
@@ -103,7 +104,7 @@ void NcursesDisplay::clear() { Ncurses::clear(); }
 
 void NcursesDisplay::drawEntity(const std::vector<Entity>& entities) {
   for (const auto& entity : entities) {
-    Ncurses::putItem(static_cast<int>(entity.position.y),
+    Ncurses::putItem(static_cast<int>(entity.position.y) + TOP_INTERFACE_HEIGHT,
                      static_cast<int>(entity.position.x),
                      entity.type.asciiChar);
   }

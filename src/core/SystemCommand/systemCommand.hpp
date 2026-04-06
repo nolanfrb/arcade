@@ -36,6 +36,9 @@ class SystemCommand {
   void setOnNextDisplayRequested(std::function<void()> callback) {
     onNextDisplayRequested = std::move(callback);
   }
+  void setOnRestartRequested(std::function<void()> callback) {
+    onRestartRequested = std::move(callback);
+  }
 
   [[nodiscard]] std::function<void()> getOnExitRequested() const {
     return onExitRequested;
@@ -49,6 +52,9 @@ class SystemCommand {
   [[nodiscard]] std::function<void()> getOnNextDisplayRequested() const {
     return onNextDisplayRequested;
   }
+  [[nodiscard]] std::function<void()> getOnRestartRequested() const {
+    return onRestartRequested;
+  }
 
  private:
   using EventHandler = void (SystemCommand::*)();
@@ -57,16 +63,19 @@ class SystemCommand {
   void handleExit();
   void handleNextGame();
   void handleNextDisplay();
+  void handleRestart();
 
-  static constexpr std::array<std::pair<Input, EventHandler>, 4> _eventMap = {{
+  static constexpr std::array<std::pair<Input, EventHandler>, 5> _eventMap = {{
       {Input::MENU, &SystemCommand::handleMenu},
       {Input::EXIT, &SystemCommand::handleExit},
       {Input::NEXTGAME, &SystemCommand::handleNextGame},
       {Input::NEXTDISPLAY, &SystemCommand::handleNextDisplay},
+      {Input::RESTART, &SystemCommand::handleRestart},
   }};
 
   std::function<void()> onExitRequested;
   std::function<void()> onMenuRequested;
   std::function<void()> onNextGameRequested;
   std::function<void()> onNextDisplayRequested;
+  std::function<void()> onRestartRequested;
 };
