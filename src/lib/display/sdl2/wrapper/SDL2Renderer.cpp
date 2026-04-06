@@ -141,11 +141,11 @@ void SDL2Renderer::clear() {
   SDL_RenderClear(_renderer);
 }
 
-void SDL2Renderer::drawSprite(const Entity& entity) {
+bool SDL2Renderer::drawSprite(const Entity& entity) {
   SDL_Texture* texture = loadTexture(entity.type.spritePath);
 
   if (texture == nullptr) {
-    return;
+    return false;
   }
 
   int textureWidth = 0;
@@ -164,6 +164,20 @@ void SDL2Renderer::drawSprite(const Entity& entity) {
                           .h = static_cast<int>(height)};
 
   SDL_RenderCopy(_renderer, texture, &srcRect, &destRect);
+  return true;
+}
+
+void SDL2Renderer::drawAsciiFallback(const Entity& entity) {
+  if (entity.type.asciiChar == '\0') {
+    return;
+  }
+
+  const Text fallbackText{.content = std::string(1, entity.type.asciiChar),
+                          .position = entity.position,
+                          .color = entity.type.color,
+                          .fontPath = sdl2::DEFAULT_FONT,
+                          .fontSize = sdl2::DEFAULT_FONT_SIZE};
+  drawText(fallbackText);
 }
 
 void SDL2Renderer::drawCircle(const Entity& entity) {
@@ -218,7 +232,10 @@ void SDL2Renderer::drawRectangle(const Entity& entity) {
 
 void SDL2Renderer::drawEntity(const Entity& entity) {
   if (entity.type.type == Shape::SPRITE && !entity.type.spritePath.empty()) {
-    drawSprite(entity);
+    if (drawSprite(entity)) {
+      return;
+    }
+    drawAsciiFallback(entity);
     return;
   }
 
@@ -282,14 +299,16 @@ SDL_Texture* SDL2Renderer::loadTexture(const std::string& path) {
   SDL_Surface* surface = IMG_Load(path.c_str());
 
   if (surface == nullptr) {
-    throw std::runtime_error("Failed to load image: " + path);
+    _textures[path] = nullptr;
+    return nullptr;
   }
 
   SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
   SDL_FreeSurface(surface);
 
   if (texture == nullptr) {
-    throw std::runtime_error("Failed to create texture from: " + path);
+    _textures[path] = nullptr;
+    return nullptr;
   }
 
   _textures[path] = texture;

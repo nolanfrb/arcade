@@ -49,7 +49,8 @@ class SDL2Renderer {
   SDL_Texture* loadTexture(const std::string& path);
   TTF_Font* loadFont(const std::string& path, int size);
 
-  void drawSprite(const Entity& entity);
+  bool drawSprite(const Entity& entity);
+  void drawAsciiFallback(const Entity& entity);
   void drawCircle(const Entity& entity);
   void drawTriangle(const Entity& entity);
   void drawRectangle(const Entity& entity);
