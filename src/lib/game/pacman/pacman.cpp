@@ -33,6 +33,67 @@ enum : std::uint8_t {
 
 constexpr int SUPERPACGUM_DURATION = 10;
 constexpr float GHOST_SPEED_DELAY = 0.2F;
+
+constexpr std::uint8_t PACMAN_FRAME_COUNT = 3;
+constexpr std::uint8_t GHOST_DIRECTION_FRAME_COUNT = 2;
+constexpr std::uint8_t SCARED_GHOST_FRAME_COUNT = 2;
+constexpr std::uint8_t DEAD_GHOST_FRAME_COUNT = 4;
+
+std::string buildTexturePath(const std::string& folder, std::uint8_t frame) {
+  return folder + "/texture_" + std::to_string(frame) + ".png";
+}
+
+std::string getPacmanDirectionFolder(Input direction) {
+  switch (direction) {
+    case Input::UP:
+      return "assets/pacman/pacman/up";
+    case Input::DOWN:
+      return "assets/pacman/pacman/down";
+    case Input::LEFT:
+      return "assets/pacman/pacman/left";
+    case Input::RIGHT:
+    case Input::NONE:
+    default:
+      return "assets/pacman/pacman/right";
+  }
+}
+
+std::string getGhostColorFolder(const Entity& ghost) {
+  if (ghost.type.color == RED) {
+    return "assets/pacman/redGhost";
+  }
+  if (ghost.type.color == BLUE) {
+    return "assets/pacman/blueGhost";
+  }
+  if (ghost.type.color == PINK) {
+    return "assets/pacman/pinkGhost";
+  }
+  if (ghost.type.color == ORANGE) {
+    return "assets/pacman/orangeGhost";
+  }
+  return "assets/pacman/redGhost";
+}
+
+std::uint8_t getDirectionBaseFrame(Input direction) {
+  constexpr std::uint8_t UP_BASE_FRAME = 4;
+  constexpr std::uint8_t RIGHT_BASE_FRAME = 0;
+  constexpr std::uint8_t DOWN_BASE_FRAME = 6;
+  constexpr std::uint8_t LEFT_BASE_FRAME = 2;
+
+  switch (direction) {
+    case Input::UP:
+      return UP_BASE_FRAME;
+    case Input::RIGHT:
+      return RIGHT_BASE_FRAME;
+    case Input::DOWN:
+      return DOWN_BASE_FRAME;
+    case Input::LEFT:
+      return LEFT_BASE_FRAME;
+    case Input::NONE:
+    default:
+      return UP_BASE_FRAME;
+  }
+}
 }  // namespace
 
 namespace gsl {
@@ -138,6 +199,47 @@ void Pacman::checkVictory() {
   }
 }
 
+void Pacman::updateAnimation(float deltatime) {
+  _animationTimer += deltatime;
+  while (_animationTimer >= GHOST_SPEED_DELAY) {
+    _animationTimer -= GHOST_SPEED_DELAY;
+    _pacmanAnimationFrame = (_pacmanAnimationFrame + 1) % PACMAN_FRAME_COUNT;
+    _ghostAnimationFrame =
+        (_ghostAnimationFrame + 1) % GHOST_DIRECTION_FRAME_COUNT;
+    _scaredGhostAnimationFrame =
+        (_scaredGhostAnimationFrame + 1) % SCARED_GHOST_FRAME_COUNT;
+    _deadGhostAnimationFrame =
+        (_deadGhostAnimationFrame + 1) % DEAD_GHOST_FRAME_COUNT;
+  }
+
+  const Input playerDirection =
+      _lastPlayerInput == Input::NONE ? Input::RIGHT : _lastPlayerInput;
+  _player.type.spritePath = buildTexturePath(
+      getPacmanDirectionFolder(playerDirection), _pacmanAnimationFrame);
+
+  for (std::size_t i = 0; i < _ghosts.size(); ++i) {
+    Input ghostDirection = Input::UP;
+    if (i < _ghostDirections.size()) {
+      ghostDirection = _ghostDirections[i];
+    }
+    const std::uint8_t frame =
+        getDirectionBaseFrame(ghostDirection) + _ghostAnimationFrame;
+    _ghosts[i].type.spritePath =
+        buildTexturePath(getGhostColorFolder(_ghosts[i]), frame);
+  }
+
+  std::vector<EntityType> entityTypes = getEntityTypes();
+  if (entityTypes.size() > CHASED_GHOST_INDEX) {
+    entityTypes[CHASED_GHOST_INDEX].spritePath = buildTexturePath(
+        "assets/pacman/scaredGhost", _scaredGhostAnimationFrame);
+  }
+  if (entityTypes.size() > DEAD_GHOST_INDEX) {
+    entityTypes[DEAD_GHOST_INDEX].spritePath =
+        buildTexturePath("assets/pacman/deadGhost", _deadGhostAnimationFrame);
+  }
+  setEntityTypes(entityTypes);
+}
+
 void Pacman::update(Input input, float deltaTime) {
   _gameTimer += deltaTime;
   _playerMovementTimer += deltaTime;
@@ -145,6 +247,7 @@ void Pacman::update(Input input, float deltaTime) {
   checkBordersCollision();
   movePlayer(input);
   moveGhosts(deltaTime, input);
+  updateAnimation(deltaTime);
   setScore(_score);
   checkVictory();
   if (isGameOver()) {

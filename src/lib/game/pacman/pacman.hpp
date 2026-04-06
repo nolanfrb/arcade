@@ -91,6 +91,7 @@ class Pacman : public AGame {
   void checkVictory();
 
   void checkSuperPacgumTimer(float deltaTime);
+  void updateAnimation(float deltaTime);
 
   void createEntities();
   void createEntitiesType();
@@ -108,7 +109,12 @@ class Pacman : public AGame {
   float _aliveGhostMovementTimer = 0;
   float _deadGhostMovementTimer = 0;
   float _playerMovementTimer = 0;
+  float _animationTimer = 0;
   Input _lastPlayerInput = Input::NONE;
+  std::uint8_t _pacmanAnimationFrame = 0;
+  std::uint8_t _ghostAnimationFrame = 0;
+  std::uint8_t _scaredGhostAnimationFrame = 0;
+  std::uint8_t _deadGhostAnimationFrame = 0;
   std::vector<Entity> _chassedGhosts;
   std::vector<Entity> _deadGhosts;
   std::vector<Position> _ghostSpawnPositions;
