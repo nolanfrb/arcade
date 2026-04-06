@@ -99,6 +99,8 @@ class Pacman : public AGame {
   type getTile(int xCoordinate, int yCoordinate);
   static int getTypeIndex(type tile);
 
+  void displayGameOver();
+
   Entity _player;
   int _score = 0;
   bool _isSuperPacgumActive = false;

@@ -240,6 +240,21 @@ void Pacman::updateAnimation(float deltatime) {
   setEntityTypes(entityTypes);
 }
 
+void Pacman::displayGameOver() {
+  std::vector<Entity> entities;
+  Text gameOverText;
+  gameOverText.content =
+      "Game Over. You can type R to restart or esc to return to "
+      "the menu.";
+  gameOverText.position = Position{.x = 5, .y = 5};
+  gameOverText.fontSize = 50;
+  gameOverText.color = RED;
+  gameOverText.fontPath = "";
+  clearEntities();
+  clearTexts();
+  addText(gameOverText);
+}
+
 void Pacman::update(Input input, float deltaTime) {
   _gameTimer += deltaTime;
   _playerMovementTimer += deltaTime;
@@ -251,6 +266,7 @@ void Pacman::update(Input input, float deltaTime) {
   setScore(_score);
   checkVictory();
   if (isGameOver()) {
+    displayGameOver();
     stop();
     return;
   }
