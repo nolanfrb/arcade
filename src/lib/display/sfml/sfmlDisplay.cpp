@@ -52,7 +52,8 @@ Input SfmlDisplay::getEvent() {
     return Input::NONE;
   }
   _eventConsumed = true;
-  const Input result{*_pendingEvent};  // NOLINT(cppcoreguidelines-init-variables)
+  const Input result{
+      *_pendingEvent};  // NOLINT(cppcoreguidelines-init-variables)
   _pendingEvent.reset();
   _pendingText.reset();
   _textConsumed = true;
