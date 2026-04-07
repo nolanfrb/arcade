@@ -1,4 +1,5 @@
 add_subdirectory(display/ncurses)
+add_subdirectory(display/sfml)
 add_subdirectory(display/sdl2)
 add_subdirectory(game/pacman)
 add_subdirectory(game/menu)

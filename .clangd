@@ -2,4 +2,5 @@ CompileFlags:
   Add:
     - -I.
     - -Iinclude
+    - -I/opt/homebrew/include
     - -std=c++20

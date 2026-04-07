@@ -56,9 +56,10 @@ bool Pacman::loadMap(const std::string& filePath) {
 }
 
 type Pacman::getTile(int xCoordinate, int yCoordinate) {
-  if (xCoordinate < 0 || xCoordinate >= static_cast<int>(_map.size()) ||
+  if (xCoordinate < 0 || static_cast<std::size_t>(xCoordinate) >= _map.size() ||
       yCoordinate < 0 ||
-      yCoordinate >= static_cast<int>(_map[xCoordinate].size())) {
+      static_cast<std::size_t>(yCoordinate) >=
+          _map[static_cast<std::size_t>(xCoordinate)].size()) {
     return type::WALL;
   }
   return _map[xCoordinate][yCoordinate];
