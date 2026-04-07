@@ -67,7 +67,7 @@ char SfmlRenderer::mapTextEvent(const sf::Event& event) {
   if (event.type != sf::Event::TextEntered) {
     return '\0';
   }
-  sf::Uint32 unicode = event.text.unicode;
+  const sf::Uint32 unicode = event.text.unicode;
   if (unicode >= sfml::PRINTABLE_MIN && unicode <= sfml::PRINTABLE_MAX) {
     return static_cast<char>(unicode);
   }
@@ -88,16 +88,16 @@ void SfmlRenderer::drawEntity(const Entity& entity) {
 }
 
 void SfmlRenderer::drawShape(const Entity& entity) {
-  sf::Color color(entity.type.color[0], entity.type.color[1],
-                  entity.type.color[2], entity.type.color[3]);
-  float posx = entity.position.x * sfml::TILE_SIZE;
-  float posy = entity.position.y * sfml::TILE_SIZE;
-  float width = entity.type.width * sfml::TILE_SIZE;
-  float height = entity.type.height * sfml::TILE_SIZE;
+  const sf::Color color(entity.type.color[0], entity.type.color[1],
+                        entity.type.color[2], entity.type.color[3]);
+  const float posx = entity.position.x * sfml::TILE_SIZE;
+  const float posy = entity.position.y * sfml::TILE_SIZE;
+  const float width = entity.type.width * sfml::TILE_SIZE;
+  const float height = entity.type.height * sfml::TILE_SIZE;
 
   switch (entity.type.type) {
     case Shape::CIRCLE: {
-      float radius = width / 2.F;
+      const float radius = width / 2.F;
       sf::CircleShape circle(radius);
       circle.setPosition(posx, posy);
       circle.setFillColor(color);
@@ -123,9 +123,9 @@ void SfmlRenderer::drawShape(const Entity& entity) {
 
 void SfmlRenderer::drawSprite(const Entity& entity) {
   try {
-    sf::Texture& texture = loadTexture(entity.type.spritePath);
+    const sf::Texture& texture = loadTexture(entity.type.spritePath);
     sf::Sprite sprite(texture);
-    auto texSize = texture.getSize();
+    const auto texSize = texture.getSize();
     int frameW = 0;
     int frameH = 0;
     if (texSize.x >= texSize.y) {
@@ -138,9 +138,9 @@ void SfmlRenderer::drawSprite(const Entity& entity) {
     sprite.setTextureRect(sf::IntRect(0, 0, frameW, frameH));
     sprite.setPosition(entity.position.x * sfml::TILE_SIZE,
                        entity.position.y * sfml::TILE_SIZE);
-    float scaleX =
+    const float scaleX =
         (entity.type.width * sfml::TILE_SIZE) / static_cast<float>(frameW);
-    float scaleY =
+    const float scaleY =
         (entity.type.height * sfml::TILE_SIZE) / static_cast<float>(frameH);
     sprite.setScale(scaleX, scaleY);
     _window.draw(sprite);
@@ -152,7 +152,7 @@ void SfmlRenderer::drawSprite(const Entity& entity) {
 void SfmlRenderer::drawText(const Text& text) {
   const std::string& fontPath =
       text.fontPath.empty() ? std::string(sfml::DEFAULT_FONT) : text.fontPath;
-  sf::Font& font = loadFont(fontPath);
+  const sf::Font& font = loadFont(fontPath);
   sf::Text sfText;
   sfText.setFont(font);
   sfText.setString(text.content);
@@ -176,8 +176,8 @@ sf::Texture& SfmlRenderer::loadTexture(const std::string& path) {
   if (!texture.loadFromFile(path)) {
     throw std::runtime_error("Failed to load texture: " + path);
   }
-  // NOLINTNEXTLINE(readability-identifier-length)
-  auto [inserted, _] = _textures.emplace(path, std::move(texture));
+  auto [inserted, success] = _textures.emplace(path, std::move(texture));
+  (void)success;
   return inserted->second;
 }
 
@@ -190,6 +190,7 @@ sf::Font& SfmlRenderer::loadFont(const std::string& path) {
   if (!font.loadFromFile(path)) {
     throw std::runtime_error("Failed to load font: " + path);
   }
-  auto [inserted, _] = _fonts.emplace(path, std::move(font));
+  auto [inserted, success] = _fonts.emplace(path, std::move(font));
+  (void)success;
   return inserted->second;
 }

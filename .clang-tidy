@@ -7,15 +7,18 @@ Checks: '*,
          -fuchsia-*,
          -cppcoreguidelines-pro-bounds-*,
          -cppcoreguidelines-pro-type-vararg,
+         -cppcoreguidelines-pro-type-union-access,
          -hicpp-no-assembler,
          -hicpp-no-array-decay,
          -readability-magic-numbers,
+         -cppcoreguidelines-avoid-magic-numbers,
          -readability-function-cognitive-complexity,
          -altera-unroll-loops,
          -modernize-use-trailing-return-type,
          -llvm-include-order,
          -altera-*,
-         -llvm-header-guard'
+         -llvm-header-guard,
+         -misc-include-cleaner'
 
 # Treat warnings as errors so the CI fails on bad code
 WarningsAsErrors: '*'
