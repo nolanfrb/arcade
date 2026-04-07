@@ -32,7 +32,13 @@ class DlLoader {
     if (lib == nullptr) {
       return false;
     }
-    const bool found = (dlsym(lib, symbol.c_str()) != nullptr);
+
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
+    dlerror();
+    void* symbolAddress = dlsym(lib, symbol.c_str());
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
+    const bool found = (dlerror() == nullptr) && (symbolAddress != nullptr);
+
     dlclose(lib);
     return found;
   }
