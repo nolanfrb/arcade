@@ -91,6 +91,7 @@ class Pacman : public AGame {
   void checkVictory();
 
   void checkSuperPacgumTimer(float deltaTime);
+  void updateAnimation(float deltaTime);
 
   void createEntities();
   void createEntitiesType();
@@ -98,17 +99,29 @@ class Pacman : public AGame {
   type getTile(int xCoordinate, int yCoordinate);
   static int getTypeIndex(type tile);
 
-  Entity _player;
+  void displayGameOver();
+
   int _score = 0;
+
   bool _isSuperPacgumActive = false;
   float _superPacgumTimer = 0;
   float _gameTimer = 0;
-  std::vector<Entity> _ghosts;
-  std::vector<Input> _ghostDirections;
+
   float _aliveGhostMovementTimer = 0;
   float _deadGhostMovementTimer = 0;
   float _playerMovementTimer = 0;
+  float _animationTimer = 0;
+
   Input _lastPlayerInput = Input::NONE;
+
+  std::uint8_t _pacmanAnimationFrame = 0;
+  std::uint8_t _ghostAnimationFrame = 0;
+  std::uint8_t _scaredGhostAnimationFrame = 0;
+  std::uint8_t _deadGhostAnimationFrame = 0;
+
+  Entity _player;
+  std::vector<Entity> _ghosts;
+  std::vector<Input> _ghostDirections;
   std::vector<Entity> _chassedGhosts;
   std::vector<Entity> _deadGhosts;
   std::vector<Position> _ghostSpawnPositions;
@@ -116,7 +129,7 @@ class Pacman : public AGame {
   std::vector<Entity> _superPacgums;
   std::vector<Entity> _pacgums;
   std::vector<Entity> _foods;
-  float _ghostSpeedMultiplier = 1;
-
   std::vector<std::vector<type>> _map;
+
+  float _ghostSpeedMultiplier = 1;
 };

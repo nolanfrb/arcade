@@ -128,7 +128,9 @@ void Pacman::moveAliveGhosts(Position target, bool canPassDoor,
     return;
   }
   _aliveGhostMovementTimer = 0;
-  for (auto& ghost : _ghosts) {
+  for (std::size_t i = 0; i < _ghosts.size(); ++i) {
+    auto& ghost = _ghosts[i];
+    const Position previousPosition = ghost.position;
     bool isBlueGhost = false;
     const Position ghostTarget =
         getGhostTarget(ghost, target, playerInput, _map, _ghosts, isBlueGhost);
@@ -140,6 +142,18 @@ void Pacman::moveAliveGhosts(Position target, bool canPassDoor,
       path = getGhostPath(ghost, pivotTarget, canPassDoor, _map);
     }
     moveGhostWithPath(ghost, path);
+    if (i >= _ghostDirections.size()) {
+      continue;
+    }
+    if (ghost.position.x > previousPosition.x) {
+      _ghostDirections[i] = Input::RIGHT;
+    } else if (ghost.position.x < previousPosition.x) {
+      _ghostDirections[i] = Input::LEFT;
+    } else if (ghost.position.y > previousPosition.y) {
+      _ghostDirections[i] = Input::DOWN;
+    } else if (ghost.position.y < previousPosition.y) {
+      _ghostDirections[i] = Input::UP;
+    }
   }
 }
 
