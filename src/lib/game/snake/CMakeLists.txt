@@ -1,4 +1,8 @@
-add_library(arcade_snake MODULE snake.cpp)
+add_library(arcade_snake MODULE
+    snake.cpp
+    snakeMovement.cpp
+    snakeFood.cpp
+    snakeEntities.cpp)
 
 set_target_properties(arcade_snake PROPERTIES
     PREFIX ""

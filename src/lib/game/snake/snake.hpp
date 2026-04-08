@@ -87,7 +87,16 @@ class Snake : public AGame {
   void handleInput(Input input);
   void spawnFood();
   void spawnBonusFood();
+  bool canMoveThisFrame(float deltaTime);
+  bool prepareNextMove(Position& nextHead);
+  bool eatFoodAt(const Position& nextHead);
+  void handleFoodSpawnAfterEating();
+  void trimSnakeTail();
   void updateEntities();
+  Entity createSnakeEntity(const SnakeSegment& segment);
+  Entity createFoodEntity(const FoodItem& food);
+  void addSnakeEntities();
+  void addFoodEntities();
   void updateGameOverText();
   void updateBonusFood(float deltaTime);
   bool isPositionOccupied(const Position& pos, bool includeBody = true);
