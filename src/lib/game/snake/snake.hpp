@@ -93,8 +93,6 @@ class Snake : public AGame {
   void handleFoodSpawnAfterEating();
   void trimSnakeTail();
   void updateEntities();
-  Entity createSnakeEntity(const SnakeSegment& segment);
-  Entity createFoodEntity(const FoodItem& food);
   void addSnakeEntities();
   void addFoodEntities();
   void updateGameOverText();
