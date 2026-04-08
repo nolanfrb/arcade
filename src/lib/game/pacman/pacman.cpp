@@ -40,6 +40,14 @@ constexpr std::uint8_t GHOST_DIRECTION_FRAME_COUNT = 2;
 constexpr std::uint8_t SCARED_GHOST_FRAME_COUNT = 2;
 constexpr std::uint8_t DEAD_GHOST_FRAME_COUNT = 4;
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+float getCenteredTextPosX(const std::string& text, int fontSize,
+                          float screenWidthPx, float tilePx) {
+  const float textWidthPx =
+      static_cast<float>(text.size()) * static_cast<float>(fontSize);
+  return (screenWidthPx - textWidthPx) / (2.F * tilePx);
+}
+
 std::string buildTexturePath(const std::string& folder, std::uint8_t frame) {
   return folder + "/texture_" + std::to_string(frame) + ".png";
 }
@@ -279,18 +287,13 @@ void Pacman::displayGameOver() {
   std::ostringstream scoreStream;
   scoreStream << "GAME OVER! Final Score: " << _score;
 
-  const auto centerX = [](const std::string& text, int fontSize) -> float {
-    const float textWidthPx =
-        static_cast<float>(text.size()) * static_cast<float>(fontSize);
-    return (SCREEN_WIDTH_PX - textWidthPx) / (2.F * TILE_PX);
-  };
-
   Text gameOverText;
   gameOverText.content = scoreStream.str();
   gameOverText.fontSize = 16;
-  gameOverText.position =
-      Position{.x = centerX(gameOverText.content, gameOverText.fontSize),
-               .y = SCREEN_CENTER_Y - 1.F};
+  gameOverText.position = Position{
+      .x = getCenteredTextPosX(gameOverText.content, gameOverText.fontSize,
+                               SCREEN_WIDTH_PX, TILE_PX),
+      .y = SCREEN_CENTER_Y - 1.F};
   gameOverText.color = RED;
   gameOverText.fontPath = "";
   addText(gameOverText);
@@ -298,9 +301,10 @@ void Pacman::displayGameOver() {
   Text restartText;
   restartText.content = "Press R to Restart or ESC for Menu";
   restartText.fontSize = 14;
-  restartText.position =
-      Position{.x = centerX(restartText.content, restartText.fontSize),
-               .y = SCREEN_CENTER_Y + 1.F};
+  restartText.position = Position{
+      .x = getCenteredTextPosX(restartText.content, restartText.fontSize,
+                               SCREEN_WIDTH_PX, TILE_PX),
+      .y = SCREEN_CENTER_Y + 1.F};
   restartText.color = WHITE;
   restartText.fontPath = "";
   addText(restartText);
