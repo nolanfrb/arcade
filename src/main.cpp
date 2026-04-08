@@ -2,7 +2,7 @@
 #include <iostream>
 #include "core/core.hpp"
 
-static constexpr const char *HELP_MSG =
+static constexpr const char* HELP_MSG =
     "USAGE\n"
     "\t./arcade path_to_graphical_library\n"
     "\n"
@@ -17,13 +17,12 @@ static constexpr const char *HELP_MSG =
     "\tgo back to the menu\n"
     "\texit\n";
 
-static constexpr const char *USAGE_MSG =
+static constexpr const char* USAGE_MSG =
     "Usage: ./arcade path_to_graphical_library\n";
 
-int main(int argc, char **argv) {
-  if (argc == 2 &&
-      (std::strcmp(argv[1], "-h") == 0 ||
-       std::strcmp(argv[1], "--help") == 0)) {
+int main(int argc, char** argv) {
+  if (argc == 2 && (std::strcmp(argv[1], "-h") == 0 ||
+                    std::strcmp(argv[1], "--help") == 0)) {
     std::cout << HELP_MSG;
     return 0;
   }
