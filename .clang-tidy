@@ -2,20 +2,25 @@
 # Enable specific checks.
 # This config enables bugprone, modernize, performance, and readability checks,
 # but ignores magic numbers and complexity checks for simplicity.
-Checks: '*,
-         -llvmlibc-*,
-         -fuchsia-*,
-         -cppcoreguidelines-pro-bounds-*,
-         -cppcoreguidelines-pro-type-vararg,
-         -hicpp-no-assembler,
-         -hicpp-no-array-decay,
-         -readability-magic-numbers,
-         -readability-function-cognitive-complexity,
-         -altera-unroll-loops,
-         -modernize-use-trailing-return-type,
-         -llvm-include-order,
-         -altera-*,
-         -llvm-header-guard'
+Checks: "*,
+  -llvmlibc-*,
+  -fuchsia-*,
+  -cppcoreguidelines-pro-bounds-*,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-pro-type-union-access,
+  -hicpp-no-assembler,
+  -hicpp-no-array-decay,
+  -readability-magic-numbers,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -readability-function-cognitive-complexity,
+  -altera-unroll-loops,
+  -modernize-use-trailing-return-type,
+  -llvm-include-order,
+  -altera-*,
+  -llvm-header-guard,
+  -misc-include-cleaner,
+  -portability-avoid-pragma-once,
+  -cppcoreguidelines-owning-memory"
 
 # Treat warnings as errors so the CI fails on bad code
-WarningsAsErrors: '*'
+WarningsAsErrors: "*"

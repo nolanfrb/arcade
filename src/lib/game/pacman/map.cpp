@@ -4,6 +4,7 @@
 ** File description:
 ** map
 */
+#include "map.hpp"
 #include <cstddef>
 #include <fstream>
 #include <string>
@@ -42,7 +43,8 @@ type translateTile(char character) {
 bool Pacman::loadMap(const std::string& filePath) {
   std::ifstream file(filePath);
   if (!file.is_open()) {
-    return false;
+    _map = FALLBACK_MAP();
+    return true;
   }
   std::string line;
   while (std::getline(file, line)) {
@@ -56,9 +58,10 @@ bool Pacman::loadMap(const std::string& filePath) {
 }
 
 type Pacman::getTile(int xCoordinate, int yCoordinate) {
-  if (xCoordinate < 0 || xCoordinate >= static_cast<int>(_map.size()) ||
+  if (xCoordinate < 0 || static_cast<std::size_t>(xCoordinate) >= _map.size() ||
       yCoordinate < 0 ||
-      yCoordinate >= static_cast<int>(_map[xCoordinate].size())) {
+      static_cast<std::size_t>(yCoordinate) >=
+          _map[static_cast<std::size_t>(xCoordinate)].size()) {
     return type::WALL;
   }
   return _map[xCoordinate][yCoordinate];

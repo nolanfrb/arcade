@@ -7,6 +7,7 @@
 
 #include "ghostMovement.hpp"
 #include <cmath>
+#include <cstddef>
 #include <vector>
 #include "../../../../../shared/Entity.hpp"
 #include "../../../../../shared/Input.hpp"
@@ -19,15 +20,16 @@ Position ghostMovement::findFarthestPoint(
   Position bestTarget{.x = player.x, .y = player.y};
   int maxDistance = -1;
 
-  for (int rowIndex = 0; rowIndex < static_cast<int>(map.size()); ++rowIndex) {
-    for (int colIndex = 0; colIndex < static_cast<int>(map[rowIndex].size());
+  for (std::size_t rowIndex = 0; rowIndex < map.size(); ++rowIndex) {
+    for (std::size_t colIndex = 0; colIndex < map[rowIndex].size();
          ++colIndex) {
       if (!Utils::isWalkableTile(map[rowIndex][colIndex], true)) {
         continue;
       }
 
-      const int distance = std::abs(colIndex - static_cast<int>(player.x)) +
-                           std::abs(rowIndex - static_cast<int>(player.y));
+      const int distance =
+          std::abs(static_cast<int>(colIndex) - static_cast<int>(player.x)) +
+          std::abs(static_cast<int>(rowIndex) - static_cast<int>(player.y));
       if (distance > maxDistance) {
         maxDistance = distance;
         bestTarget = Position{.x = static_cast<float>(colIndex),

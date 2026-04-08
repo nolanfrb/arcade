@@ -37,7 +37,7 @@ EntityType createPacmanType() {
   pacman.color = WHITE;
   pacman.asciiChar = 'C';
   pacman.isTextInput = false;
-  pacman.spritePath = "assets/pacman/pacman_move_right.png";
+  pacman.spritePath = "assets/pacman/pacman/right/texture_0.png";
   return pacman;
 }
 EntityType createRedGhostType() {
@@ -48,7 +48,7 @@ EntityType createRedGhostType() {
   ghost.color = RED;
   ghost.asciiChar = 'R';
   ghost.isTextInput = false;
-  ghost.spritePath = "assets/pacman/pacman_red_ghost.png";
+  ghost.spritePath = "assets/pacman/redGhost/texture_0.png";
   return ghost;
 }
 EntityType createBlueGhostType() {
@@ -59,7 +59,7 @@ EntityType createBlueGhostType() {
   ghost.color = BLUE;
   ghost.asciiChar = 'B';
   ghost.isTextInput = false;
-  ghost.spritePath = "assets/pacman/pacman_blue_ghost.png";
+  ghost.spritePath = "assets/pacman/blueGhost/texture_0.png";
   return ghost;
 }
 EntityType createPinkGhostType() {
@@ -70,7 +70,7 @@ EntityType createPinkGhostType() {
   ghost.color = PINK;
   ghost.asciiChar = 'P';
   ghost.isTextInput = false;
-  ghost.spritePath = "assets/pacman/pacman_pink_ghost.png";
+  ghost.spritePath = "assets/pacman/pinkGhost/texture_0.png";
   return ghost;
 }
 EntityType createOrangeGhostType() {
@@ -81,7 +81,7 @@ EntityType createOrangeGhostType() {
   ghost.color = ORANGE;
   ghost.asciiChar = 'N';
   ghost.isTextInput = false;
-  ghost.spritePath = "assets/pacman/pacman_orange_ghost.png";
+  ghost.spritePath = "assets/pacman/orangeGhost/texture_0.png";
   return ghost;
 }
 
@@ -93,7 +93,7 @@ EntityType createChassedGhostType() {
   chassedGhost.color = BLUE;
   chassedGhost.asciiChar = 'D';
   chassedGhost.isTextInput = false;
-  chassedGhost.spritePath = "assets/pacman/pacman_scared_ghost.png";
+  chassedGhost.spritePath = "assets/pacman/scaredGhost/texture_0.png";
   return chassedGhost;
 }
 
@@ -105,7 +105,7 @@ EntityType createDeadGhostType() {
   deadGhost.color = BLUE;
   deadGhost.asciiChar = 'X';
   deadGhost.isTextInput = false;
-  deadGhost.spritePath = "assets/pacman/pacman_dead_ghost.png";
+  deadGhost.spritePath = "assets/pacman/deadGhost/texture_0.png";
   return deadGhost;
 }
 

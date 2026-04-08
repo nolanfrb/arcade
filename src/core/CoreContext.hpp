@@ -35,13 +35,13 @@ class CoreContext : public IGameContext {
   void loadDisplay(const std::string& path) override { _pendingDisplay = path; }
 
   void applyPending() {
-    if (_pendingGame.has_value()) {
-      _lm.loadGame(*_pendingGame);
-      _pendingGame.reset();
-    }
     if (_pendingDisplay.has_value()) {
       _lm.loadDisplay(*_pendingDisplay);
       _pendingDisplay.reset();
+    }
+    if (_pendingGame.has_value()) {
+      _lm.loadGame(*_pendingGame);
+      _pendingGame.reset();
     }
   }
 
