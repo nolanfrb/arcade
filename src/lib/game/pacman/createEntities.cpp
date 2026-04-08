@@ -20,7 +20,7 @@ constexpr float PACGUM_SIZE = 0.2F;
 
 EntityType createWallType() {
   EntityType wall = EntityType();
-  wall.type = Shape::RECTANGLE;
+  wall.type = Shape::SPRITE;
   wall.width = TILE_SIZE;
   wall.height = TILE_SIZE;
   wall.color = BLUE;
