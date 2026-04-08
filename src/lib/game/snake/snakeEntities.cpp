@@ -92,7 +92,7 @@ Entity Snake::createSnakeEntity(const SnakeSegment& segment) {
     entity.type.asciiChar = 'o';
   } else if (segment.type == EntityTypeSnake::SNAKE_TAIL) {
     entity.type.type = Shape::SPRITE;
-    entity.type.spritePath = "assets/snake/snake_tail.png";
+    entity.type.spritePath = "assets/snake/snake_body.png";
     entity.type.width = TILE_SIZE;
     entity.type.height = TILE_SIZE;
     entity.type.color = GREEN;
