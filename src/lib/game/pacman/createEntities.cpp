@@ -23,7 +23,7 @@ EntityType createWallType() {
   wall.type = Shape::RECTANGLE;
   wall.width = TILE_SIZE;
   wall.height = TILE_SIZE;
-  wall.color = WHITE;
+  wall.color = BLUE;
   wall.asciiChar = '#';
   wall.isTextInput = false;
   wall.spritePath = "assets/pacman/pacman_border.png";
@@ -198,7 +198,9 @@ void Pacman::createEntities() {
       } else if (tile == type::FOOD) {
         _foods.push_back(entity);
       }
-      entities.push_back(entity);
+      Entity displayEntity = entity;
+      displayEntity.position = toScreenPos(entity.position);
+      entities.push_back(displayEntity);
     }
   }
   setEntities(entities);

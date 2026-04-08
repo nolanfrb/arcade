@@ -7,6 +7,7 @@
 
 #include "pacman.hpp"
 #include <cstdint>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -169,30 +170,36 @@ void Pacman::updateEntities(std::vector<Entity>& entities,
                             const std::vector<EntityType>& entityTypes,
                             float deltaTime) {
   (void)deltaTime;
+  auto addWithOffset = [&entities](const Entity& src) {
+    Entity offsetEntity = src;
+    offsetEntity.position = toScreenPos(src.position);
+    entities.push_back(offsetEntity);
+  };
+
   for (const auto& item : _foods) {
-    entities.push_back(item);
+    addWithOffset(item);
   }
   for (const auto& item : _pacgums) {
-    entities.push_back(item);
+    addWithOffset(item);
   }
   for (const auto& item : _superPacgums) {
-    entities.push_back(item);
+    addWithOffset(item);
   }
   for (auto ghost : _ghosts) {
     if (_isSuperPacgumActive) {
       ghost.type = entityTypes[getTypeIndex(type::CHASED_GHOST)];
     }
-    entities.push_back(ghost);
+    addWithOffset(ghost);
   }
   for (const auto& ghost : _deadGhosts) {
     Entity deadGhostEntity = ghost;
     deadGhostEntity.type = entityTypes[getTypeIndex(type::DEAD_GHOST)];
-    entities.push_back(deadGhostEntity);
+    addWithOffset(deadGhostEntity);
   }
   for (const auto& ghost : _chassedGhosts) {
-    entities.push_back(ghost);
+    addWithOffset(ghost);
   }
-  entities.push_back(_player);
+  addWithOffset(_player);
   setEntities(entities);
 }
 
@@ -244,19 +251,59 @@ void Pacman::updateAnimation(float deltatime) {
   setEntityTypes(entityTypes);
 }
 
+Position Pacman::toScreenPos(const Position& mapPos) {
+  return Position{.x = mapPos.x + MAP_OFFSET_X, .y = mapPos.y + MAP_OFFSET_Y};
+}
+
+void Pacman::displayHUD() {
+  clearTexts();
+  std::ostringstream scoreStream;
+  scoreStream << "Score: " << _score;
+
+  Text scoreText;
+  scoreText.content = scoreStream.str();
+  scoreText.position = Position{.x = MAP_OFFSET_X, .y = HUD_Y};
+  scoreText.fontSize = 14;
+  scoreText.color = WHITE;
+  scoreText.fontPath = "";
+  addText(scoreText);
+}
+
 void Pacman::displayGameOver() {
-  std::vector<Entity> entities;
+  constexpr float SCREEN_WIDTH_PX = static_cast<float>(SCREEN_TILES_X) * 20.F;
+  constexpr float SCREEN_CENTER_Y = static_cast<float>(SCREEN_TILES_Y) / 2.F;
+  constexpr float TILE_PX = 20.F;
+
+  clearTexts();
+
+  std::ostringstream scoreStream;
+  scoreStream << "GAME OVER! Final Score: " << _score;
+
+  const auto centerX = [](const std::string& text, int fontSize) -> float {
+    const float textWidthPx =
+        static_cast<float>(text.size()) * static_cast<float>(fontSize);
+    return (SCREEN_WIDTH_PX - textWidthPx) / (2.F * TILE_PX);
+  };
+
   Text gameOverText;
-  gameOverText.content =
-      "Game Over. You can type R to restart or esc to return to "
-      "the menu.";
-  gameOverText.position = Position{.x = 0, .y = 5};
-  gameOverText.fontSize = 10;
+  gameOverText.content = scoreStream.str();
+  gameOverText.fontSize = 16;
+  gameOverText.position =
+      Position{.x = centerX(gameOverText.content, gameOverText.fontSize),
+               .y = SCREEN_CENTER_Y - 1.F};
   gameOverText.color = RED;
   gameOverText.fontPath = "";
-  clearEntities();
-  clearTexts();
   addText(gameOverText);
+
+  Text restartText;
+  restartText.content = "Press R to Restart or ESC for Menu";
+  restartText.fontSize = 14;
+  restartText.position =
+      Position{.x = centerX(restartText.content, restartText.fontSize),
+               .y = SCREEN_CENTER_Y + 1.F};
+  restartText.color = WHITE;
+  restartText.fontPath = "";
+  addText(restartText);
 }
 
 void Pacman::update(Input input, float deltaTime) {
@@ -284,18 +331,21 @@ void Pacman::update(Input input, float deltaTime) {
       if (_map[xCoordinate][yCoordinate] == type::WALL) {
         Entity wall;
         wall.type = entityTypes[getTypeIndex(type::WALL)];
-        wall.position = Position{.x = static_cast<float>(yCoordinate),
-                                 .y = static_cast<float>(xCoordinate)};
+        wall.position =
+            toScreenPos(Position{.x = static_cast<float>(yCoordinate),
+                                 .y = static_cast<float>(xCoordinate)});
         entities.push_back(wall);
       } else if (_map[xCoordinate][yCoordinate] == type::GHOST_DOOR) {
         Entity door;
         door.type = entityTypes[getTypeIndex(type::GHOST_DOOR)];
-        door.position = Position{.x = static_cast<float>(yCoordinate),
-                                 .y = static_cast<float>(xCoordinate)};
+        door.position =
+            toScreenPos(Position{.x = static_cast<float>(yCoordinate),
+                                 .y = static_cast<float>(xCoordinate)});
         entities.push_back(door);
       }
     }
   }
+  displayHUD();
   updateEntities(entities, entityTypes, deltaTime);
 }
 
