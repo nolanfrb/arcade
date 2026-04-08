@@ -122,6 +122,7 @@ int Pacman::getTypeIndex(type tile) {
 
 void Pacman::init() {
   setName("Pacman");
+  setIsGameOver(false);
   if (loadMap("assets/pacman/pacman_map.txt")) {
     if (checkMap()) {
       createEntitiesType();
@@ -140,10 +141,13 @@ void Pacman::stop() {
   _chassedGhosts.clear();
   _ghostDirections.clear();
   _isSuperPacgumActive = false;
+  _score = 0;
   _gameTimer = 0;
   _playerMovementTimer = 0;
   _gameTimer = 0;
   _playerMovementTimer = 0;
+  clearEntities();
+  clearTexts();
 }
 
 void Pacman::restart() {
@@ -246,8 +250,8 @@ void Pacman::displayGameOver() {
   gameOverText.content =
       "Game Over. You can type R to restart or esc to return to "
       "the menu.";
-  gameOverText.position = Position{.x = 5, .y = 5};
-  gameOverText.fontSize = 50;
+  gameOverText.position = Position{.x = 0, .y = 5};
+  gameOverText.fontSize = 10;
   gameOverText.color = RED;
   gameOverText.fontPath = "";
   clearEntities();
@@ -256,6 +260,11 @@ void Pacman::displayGameOver() {
 }
 
 void Pacman::update(Input input, float deltaTime) {
+  if (isGameOver()) {
+    displayGameOver();
+    return;
+  }
+
   _gameTimer += deltaTime;
   _playerMovementTimer += deltaTime;
   checkCollision();
@@ -265,11 +274,6 @@ void Pacman::update(Input input, float deltaTime) {
   updateAnimation(deltaTime);
   setScore(_score);
   checkVictory();
-  if (isGameOver()) {
-    displayGameOver();
-    stop();
-    return;
-  }
   checkSuperPacgumTimer(deltaTime);
 
   std::vector<Entity> entities;
