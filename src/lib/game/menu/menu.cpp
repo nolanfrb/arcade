@@ -45,18 +45,15 @@ void Menu::restart() {
   _state = MenuState::SELECTING_GAME;
 }
 
-void Menu::setContext(IGameContext* ctx) {
-  _ctx = ctx;
-  if (ctx == nullptr) {
-    return;
-  }
+void Menu::setContext(IGameContext& ctx) {
+  _ctx = &ctx;
   _gameList.clear();
-  for (const auto& path : ctx->getGameList()) {
+  for (const auto& path : ctx.getGameList()) {
     if (std::filesystem::path(path).filename() != "arcade_menu.so") {
       _gameList.push_back(path);
     }
   }
-  _displayList = ctx->getDisplayList();
+  _displayList = ctx.getDisplayList();
 }
 
 void Menu::update(Input input, float /*deltaTime*/) {

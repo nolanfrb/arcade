@@ -36,7 +36,7 @@ class Menu : public AGame {
   void restart() override;
   void update(Input input, float deltaTime) override;
 
-  void setContext(IGameContext* ctx) override;
+  void setContext(IGameContext& ctx) override;
 
  private:
   void buildScene();
