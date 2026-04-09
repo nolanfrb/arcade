@@ -42,16 +42,6 @@ float getDeltaTime(std::chrono::steady_clock::time_point& lastFrameTime) {
   return deltaTime;
 }
 
-void createScore(IGame* currentGame, std::vector<Text>& texts) {
-  if (currentGame->getName() != "menu") {
-    Text scoreText;
-    scoreText.content = "Score: " + std::to_string(currentGame->getScore());
-    scoreText.position = {.x = SCORE_TEXT_X, .y = SCORE_TEXT_Y};
-    scoreText.color = SCORE_TEXT_COLOR;
-    scoreText.fontSize = SCORE_TEXT_FONT_SIZE;
-    texts.push_back(scoreText);
-  }
-}
 }  // namespace
 
 Core::Core() {
@@ -84,7 +74,7 @@ void Core::menu() {
 int Core::initCore(std::filesystem::path const& path) {
   _libManager.loadDisplay(path.string());
   _libManager.scanLibs("./lib");
-  _libManager.setContext(&_ctx);
+  _libManager.setContext(_ctx);
 
   if (_libManager.getDisplay() == nullptr) {
     std::cerr << "No display library found." << '\n';
@@ -107,7 +97,6 @@ void Core::updateGame(IGame* currentGame, IDisplay* currentDisplay, Input input,
   currentDisplay->clear();
   const std::vector<Entity> entities = currentGame->getEntity();
   std::vector<Text> texts = currentGame->getText();
-  createScore(currentGame, texts);
   currentDisplay->drawEntity(entities);
   currentDisplay->drawText(texts);
   currentDisplay->display();
