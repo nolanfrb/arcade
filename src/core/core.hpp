@@ -40,7 +40,12 @@ class Core {
   void loadDisplay(std::string const& path);
 
  private:
+  bool isInMenu();
+  bool handleConfirmQuit(Input input);
+  static void appendConfirmTexts(std::vector<Text>& texts);
+
   bool _running = true;
+  bool _confirmingQuit = false;
 
   SystemCommand _systemCommand;
   LibManager _libManager;

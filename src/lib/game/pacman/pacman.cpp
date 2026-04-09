@@ -275,6 +275,7 @@ void Pacman::displayHUD() {
   scoreText.color = WHITE;
   scoreText.fontPath = "";
   addText(scoreText);
+
 }
 
 void Pacman::displayGameOver() {

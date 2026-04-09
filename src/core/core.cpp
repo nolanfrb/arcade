@@ -22,10 +22,21 @@
 #include "SystemCommand/systemCommand.hpp"
 
 namespace {
-constexpr std::array<std::uint8_t, 4> SCORE_TEXT_COLOR = {255, 255, 255, 255};
-constexpr int SCORE_TEXT_FONT_SIZE = 16;
-constexpr float SCORE_TEXT_X = 1.0F;
-constexpr float SCORE_TEXT_Y = 0.0F;
+constexpr std::array<std::uint8_t, 4> CONFIRM_TEXT_COLOR = {255, 255, 255, 255};
+constexpr std::array<std::uint8_t, 4> CONFIRM_HINT_COLOR = {200, 200, 200, 255};
+constexpr int CONFIRM_FONT_SIZE = 16;
+constexpr int CONFIRM_HINT_FONT_SIZE = 14;
+constexpr float SCREEN_TILES_X = 40.F;
+constexpr float SCREEN_TILES_Y = 30.F;
+constexpr float SCREEN_CENTER_Y = SCREEN_TILES_Y / 2.F;
+constexpr float TILE_PX = 20.F;
+constexpr float SCREEN_WIDTH_PX = SCREEN_TILES_X * TILE_PX;
+
+float getCenteredTextPosX(const std::string& text, int fontSize) {
+  const float textWidthPx =
+      static_cast<float>(text.size()) * static_cast<float>(fontSize);
+  return (SCREEN_WIDTH_PX - textWidthPx) / (2.F * TILE_PX);
+}
 
 float getDeltaTime(std::chrono::steady_clock::time_point& lastFrameTime) {
   const auto currentFrameTime = std::chrono::steady_clock::now();
@@ -46,7 +57,13 @@ float getDeltaTime(std::chrono::steady_clock::time_point& lastFrameTime) {
 
 Core::Core() {
   _systemCommand.setOnExitRequested([this]() { _running = false; });
-  _systemCommand.setOnMenuRequested([this]() { menu(); });
+  _systemCommand.setOnMenuRequested([this]() {
+    if (isInMenu()) {
+      menu();
+    } else {
+      _confirmingQuit = !_confirmingQuit;
+    }
+  });
   _systemCommand.setOnNextGameRequested([this]() { _libManager.nextGame(); });
   _systemCommand.setOnNextDisplayRequested(
       [this]() { _libManager.nextDisplay(); });
@@ -58,6 +75,11 @@ Core::Core() {
   });
 }
 
+bool Core::isInMenu() {
+  IGame* game = _libManager.getGame();
+  return game != nullptr && game->getName() == "menu";
+}
+
 void Core::loadDisplay(std::string const& path) {
   _libManager.loadDisplay(path);
 }
@@ -65,6 +87,7 @@ void Core::loadDisplay(std::string const& path) {
 void Core::loadGame(std::string const& path) { _libManager.loadGame(path); }
 
 void Core::menu() {
+  _confirmingQuit = false;
   if (_libManager.getDisplay() != nullptr) {
     _libManager.getDisplay()->clear();
   }
@@ -84,10 +107,51 @@ int Core::initCore(std::filesystem::path const& path) {
   return 0;
 }
 
+bool Core::handleConfirmQuit(Input input) {
+  if (input == Input::ACTION) {
+    _confirmingQuit = false;
+    menu();
+    return true;
+  }
+  return false;
+}
+
+void Core::appendConfirmTexts(std::vector<Text>& texts) {
+  const std::string confirmMsg = "Voulez-vous vraiment quitter ?";
+  const std::string hintMsg = "Espace pour confirmer / Echap pour annuler";
+
+  Text confirmText;
+  confirmText.content = confirmMsg;
+  confirmText.fontSize = CONFIRM_FONT_SIZE;
+  confirmText.position =
+      Position{.x = getCenteredTextPosX(confirmMsg, CONFIRM_FONT_SIZE),
+               .y = SCREEN_CENTER_Y - 1.F};
+  confirmText.color = CONFIRM_TEXT_COLOR;
+  confirmText.fontPath = "";
+  texts.push_back(confirmText);
+
+  Text hintText;
+  hintText.content = hintMsg;
+  hintText.fontSize = CONFIRM_HINT_FONT_SIZE;
+  hintText.position =
+      Position{.x = getCenteredTextPosX(hintMsg, CONFIRM_HINT_FONT_SIZE),
+               .y = SCREEN_CENTER_Y + 1.F};
+  hintText.color = CONFIRM_HINT_COLOR;
+  hintText.fontPath = "";
+  texts.push_back(hintText);
+}
+
 void Core::updateGame(IGame* currentGame, IDisplay* currentDisplay, Input input,
                       std::chrono::steady_clock::time_point& lastFrameTime) {
   const float deltaTime = getDeltaTime(lastFrameTime);
-  currentGame->update(input, deltaTime);
+  if (_confirmingQuit) {
+    if (handleConfirmQuit(input)) {
+      return;
+    }
+    currentGame->update(Input::NONE, 0.F);
+  } else {
+    currentGame->update(input, deltaTime);
+  }
   _ctx.applyPending();
   currentDisplay = _libManager.getDisplay();
   currentGame = _libManager.getGame();
@@ -97,6 +161,9 @@ void Core::updateGame(IGame* currentGame, IDisplay* currentDisplay, Input input,
   currentDisplay->clear();
   const std::vector<Entity> entities = currentGame->getEntity();
   std::vector<Text> texts = currentGame->getText();
+  if (_confirmingQuit) {
+    appendConfirmTexts(texts);
+  }
   currentDisplay->drawEntity(entities);
   currentDisplay->drawText(texts);
   currentDisplay->display();

@@ -126,22 +126,12 @@ void SfmlRenderer::drawSprite(const Entity& entity) {
     const sf::Texture& texture = loadTexture(entity.type.spritePath);
     sf::Sprite sprite(texture);
     const auto texSize = texture.getSize();
-    int frameW = 0;
-    int frameH = 0;
-    if (texSize.x >= texSize.y) {
-      frameW = static_cast<int>(texSize.y);
-      frameH = static_cast<int>(texSize.y);
-    } else {
-      frameW = static_cast<int>(texSize.x);
-      frameH = static_cast<int>(texSize.x);
-    }
-    sprite.setTextureRect(sf::IntRect(0, 0, frameW, frameH));
     sprite.setPosition(entity.position.x * sfml::TILE_SIZE,
                        entity.position.y * sfml::TILE_SIZE);
     const float scaleX =
-        (entity.type.width * sfml::TILE_SIZE) / static_cast<float>(frameW);
+        (entity.type.width * sfml::TILE_SIZE) / static_cast<float>(texSize.x);
     const float scaleY =
-        (entity.type.height * sfml::TILE_SIZE) / static_cast<float>(frameH);
+        (entity.type.height * sfml::TILE_SIZE) / static_cast<float>(texSize.y);
     sprite.setScale(scaleX, scaleY);
     _window.draw(sprite);
   } catch (const std::runtime_error&) {
