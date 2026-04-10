@@ -144,4 +144,5 @@ class Pacman : public AGame {
   std::vector<std::vector<type>> _map;
 
   float _ghostSpeedMultiplier = 1;
+  int _level = 1;
 };

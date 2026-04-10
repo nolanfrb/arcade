@@ -153,8 +153,8 @@ void Pacman::stop() {
   _ghostDirections.clear();
   _isSuperPacgumActive = false;
   _score = 0;
-  _gameTimer = 0;
-  _playerMovementTimer = 0;
+  _level = 1;
+  _ghostSpeedMultiplier = 1;
   _gameTimer = 0;
   _playerMovementTimer = 0;
   clearEntities();
@@ -216,7 +216,15 @@ void Pacman::updateEntities(std::vector<Entity>& entities,
 void Pacman::checkVictory() {
   if (_pacgums.empty() && _superPacgums.empty()) {
     _ghostSpeedMultiplier += LEVEL_UP_SPEED_INCREASE;
+    _level++;
+    int savedLevel = _level;
+    int savedScore = _score;
+    float savedSpeed = _ghostSpeedMultiplier;
     restart();
+    _level = savedLevel;
+    _score = savedScore;
+    _ghostSpeedMultiplier = savedSpeed;
+    setScore(_score);
   }
 }
 
@@ -278,6 +286,17 @@ void Pacman::displayHUD() {
   scoreText.fontPath = "";
   addText(scoreText);
 
+  std::ostringstream levelStream;
+  levelStream << "Level: " << _level;
+
+  Text levelText;
+  levelText.content = levelStream.str();
+  levelText.position = Position{
+      .x = MAP_OFFSET_X + static_cast<float>(MAP_COLS) - 8.F, .y = HUD_Y};
+  levelText.fontSize = 14;
+  levelText.color = WHITE;
+  levelText.fontPath = "";
+  addText(levelText);
 }
 
 void Pacman::displayGameOver() {
