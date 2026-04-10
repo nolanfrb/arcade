@@ -15,6 +15,7 @@
 #include "../shared/interface/IGame.hpp"
 #include "CoreContext.hpp"
 #include "LibManager/libManager.hpp"
+#include "Registry.hpp"
 #include "SystemCommand/systemCommand.hpp"
 
 constexpr int ERROR = 84;
@@ -49,5 +50,6 @@ class Core {
 
   SystemCommand _systemCommand;
   LibManager _libManager;
-  CoreContext _ctx{_libManager};
+  Registry _registry;
+  CoreContext _ctx{_libManager, _registry};
 };

@@ -15,6 +15,7 @@
 #include <vector>
 #include "../shared/Entity.hpp"
 #include "../shared/Input.hpp"
+#include "../shared/Sound.hpp"
 #include "../shared/Text.hpp"
 #include "../shared/interface/IDisplay.hpp"
 #include "../shared/interface/IGame.hpp"
@@ -58,7 +59,8 @@ float getDeltaTime(std::chrono::steady_clock::time_point& lastFrameTime) {
 Core::Core() {
   _systemCommand.setOnExitRequested([this]() { _running = false; });
   _systemCommand.setOnMenuRequested([this]() {
-    if (isInMenu()) {
+    IGame* game = _libManager.getGame();
+    if (isInMenu() || (game != nullptr && game->isGameOver())) {
       menu();
     } else {
       _confirmingQuit = !_confirmingQuit;
@@ -88,6 +90,10 @@ void Core::loadGame(std::string const& path) { _libManager.loadGame(path); }
 
 void Core::menu() {
   _confirmingQuit = false;
+  IGame* game = _libManager.getGame();
+  if (game != nullptr && game->getName() != "menu") {
+    _registry.setHighScore(game->getName(), game->getScore());
+  }
   if (_libManager.getDisplay() != nullptr) {
     _libManager.getDisplay()->clear();
   }
@@ -144,6 +150,7 @@ void Core::appendConfirmTexts(std::vector<Text>& texts) {
 void Core::updateGame(IGame* currentGame, IDisplay* currentDisplay, Input input,
                       std::chrono::steady_clock::time_point& lastFrameTime) {
   const float deltaTime = getDeltaTime(lastFrameTime);
+  _ctx.setTextInput(currentDisplay->getTextInput());
   if (_confirmingQuit) {
     if (handleConfirmQuit(input)) {
       return;
@@ -164,8 +171,12 @@ void Core::updateGame(IGame* currentGame, IDisplay* currentDisplay, Input input,
   if (_confirmingQuit) {
     appendConfirmTexts(texts);
   }
+  const std::vector<Sound> sounds = currentGame->getSounds();
   currentDisplay->drawEntity(entities);
   currentDisplay->drawText(texts);
+  if (!_confirmingQuit) {
+    currentDisplay->playSound(sounds);
+  }
   currentDisplay->display();
 }
 
