@@ -124,6 +124,7 @@ class Pacman : public AGame {
   float _animationTimer = 0;
 
   Input _lastPlayerInput = Input::NONE;
+  Input _bufferedDirection = Input::NONE;
 
   std::uint8_t _pacmanAnimationFrame = 0;
   std::uint8_t _ghostAnimationFrame = 0;

@@ -10,22 +10,18 @@
 #include "../../../shared/Position.hpp"
 #include "pacman.hpp"
 
-void Pacman::movePlayer(Input input) {
-  if (input != Input::UP && input != Input::DOWN && input != Input::LEFT &&
-      input != Input::RIGHT) {
-    return;
-  }
-  _lastPlayerInput = input;
-  if (_playerMovementTimer < PLAYER_MOVE_DELAY) {
-    return;
-  }
-  _playerMovementTimer -= PLAYER_MOVE_DELAY;
+namespace {
+struct MapSize {
+  int height;
+  int width;
+};
 
-  float newX = _player.position.x;
-  float newY = _player.position.y;
-  const int mapHeight = static_cast<int>(_map.size());
+Position getNextPosition(const Position& pos, Input direction,
+                         MapSize mapSize) {
+  float newX = pos.x;
+  float newY = pos.y;
 
-  switch (input) {
+  switch (direction) {
     case Input::UP:
       newY -= 1;
       break;
@@ -39,23 +35,59 @@ void Pacman::movePlayer(Input input) {
       newX += 1;
       break;
     default:
-      return;
+      return pos;
   }
   if (newY < 0) {
-    newY = static_cast<float>(mapHeight - 1);
-  } else if (newY >= static_cast<float>(mapHeight)) {
+    newY = static_cast<float>(mapSize.height - 1);
+  } else if (newY >= static_cast<float>(mapSize.height)) {
     newY = 0;
   }
-  const int mapWidth = static_cast<int>(_map[static_cast<int>(newY)].size());
   if (newX < 0) {
-    newX = static_cast<float>(mapWidth - 1);
-  } else if (newX >= static_cast<float>(mapWidth)) {
+    newX = static_cast<float>(mapSize.width - 1);
+  } else if (newX >= static_cast<float>(mapSize.width)) {
     newX = 0;
   }
-  if (getTile(static_cast<int>(newY), static_cast<int>(newX)) != type::WALL &&
-      getTile(static_cast<int>(newY), static_cast<int>(newX)) !=
-          type::GHOST_DOOR) {
-    _player.position.x = newX;
-    _player.position.y = newY;
+  return Position{.x = newX, .y = newY};
+}
+}  // namespace
+
+void Pacman::movePlayer(Input input) {
+  if (input == Input::UP || input == Input::DOWN || input == Input::LEFT ||
+      input == Input::RIGHT) {
+    _bufferedDirection = input;
+  }
+
+  if (_playerMovementTimer < PLAYER_MOVE_DELAY) {
+    return;
+  }
+  _playerMovementTimer -= PLAYER_MOVE_DELAY;
+
+  const MapSize mapSize = {
+      .height = static_cast<int>(_map.size()),
+      .width =
+          static_cast<int>(_map[static_cast<int>(_player.position.y)].size())};
+
+  auto canMoveTo = [this](const Position& pos) {
+    const type tile = getTile(static_cast<int>(pos.y), static_cast<int>(pos.x));
+    return tile != type::WALL && tile != type::GHOST_DOOR;
+  };
+
+  if (_bufferedDirection != Input::NONE) {
+    const Position bufferedPos =
+        getNextPosition(_player.position, _bufferedDirection, mapSize);
+    if (canMoveTo(bufferedPos)) {
+      _lastPlayerInput = _bufferedDirection;
+      _bufferedDirection = Input::NONE;
+      _player.position = bufferedPos;
+      return;
+    }
+  }
+
+  if (_lastPlayerInput != Input::NONE) {
+    const Position currentPos =
+        getNextPosition(_player.position, _lastPlayerInput, mapSize);
+    if (canMoveTo(currentPos)) {
+      _player.position = currentPos;
+    }
   }
 }
