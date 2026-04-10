@@ -7,8 +7,12 @@
 #include "scene.hpp"
 namespace {
 constexpr float MENU_LEFT_MARGIN = 5.0F;
+constexpr float SCOREBOARD_X = 24.0F;
 constexpr float SCOREBOARD_Y = 1.0F;
 constexpr float GAME_LIST_Y = 3.0F;
+constexpr float SCORE_LIST_Y = 5.0F;
+constexpr float SCORE_SPACING = 1.5F;
+constexpr int SMALL_FONT = 14;
 
 std::string formatLibName(const std::string& path) {
   std::string filename = std::filesystem::path(path).stem().string();
@@ -42,7 +46,8 @@ void Menu::stop() {}
 void Menu::restart() {
   _selectedGameIndex = 0;
   _selectedDisplayIndex = 0;
-  _state = MenuState::SELECTING_GAME;
+  _state = _username.empty() ? MenuState::ENTERING_USERNAME
+                             : MenuState::SELECTING_GAME;
 }
 
 void Menu::setContext(IGameContext& ctx) {
@@ -54,6 +59,10 @@ void Menu::setContext(IGameContext& ctx) {
     }
   }
   _displayList = ctx.getDisplayList();
+  _username = ctx.getUsername();
+  if (!_username.empty()) {
+    _state = MenuState::SELECTING_GAME;
+  }
 }
 
 void Menu::update(Input input, float /*deltaTime*/) {
@@ -103,11 +112,54 @@ void Menu::handleDisplaySelection(Input input) {
   }
 }
 
-void Menu::handleUsernameInput(Input /*input*/) {}
+void Menu::handleUsernameInput(Input input) {
+  if (_ctx == nullptr) {
+    return;
+  }
+  auto textInput = _ctx->getTextInput();
+  if (textInput.has_value()) {
+    _username = *textInput;
+  }
+  if (input == Input::ACTION && !_username.empty()) {
+    _ctx->setUsername(_username);
+    _state = MenuState::SELECTING_GAME;
+  }
+}
+
+void Menu::buildScoreboard(Scene& scene) {
+  if (_ctx == nullptr) {
+    return;
+  }
+  scene.label("Player: " + _username,
+              {.x = MENU_LEFT_MARGIN, .y = SCOREBOARD_Y}, Colors::YELLOW);
+  scene.label("HIGH SCORES", {.x = SCOREBOARD_X, .y = GAME_LIST_Y},
+              Colors::GREEN);
+  scene.label("-----------", {.x = SCOREBOARD_X, .y = GAME_LIST_Y + 1},
+              Colors::GREEN, SMALL_FONT);
+  float scoreY = SCORE_LIST_Y;
+  for (const auto& path : _gameList) {
+    const std::string name = formatLibName(path);
+    int score = _ctx->getHighScore(name);
+    std::string scoreStr = score > 0 ? std::to_string(score) : "-";
+    scene.label(name + ": " + scoreStr, {.x = SCOREBOARD_X, .y = scoreY},
+                score > 0 ? Colors::WHITE : Colors::BLUE, SMALL_FONT);
+    scoreY += SCORE_SPACING;
+  }
+}
 
 void Menu::buildScene() {
   Scene scene;
-  if (_state == MenuState::SELECTING_GAME) {
+  if (_state == MenuState::ENTERING_USERNAME) {
+    scene
+        .label("Enter your username:",
+               {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y}, Colors::GREEN)
+        .label("> " + _username + "_",
+               {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y + 2}, Colors::WHITE)
+        .label("Press SPACE to confirm",
+               {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y + 4}, Colors::YELLOW,
+               SMALL_FONT);
+  } else if (_state == MenuState::SELECTING_GAME) {
+    buildScoreboard(scene);
     scene
         .label("Select a game:", {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y},
                Colors::GREEN)
@@ -115,6 +167,7 @@ void Menu::buildScene() {
               {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y + 2},
               _selectedGameIndex);
   } else if (_state == MenuState::SELECTING_DISPLAY) {
+    buildScoreboard(scene);
     scene
         .label("Game: " + formatLibName(_gameList[_selectedGameIndex]),
                {.x = MENU_LEFT_MARGIN, .y = GAME_LIST_Y}, Colors::YELLOW)
