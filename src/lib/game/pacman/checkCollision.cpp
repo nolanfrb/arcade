@@ -6,6 +6,7 @@
 */
 
 #include <cstddef>
+#include "../../../shared/Sound.hpp"
 #include "pacman.hpp"
 
 void Pacman::checkBordersCollision() {}
@@ -17,7 +18,7 @@ void Pacman::checkSuperPacgumCollision() {
       _score += static_cast<int>(itemScore::SUPERPACGUM_SCORE);
       _isSuperPacgumActive = true;
       _superPacgumTimer = 0;
-
+      addSound(Sound{.filePath = "assets/pacman/sounds/pacman_eatfruit.wav"});
       _superPacgums.erase(it);
       break;
     }
@@ -29,6 +30,7 @@ void Pacman::checkPacgumCollision() {
     if (_player.position.x == it->position.x &&
         _player.position.y == it->position.y) {
       _score += static_cast<int>(itemScore::PACGUM_SCORE);
+      addSound(Sound{.filePath = "assets/pacman/sounds/pacman_chomp.wav"});
       _pacgums.erase(it);
       break;
     }
@@ -40,6 +42,7 @@ void Pacman::checkFoodCollision() {
     if (_player.position.x == it->position.x &&
         _player.position.y == it->position.y) {
       _score += static_cast<int>(itemScore::FOOD_SCORE);
+      addSound(Sound{.filePath = "assets/pacman/sounds/pacman_eatfruit.wav"});
       _foods.erase(it);
       break;
     }

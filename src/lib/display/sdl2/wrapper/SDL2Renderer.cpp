@@ -28,7 +28,8 @@ constexpr int DIAMETER_MULTIPLIER = 2;
 }  // namespace
 
 void SDL2Renderer::init(int width, int height, const std::string& title) {
-  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
+  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO);
+  Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048);
 
   _window =
       SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED,
@@ -54,6 +55,13 @@ void SDL2Renderer::init(int width, int height, const std::string& title) {
 SDL2Renderer::~SDL2Renderer() { close(); }
 
 void SDL2Renderer::close() {
+  for (auto& soundPair : _sounds) {
+    if (soundPair.second != nullptr) {
+      Mix_FreeChunk(soundPair.second);
+    }
+  }
+  _sounds.clear();
+
   for (auto& fontPair : _fonts) {
     if (fontPair.second != nullptr) {
       TTF_CloseFont(fontPair.second);
@@ -78,6 +86,7 @@ void SDL2Renderer::close() {
     _window = nullptr;
   }
 
+  Mix_CloseAudio();
   IMG_Quit();
   TTF_Quit();
   SDL_Quit();
@@ -331,4 +340,26 @@ TTF_Font* SDL2Renderer::loadFont(const std::string& path, int size) {
 
   _fonts[key] = font;
   return font;
+}
+
+Mix_Chunk* SDL2Renderer::loadSound(const std::string& path) {
+  auto iterator = _sounds.find(path);
+  if (iterator != _sounds.end()) {
+    return iterator->second;
+  }
+  Mix_Chunk* chunk = Mix_LoadWAV(path.c_str());
+  _sounds[path] = chunk;
+  return chunk;
+}
+
+void SDL2Renderer::playSound(const Sound& sound) {
+  Mix_Chunk* chunk = loadSound(sound.filePath);
+  if (chunk == nullptr) {
+    return;
+  }
+  constexpr int MAX_VOLUME = 128;
+  Mix_VolumeChunk(chunk,
+                  static_cast<int>(sound.volume / 100.F * MAX_VOLUME));
+  int channel = Mix_PlayChannel(-1, chunk, sound.loop ? -1 : 0);
+  (void)channel;
 }

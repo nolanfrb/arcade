@@ -14,6 +14,7 @@
 #include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
 #include "../../../shared/Position.hpp"
+#include "../../../shared/Sound.hpp"
 #include "../../../shared/interface/IGame.hpp"
 
 namespace {
@@ -136,6 +137,7 @@ void Pacman::init() {
     if (checkMap()) {
       createEntitiesType();
       createEntities();
+      addSound(Sound{.filePath = "assets/pacman/sounds/pacman_beginning.wav"});
     }
   }
 }

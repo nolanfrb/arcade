@@ -11,6 +11,7 @@
 #include <vector>
 #include "../Entity.hpp"
 #include "../Input.hpp"
+#include "../Sound.hpp"
 #include "../Text.hpp"
 #include "../interface/IGame.hpp"
 #include "../interface/IGameContext.hpp"
@@ -35,6 +36,11 @@ class AGame : public IGame {
 
   std::vector<Entity> getEntity() override { return _entities; }
   std::vector<Text> getText() override { return _texts; }
+  std::vector<Sound> getSounds() override {
+    std::vector<Sound> sounds = _sounds;
+    _sounds.clear();
+    return sounds;
+  }
   int getScore() override { return _score; }
   std::string getName() override { return _name; }
 
@@ -43,6 +49,7 @@ class AGame : public IGame {
  protected:
   void addEntity(const Entity& entity) { _entities.push_back(entity); }
   void addText(const Text& text) { _texts.push_back(text); }
+  void addSound(const Sound& sound) { _sounds.push_back(sound); }
 
   void setScore(int score) { _score = score; }
   void setIsGameOver(bool isGameOver) { _isGameOver = isGameOver; }
@@ -59,11 +66,13 @@ class AGame : public IGame {
 
   void clearEntities() { _entities.clear(); }
   void clearTexts() { _texts.clear(); }
+  void clearSounds() { _sounds.clear(); }
 
  private:
   std::vector<Entity> _entities;
   std::vector<EntityType> _entityTypes;
   std::vector<Text> _texts;
+  mutable std::vector<Sound> _sounds;
   int _score = 0;
   bool _isGameOver = false;
   std::string _name;

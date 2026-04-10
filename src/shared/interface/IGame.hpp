@@ -11,6 +11,7 @@
 #include <vector>
 #include "../Entity.hpp"
 #include "../Input.hpp"
+#include "../Sound.hpp"
 #include "../Text.hpp"
 #include "IGameContext.hpp"
 
@@ -33,6 +34,7 @@ class IGame {
 
   virtual std::vector<Entity> getEntity() = 0;
   virtual std::vector<Text> getText() = 0;
+  virtual std::vector<Sound> getSounds() = 0;
 
   virtual int getScore() = 0;
   virtual bool isGameOver() = 0;

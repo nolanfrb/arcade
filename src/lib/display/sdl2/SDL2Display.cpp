@@ -33,7 +33,7 @@ void SDL2Display::pollEvents() {
   _eventConsumed = false;
   _textConsumed = false;
   SDL_Event event{};
-  while (_renderer.pollEvent(event)) {
+  while (SDL2Renderer::pollEvent(event)) {
     if (event.type == SDL_QUIT) {
       _pendingEvent = Input::EXIT;
       return;
@@ -65,7 +65,9 @@ Input SDL2Display::getEvent() {
 }
 
 std::optional<std::string> SDL2Display::getTextInput() {
-  pollEvents();
+  if (!_pendingText.has_value()) {
+    pollEvents();
+  }
   if (_textConsumed) {
     return _textInputBuffer;
   }
@@ -86,6 +88,12 @@ std::optional<std::string> SDL2Display::getTextInput() {
     _textInputBuffer.push_back(input);
   }
   return _textInputBuffer;
+}
+
+void SDL2Display::playSound(const std::vector<Sound>& sounds) {
+  for (const auto& sound : sounds) {
+    _renderer.playSound(sound);
+  }
 }
 
 void SDL2Display::clear() { _renderer.clear(); }

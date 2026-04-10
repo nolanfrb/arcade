@@ -171,6 +171,38 @@ sf::Texture& SfmlRenderer::loadTexture(const std::string& path) {
   return inserted->second;
 }
 
+sf::SoundBuffer& SfmlRenderer::loadSoundBuffer(const std::string& path) {
+  auto iterator = _soundBuffers.find(path);
+  if (iterator != _soundBuffers.end()) {
+    return iterator->second;
+  }
+  auto& buffer = _soundBuffers[path];
+  if (!buffer.loadFromFile(path)) {
+    _soundBuffers.erase(path);
+    throw std::runtime_error("Failed to load sound: " + path);
+  }
+  return buffer;
+}
+
+void SfmlRenderer::playSound(const Sound& sound) {
+  // Clean up finished sounds
+  _activeSounds.erase(std::remove_if(_activeSounds.begin(), _activeSounds.end(),
+                                     [](const std::unique_ptr<sf::Sound>& s) {
+                                       return s->getStatus() ==
+                                              sf::Sound::Stopped;
+                                     }),
+                      _activeSounds.end());
+  try {
+    sf::SoundBuffer& buffer = loadSoundBuffer(sound.filePath);
+    auto sfSound = std::make_unique<sf::Sound>(buffer);
+    sfSound->setVolume(sound.volume);
+    sfSound->setLoop(sound.loop);
+    sfSound->play();
+    _activeSounds.push_back(std::move(sfSound));
+  } catch (const std::runtime_error&) {
+  }
+}
+
 sf::Font& SfmlRenderer::loadFont(const std::string& path) {
   auto iterator = _fonts.find(path);
   if (iterator != _fonts.end()) {

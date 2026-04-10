@@ -31,6 +31,7 @@ class SfmlDisplay : public ADisplay {
   void clear() override;
   void drawEntity(const std::vector<Entity>& entities) override;
   void drawText(const std::vector<Text>& texts) override;
+  void playSound(const std::vector<Sound>& sounds) override;
 
   void display() override;
 

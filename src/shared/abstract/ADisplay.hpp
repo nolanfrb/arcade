@@ -12,6 +12,7 @@
 #include <vector>
 #include "../Entity.hpp"
 #include "../Input.hpp"
+#include "../Sound.hpp"
 #include "../Text.hpp"
 #include "../interface/IDisplay.hpp"
 
@@ -35,6 +36,8 @@ class ADisplay : public IDisplay {
   void clear() override = 0;
   void drawEntity(const std::vector<Entity>& entities) override = 0;
   void drawText(const std::vector<Text>& texts) override = 0;
+
+  void playSound(const std::vector<Sound>& /*sounds*/) override {}
 
   void display() override = 0;
 
