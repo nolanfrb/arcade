@@ -358,8 +358,7 @@ void SDL2Renderer::playSound(const Sound& sound) {
     return;
   }
   constexpr int MAX_VOLUME = 128;
-  Mix_VolumeChunk(chunk,
-                  static_cast<int>(sound.volume / 100.F * MAX_VOLUME));
+  Mix_VolumeChunk(chunk, static_cast<int>(sound.volume / 100.F * MAX_VOLUME));
   int channel = Mix_PlayChannel(-1, chunk, sound.loop ? -1 : 0);
   (void)channel;
 }

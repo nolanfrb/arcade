@@ -48,7 +48,6 @@ void Snake::displayHUD() {
   scoreText.color = WHITE;
   scoreText.fontPath = "";
   addText(scoreText);
-
 }
 
 void Snake::updateGameOverText() {
