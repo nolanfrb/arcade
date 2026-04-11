@@ -7,7 +7,7 @@
 #include "scene.hpp"
 namespace {
 constexpr float MENU_LEFT_MARGIN = 5.0F;
-constexpr float SCOREBOARD_X = 24.0F;
+constexpr float SCOREBOARD_X = 30.0F;
 constexpr float SCOREBOARD_Y = 1.0F;
 constexpr float GAME_LIST_Y = 3.0F;
 constexpr float SCORE_LIST_Y = 5.0F;
