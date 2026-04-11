@@ -7,12 +7,14 @@
 
 #include "pacman.hpp"
 #include <cstdint>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
 #include "../../../shared/Entity.hpp"
 #include "../../../shared/Input.hpp"
 #include "../../../shared/Position.hpp"
+#include "../../../shared/Sound.hpp"
 #include "../../../shared/interface/IGame.hpp"
 
 namespace {
@@ -38,6 +40,14 @@ constexpr std::uint8_t PACMAN_FRAME_COUNT = 3;
 constexpr std::uint8_t GHOST_DIRECTION_FRAME_COUNT = 2;
 constexpr std::uint8_t SCARED_GHOST_FRAME_COUNT = 2;
 constexpr std::uint8_t DEAD_GHOST_FRAME_COUNT = 4;
+
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+float getCenteredTextPosX(const std::string& text, int fontSize,
+                          float screenWidthPx, float tilePx) {
+  const float textWidthPx =
+      static_cast<float>(text.size()) * static_cast<float>(fontSize);
+  return (screenWidthPx - textWidthPx) / (2.F * tilePx);
+}
 
 std::string buildTexturePath(const std::string& folder, std::uint8_t frame) {
   return folder + "/texture_" + std::to_string(frame) + ".png";
@@ -127,6 +137,7 @@ void Pacman::init() {
     if (checkMap()) {
       createEntitiesType();
       createEntities();
+      addSound(Sound{.filePath = "assets/pacman/sounds/pacman_beginning.wav"});
     }
   }
 }
@@ -142,8 +153,8 @@ void Pacman::stop() {
   _ghostDirections.clear();
   _isSuperPacgumActive = false;
   _score = 0;
-  _gameTimer = 0;
-  _playerMovementTimer = 0;
+  _level = 1;
+  _ghostSpeedMultiplier = 1;
   _gameTimer = 0;
   _playerMovementTimer = 0;
   clearEntities();
@@ -169,37 +180,51 @@ void Pacman::updateEntities(std::vector<Entity>& entities,
                             const std::vector<EntityType>& entityTypes,
                             float deltaTime) {
   (void)deltaTime;
+  auto addWithOffset = [&entities](const Entity& src) {
+    Entity offsetEntity = src;
+    offsetEntity.position = toScreenPos(src.position);
+    entities.push_back(offsetEntity);
+  };
+
   for (const auto& item : _foods) {
-    entities.push_back(item);
+    addWithOffset(item);
   }
   for (const auto& item : _pacgums) {
-    entities.push_back(item);
+    addWithOffset(item);
   }
   for (const auto& item : _superPacgums) {
-    entities.push_back(item);
+    addWithOffset(item);
   }
   for (auto ghost : _ghosts) {
     if (_isSuperPacgumActive) {
       ghost.type = entityTypes[getTypeIndex(type::CHASED_GHOST)];
     }
-    entities.push_back(ghost);
+    addWithOffset(ghost);
   }
   for (const auto& ghost : _deadGhosts) {
     Entity deadGhostEntity = ghost;
     deadGhostEntity.type = entityTypes[getTypeIndex(type::DEAD_GHOST)];
-    entities.push_back(deadGhostEntity);
+    addWithOffset(deadGhostEntity);
   }
   for (const auto& ghost : _chassedGhosts) {
-    entities.push_back(ghost);
+    addWithOffset(ghost);
   }
-  entities.push_back(_player);
+  addWithOffset(_player);
   setEntities(entities);
 }
 
 void Pacman::checkVictory() {
   if (_pacgums.empty() && _superPacgums.empty()) {
     _ghostSpeedMultiplier += LEVEL_UP_SPEED_INCREASE;
+    _level++;
+    int savedLevel = _level;
+    int savedScore = _score;
+    float savedSpeed = _ghostSpeedMultiplier;
     restart();
+    _level = savedLevel;
+    _score = savedScore;
+    _ghostSpeedMultiplier = savedSpeed;
+    setScore(_score);
   }
 }
 
@@ -244,19 +269,67 @@ void Pacman::updateAnimation(float deltatime) {
   setEntityTypes(entityTypes);
 }
 
+Position Pacman::toScreenPos(const Position& mapPos) {
+  return Position{.x = mapPos.x + MAP_OFFSET_X, .y = mapPos.y + MAP_OFFSET_Y};
+}
+
+void Pacman::displayHUD() {
+  clearTexts();
+  std::ostringstream scoreStream;
+  scoreStream << "Score: " << _score;
+
+  Text scoreText;
+  scoreText.content = scoreStream.str();
+  scoreText.position = Position{.x = MAP_OFFSET_X, .y = HUD_Y};
+  scoreText.fontSize = 14;
+  scoreText.color = WHITE;
+  scoreText.fontPath = "";
+  addText(scoreText);
+
+  std::ostringstream levelStream;
+  levelStream << "Level: " << _level;
+
+  Text levelText;
+  levelText.content = levelStream.str();
+  levelText.position = Position{
+      .x = MAP_OFFSET_X + static_cast<float>(MAP_COLS) - 8.F, .y = HUD_Y};
+  levelText.fontSize = 14;
+  levelText.color = WHITE;
+  levelText.fontPath = "";
+  addText(levelText);
+}
+
 void Pacman::displayGameOver() {
-  std::vector<Entity> entities;
+  constexpr float SCREEN_WIDTH_PX = static_cast<float>(SCREEN_TILES_X) * 20.F;
+  constexpr float SCREEN_CENTER_Y = static_cast<float>(SCREEN_TILES_Y) / 2.F;
+  constexpr float TILE_PX = 20.F;
+
+  clearTexts();
+
+  std::ostringstream scoreStream;
+  scoreStream << "GAME OVER! Final Score: " << _score;
+
   Text gameOverText;
-  gameOverText.content =
-      "Game Over. You can type R to restart or esc to return to "
-      "the menu.";
-  gameOverText.position = Position{.x = 0, .y = 5};
-  gameOverText.fontSize = 10;
+  gameOverText.content = scoreStream.str();
+  gameOverText.fontSize = 16;
+  gameOverText.position = Position{
+      .x = getCenteredTextPosX(gameOverText.content, gameOverText.fontSize,
+                               SCREEN_WIDTH_PX, TILE_PX),
+      .y = SCREEN_CENTER_Y - 1.F};
   gameOverText.color = RED;
   gameOverText.fontPath = "";
-  clearEntities();
-  clearTexts();
   addText(gameOverText);
+
+  Text restartText;
+  restartText.content = "Press R to Restart or ESC for Menu";
+  restartText.fontSize = 14;
+  restartText.position = Position{
+      .x = getCenteredTextPosX(restartText.content, restartText.fontSize,
+                               SCREEN_WIDTH_PX, TILE_PX),
+      .y = SCREEN_CENTER_Y + 1.F};
+  restartText.color = WHITE;
+  restartText.fontPath = "";
+  addText(restartText);
 }
 
 void Pacman::update(Input input, float deltaTime) {
@@ -284,18 +357,21 @@ void Pacman::update(Input input, float deltaTime) {
       if (_map[xCoordinate][yCoordinate] == type::WALL) {
         Entity wall;
         wall.type = entityTypes[getTypeIndex(type::WALL)];
-        wall.position = Position{.x = static_cast<float>(yCoordinate),
-                                 .y = static_cast<float>(xCoordinate)};
+        wall.position =
+            toScreenPos(Position{.x = static_cast<float>(yCoordinate),
+                                 .y = static_cast<float>(xCoordinate)});
         entities.push_back(wall);
       } else if (_map[xCoordinate][yCoordinate] == type::GHOST_DOOR) {
         Entity door;
         door.type = entityTypes[getTypeIndex(type::GHOST_DOOR)];
-        door.position = Position{.x = static_cast<float>(yCoordinate),
-                                 .y = static_cast<float>(xCoordinate)};
+        door.position =
+            toScreenPos(Position{.x = static_cast<float>(yCoordinate),
+                                 .y = static_cast<float>(xCoordinate)});
         entities.push_back(door);
       }
     }
   }
+  displayHUD();
   updateEntities(entities, entityTypes, deltaTime);
 }
 

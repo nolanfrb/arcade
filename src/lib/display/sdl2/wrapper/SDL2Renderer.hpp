@@ -8,6 +8,7 @@
 #pragma once
 
 #include <SDL2/SDL_events.h>
+#include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
@@ -15,6 +16,7 @@
 #include <unordered_map>
 #include "../../../../shared/Entity.hpp"
 #include "../../../../shared/Input.hpp"
+#include "../../../../shared/Sound.hpp"
 #include "../../../../shared/Text.hpp"
 
 class SDL2Renderer {
@@ -38,6 +40,7 @@ class SDL2Renderer {
   void clear();
   void drawEntity(const Entity& entity);
   void drawText(const Text& text);
+  void playSound(const Sound& sound);
   void display();
 
  private:
@@ -48,6 +51,9 @@ class SDL2Renderer {
 
   SDL_Texture* loadTexture(const std::string& path);
   TTF_Font* loadFont(const std::string& path, int size);
+  Mix_Chunk* loadSound(const std::string& path);
+
+  std::unordered_map<std::string, Mix_Chunk*> _sounds;
 
   bool drawSprite(const Entity& entity);
   void drawAsciiFallback(const Entity& entity);

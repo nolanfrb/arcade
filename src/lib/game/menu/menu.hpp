@@ -16,10 +16,12 @@
 #include "../../../shared/interface/IGame.hpp"
 #include "../../../shared/interface/IGameContext.hpp"
 
+class Scene;
+
 enum class MenuState : std::int8_t {
+  ENTERING_USERNAME,
   SELECTING_GAME,
   SELECTING_DISPLAY,
-  ENTERING_USERNAME,
 };
 
 class Menu : public AGame {
@@ -36,10 +38,11 @@ class Menu : public AGame {
   void restart() override;
   void update(Input input, float deltaTime) override;
 
-  void setContext(IGameContext* ctx) override;
+  void setContext(IGameContext& ctx) override;
 
  private:
   void buildScene();
+  void buildScoreboard(Scene& scene);
 
   void handleGameSelection(Input input);
   void handleDisplaySelection(Input input);
@@ -50,7 +53,7 @@ class Menu : public AGame {
   std::size_t _selectedGameIndex = 0;
   std::size_t _selectedDisplayIndex = 0;
   std::string _username;
-  MenuState _state = MenuState::SELECTING_GAME;
+  MenuState _state = MenuState::ENTERING_USERNAME;
 };
 
 extern "C" IGame* createGame();

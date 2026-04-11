@@ -33,7 +33,7 @@ class LibManager {
   void nextGame();
   void nextDisplay();
 
-  void setContext(IGameContext* ctx) { _ctx = ctx; }
+  void setContext(IGameContext& ctx) { _ctx = &ctx; }
 
   [[nodiscard]] IGame* getGame() const { return _game; }
   [[nodiscard]] IDisplay* getDisplay() const { return _display; }

@@ -12,6 +12,7 @@
 #include <vector>
 #include "../Entity.hpp"
 #include "../Input.hpp"
+#include "../Sound.hpp"
 #include "../Text.hpp"
 
 class IDisplay {
@@ -29,6 +30,8 @@ class IDisplay {
   virtual void clear() = 0;
   virtual void drawEntity(const std::vector<Entity>& entities) = 0;
   virtual void drawText(const std::vector<Text>& texts) = 0;
+
+  virtual void playSound(const std::vector<Sound>& sounds) = 0;
 
   virtual void display() = 0;
 

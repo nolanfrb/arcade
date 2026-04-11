@@ -29,6 +29,12 @@ if(APPLE)
         REQUIRED
     )
 
+    find_library(SDL2_MIXER_LIBRARY
+        NAMES SDL2_mixer
+        HINTS ${HOMEBREW_PREFIX}/lib
+        REQUIRED
+    )
+
     target_include_directories(arcade_sdl2 PRIVATE
         ${SDL2_INCLUDE_DIRS}
         ${HOMEBREW_PREFIX}/include
@@ -38,10 +44,12 @@ if(APPLE)
         ${SDL2_LIBRARIES}
         ${SDL2_IMAGE_LIBRARY}
         ${SDL2_TTF_LIBRARY}
+        ${SDL2_MIXER_LIBRARY}
     )
 else()
     find_package(SDL2_image REQUIRED)
     find_package(SDL2_ttf REQUIRED)
+    find_package(SDL2_mixer REQUIRED)
 
     target_include_directories(arcade_sdl2 PRIVATE
         ${SDL2_INCLUDE_DIRS}
@@ -53,5 +61,6 @@ else()
         ${SDL2_LIBRARIES}
         SDL2_image
         SDL2_ttf
+        SDL2_mixer
     )
 endif()

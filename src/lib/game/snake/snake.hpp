@@ -19,12 +19,18 @@
 #include "../../../shared/Text.hpp"
 #include "../../../shared/abstract/AGame.hpp"
 
+constexpr int SCREEN_TILES_X = 40;
+constexpr int SCREEN_TILES_Y = 30;
 constexpr int MAP_WIDTH = 38;
 constexpr int MAP_HEIGHT = 28;
 constexpr int PLAY_AREA_X = 1;
 constexpr int PLAY_AREA_Y = 1;
 constexpr int PLAY_AREA_WIDTH = 36;
 constexpr int PLAY_AREA_HEIGHT = 26;
+constexpr float MAP_OFFSET_X =
+    static_cast<float>(SCREEN_TILES_X - MAP_WIDTH) / 2.F;
+constexpr float MAP_OFFSET_Y = 2.F;
+constexpr float HUD_Y = 0.5F;
 constexpr bool CYCLICAL = false;
 constexpr float INITIAL_SPEED = 0.15F;
 constexpr float MAX_SPEED = 0.05F;
@@ -96,7 +102,9 @@ class Snake : public AGame {
   void addSnakeEntities();
   void addFoodEntities();
   void updateGameOverText();
+  void displayHUD();
   void updateBonusFood(float deltaTime);
+  static Position toScreenPos(const Position& pos);
   bool isPositionOccupied(const Position& pos, bool includeBody = true);
   Position getNextHeadPosition();
   EntityTypeSnake getHeadTypeForDirection();

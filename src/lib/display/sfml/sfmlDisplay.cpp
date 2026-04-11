@@ -61,7 +61,9 @@ Input SfmlDisplay::getEvent() {
 }
 
 std::optional<std::string> SfmlDisplay::getTextInput() {
-  pollEvents();
+  if (!_pendingText.has_value()) {
+    pollEvents();
+  }
   if (_textConsumed) {
     return _textInputBuffer;
   }
@@ -82,6 +84,12 @@ std::optional<std::string> SfmlDisplay::getTextInput() {
     _textInputBuffer.push_back(input);
   }
   return _textInputBuffer;
+}
+
+void SfmlDisplay::playSound(const std::vector<Sound>& sounds) {
+  for (const auto& sound : sounds) {
+    _renderer.playSound(sound);
+  }
 }
 
 void SfmlDisplay::clear() { _renderer.clear(); }

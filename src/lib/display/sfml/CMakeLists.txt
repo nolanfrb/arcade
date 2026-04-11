@@ -23,5 +23,5 @@ if(APPLE)
     endif()
 endif()
 
-find_package(SFML 2.6.1 REQUIRED COMPONENTS graphics window system)
-target_link_libraries(arcade_sfml PRIVATE sfml-graphics sfml-window sfml-system)
+find_package(SFML 2.6.1 REQUIRED COMPONENTS graphics window system audio)
+target_link_libraries(arcade_sfml PRIVATE sfml-graphics sfml-window sfml-system sfml-audio)

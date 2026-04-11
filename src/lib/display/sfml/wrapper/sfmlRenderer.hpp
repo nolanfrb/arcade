@@ -7,11 +7,15 @@
 
 #pragma once
 
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
+#include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include "../../../../shared/Entity.hpp"
 #include "../../../../shared/Input.hpp"
+#include "../../../../shared/Sound.hpp"
 #include "../../../../shared/Text.hpp"
 
 class SfmlRenderer {
@@ -35,6 +39,7 @@ class SfmlRenderer {
   void clear();
   void drawEntity(const Entity& entity);
   void drawText(const Text& text);
+  void playSound(const Sound& sound);
   void display();
 
  private:
@@ -44,7 +49,11 @@ class SfmlRenderer {
 
   sf::Texture& loadTexture(const std::string& path);
   sf::Font& loadFont(const std::string& path);
+  sf::SoundBuffer& loadSoundBuffer(const std::string& path);
 
   void drawShape(const Entity& entity);
   void drawSprite(const Entity& entity);
+
+  std::unordered_map<std::string, sf::SoundBuffer> _soundBuffers;
+  std::vector<std::unique_ptr<sf::Sound>> _activeSounds;
 };

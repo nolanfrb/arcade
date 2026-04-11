@@ -53,6 +53,15 @@ constexpr std::array<std::uint8_t, 4> RED = {255, 0, 0, 255};
 constexpr std::array<std::uint8_t, 4> ORANGE = {255, 165, 0, 255};
 constexpr std::array<std::uint8_t, 4> PINK = {255, 192, 203, 255};
 
+constexpr int SCREEN_TILES_X = 40;
+constexpr int SCREEN_TILES_Y = 30;
+constexpr int MAP_COLS = 28;
+constexpr int MAP_ROWS = 26;
+constexpr float MAP_OFFSET_X =
+    static_cast<float>(SCREEN_TILES_X - MAP_COLS) / 2.F;
+constexpr float MAP_OFFSET_Y = 2.F;
+constexpr float HUD_Y = 0.5F;
+
 class Pacman : public AGame {
  public:
   Pacman() = default;
@@ -100,6 +109,8 @@ class Pacman : public AGame {
   static int getTypeIndex(type tile);
 
   void displayGameOver();
+  void displayHUD();
+  static Position toScreenPos(const Position& mapPos);
 
   int _score = 0;
 
@@ -113,6 +124,7 @@ class Pacman : public AGame {
   float _animationTimer = 0;
 
   Input _lastPlayerInput = Input::NONE;
+  Input _bufferedDirection = Input::NONE;
 
   std::uint8_t _pacmanAnimationFrame = 0;
   std::uint8_t _ghostAnimationFrame = 0;
@@ -132,4 +144,5 @@ class Pacman : public AGame {
   std::vector<std::vector<type>> _map;
 
   float _ghostSpeedMultiplier = 1;
+  int _level = 1;
 };

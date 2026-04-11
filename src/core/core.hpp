@@ -15,6 +15,7 @@
 #include "../shared/interface/IGame.hpp"
 #include "CoreContext.hpp"
 #include "LibManager/libManager.hpp"
+#include "Registry.hpp"
 #include "SystemCommand/systemCommand.hpp"
 
 constexpr int ERROR = 84;
@@ -40,9 +41,15 @@ class Core {
   void loadDisplay(std::string const& path);
 
  private:
+  bool isInMenu();
+  bool handleConfirmQuit(Input input);
+  static void appendConfirmTexts(std::vector<Text>& texts);
+
   bool _running = true;
+  bool _confirmingQuit = false;
 
   SystemCommand _systemCommand;
   LibManager _libManager;
-  CoreContext _ctx{_libManager};
+  Registry _registry;
+  CoreContext _ctx{_libManager, _registry};
 };
