@@ -21,5 +21,6 @@ enum class Input : std::int8_t {
   RESTART,
   NEXTGAME,
   NEXTDISPLAY,
-  TEXT
+  TEXT,
+  HELP
 };
