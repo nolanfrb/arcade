@@ -31,7 +31,7 @@ void Snake::createBorders() {
         addEntity(EntityFactory::createTile(
             toScreenPos(Position{.x = static_cast<float>(col),
                                  .y = static_cast<float>(row)}),
-            "assets/snake/border.png", WHITE, '#'));
+            "", WHITE, '#'));
       }
     }
   }

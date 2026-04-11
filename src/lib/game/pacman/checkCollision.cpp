@@ -18,7 +18,7 @@ void Pacman::checkSuperPacgumCollision() {
       _score += static_cast<int>(itemScore::SUPERPACGUM_SCORE);
       _isSuperPacgumActive = true;
       _superPacgumTimer = 0;
-      addSound(Sound{.filePath = "assets/pacman/sounds/pacman_eatfruit.wav"});
+      addSound(Sound{.filePath = "assets/pacman/sounds/power_pellet.wav"});
       _superPacgums.erase(it);
       break;
     }
@@ -30,7 +30,7 @@ void Pacman::checkPacgumCollision() {
     if (_player.position.x == it->position.x &&
         _player.position.y == it->position.y) {
       _score += static_cast<int>(itemScore::PACGUM_SCORE);
-      addSound(Sound{.filePath = "assets/pacman/sounds/pacman_chomp.wav"});
+      addSound(Sound{.filePath = "assets/pacman/sounds/eat_dot.wav"});
       _pacgums.erase(it);
       break;
     }
@@ -42,7 +42,7 @@ void Pacman::checkFoodCollision() {
     if (_player.position.x == it->position.x &&
         _player.position.y == it->position.y) {
       _score += static_cast<int>(itemScore::FOOD_SCORE);
-      addSound(Sound{.filePath = "assets/pacman/sounds/pacman_eatfruit.wav"});
+      addSound(Sound{.filePath = "assets/pacman/sounds/eat_fruit.wav"});
       _foods.erase(it);
       break;
     }
@@ -60,8 +60,10 @@ void Pacman::checkGhostCollision() {
         _deadGhosts.push_back(ghost);
         _ghosts.erase(_ghosts.begin() + static_cast<int>(i));
         _ghostDirections.erase(_ghostDirections.begin() + static_cast<int>(i));
+        addSound(Sound{.filePath = "assets/pacman/sounds/ghost_eaten.wav"});
         continue;
       }
+      addSound(Sound{.filePath = "assets/pacman/sounds/death.wav"});
       setIsGameOver(true);
     }
     ++i;
