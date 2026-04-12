@@ -31,9 +31,12 @@ void SDL2Renderer::init(int width, int height, const std::string& title) {
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO);
   Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048);
 
+  // NOLINTBEGIN(hicpp-signed-bitwise)
+  const Uint32 windowFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
   _window =
       SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED,
-                       SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
+                       SDL_WINDOWPOS_CENTERED, width, height, windowFlags);
+  // NOLINTEND(hicpp-signed-bitwise)
 
   if (_window == nullptr) {
     throw std::runtime_error("Failed to create SDL window");
@@ -47,6 +50,9 @@ void SDL2Renderer::init(int width, int height, const std::string& title) {
     _window = nullptr;
     throw std::runtime_error("Failed to create SDL renderer");
   }
+
+  SDL_RenderSetLogicalSize(_renderer, sdl2::LOGICAL_WIDTH,
+                           sdl2::LOGICAL_HEIGHT);
 
   IMG_Init(IMG_INIT_PNG);
   TTF_Init();
