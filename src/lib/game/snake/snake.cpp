@@ -14,6 +14,7 @@ using owner = T;
 }  // namespace gsl
 
 extern "C" gsl::owner<IGame*> createGame() { return new Snake(); }
+extern "C" void destroyGame(gsl::owner<IGame*> game) { delete game; }
 
 void Snake::init() {
   srand(static_cast<unsigned>(time(nullptr)));

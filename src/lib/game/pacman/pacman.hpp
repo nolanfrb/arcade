@@ -101,7 +101,6 @@ class Pacman : public AGame {
 
   void checkSuperPacgumTimer(float deltaTime);
   void updateAnimation(float deltaTime);
-  void updateSiren(float deltaTime);
 
   void createEntities();
   void createEntitiesType();
@@ -123,7 +122,6 @@ class Pacman : public AGame {
   float _deadGhostMovementTimer = 0;
   float _playerMovementTimer = 0;
   float _animationTimer = 0;
-  float _sirenTimer = 0;
 
   Input _lastPlayerInput = Input::NONE;
   Input _bufferedDirection = Input::NONE;

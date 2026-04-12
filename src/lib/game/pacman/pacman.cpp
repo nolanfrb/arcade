@@ -157,7 +157,6 @@ void Pacman::stop() {
   _ghostSpeedMultiplier = 1;
   _gameTimer = 0;
   _playerMovementTimer = 0;
-  _sirenTimer = 0;
   clearEntities();
   clearTexts();
 }
@@ -174,26 +173,6 @@ void Pacman::checkSuperPacgumTimer(float deltaTime) {
       _isSuperPacgumActive = false;
       _superPacgumTimer = 0;
     }
-  }
-}
-
-void Pacman::updateSiren(float deltaTime) {
-  constexpr float SIREN_INITIAL_DELAY = 4.2F;
-  constexpr float SIREN_REPLAY_INTERVAL = 6.3F;
-  constexpr float SIREN_VOLUME = 40.F;
-
-  if (_gameTimer < SIREN_INITIAL_DELAY) {
-    return;
-  }
-  if (_isSuperPacgumActive) {
-    _sirenTimer = SIREN_REPLAY_INTERVAL;
-    return;
-  }
-  _sirenTimer += deltaTime;
-  if (_sirenTimer >= SIREN_REPLAY_INTERVAL) {
-    addSound(Sound{.filePath = "assets/pacman/sounds/siren.wav",
-                   .volume = SIREN_VOLUME});
-    _sirenTimer = 0.F;
   }
 }
 
@@ -369,7 +348,6 @@ void Pacman::update(Input input, float deltaTime) {
   setScore(_score);
   checkVictory();
   checkSuperPacgumTimer(deltaTime);
-  updateSiren(deltaTime);
 
   std::vector<Entity> entities;
   const std::vector<EntityType>& entityTypes = getEntityTypes();
@@ -398,3 +376,4 @@ void Pacman::update(Input input, float deltaTime) {
 }
 
 extern "C" gsl::owner<IGame*> createGame() { return new Pacman(); }
+extern "C" void destroyGame(gsl::owner<IGame*> game) { delete game; }

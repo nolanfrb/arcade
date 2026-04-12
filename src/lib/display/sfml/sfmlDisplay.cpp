@@ -109,3 +109,6 @@ void SfmlDisplay::drawText(const std::vector<Text>& texts) {
 void SfmlDisplay::display() { _renderer.display(); }
 
 extern "C" gsl::owner<IDisplay*> createDisplay() { return new SfmlDisplay(); }
+extern "C" void destroyDisplay(gsl::owner<IDisplay*> display) {
+  delete display;
+}

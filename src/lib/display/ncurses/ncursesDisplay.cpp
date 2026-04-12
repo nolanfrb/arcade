@@ -157,3 +157,6 @@ void NcursesDisplay::display() { refresh(); }
 extern "C" gsl::owner<IDisplay*> createDisplay() {
   return new NcursesDisplay();
 }
+extern "C" void destroyDisplay(gsl::owner<IDisplay*> display) {
+  delete display;
+}
