@@ -48,7 +48,7 @@ EntityFactory::SnakeSegmentInfo EntityFactory::getSegmentInfo(
               .color = GREEN,
               .asciiChar = 'o'};
     case EntityTypeSnake::SNAKE_TAIL:
-      return {.spritePath = "assets/snake/snake_body.png",
+      return {.spritePath = "assets/snake/snake_tail.png",
               .color = GREEN,
               .asciiChar = '~'};
     default:
