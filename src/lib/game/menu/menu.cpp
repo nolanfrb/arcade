@@ -189,3 +189,4 @@ void Menu::buildScene() {
 }
 
 extern "C" gsl::owner<IGame*> createGame() { return new Menu(); }
+extern "C" void destroyGame(gsl::owner<IGame*> game) { delete game; }

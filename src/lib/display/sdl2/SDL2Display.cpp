@@ -113,3 +113,6 @@ void SDL2Display::drawText(const std::vector<Text>& texts) {
 void SDL2Display::display() { _renderer.display(); }
 
 extern "C" gsl::owner<IDisplay*> createDisplay() { return new SDL2Display(); }
+extern "C" void destroyDisplay(gsl::owner<IDisplay*> display) {
+  delete display;
+}

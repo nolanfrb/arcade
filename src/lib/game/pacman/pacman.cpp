@@ -398,3 +398,4 @@ void Pacman::update(Input input, float deltaTime) {
 }
 
 extern "C" gsl::owner<IGame*> createGame() { return new Pacman(); }
+extern "C" void destroyGame(gsl::owner<IGame*> game) { delete game; }
