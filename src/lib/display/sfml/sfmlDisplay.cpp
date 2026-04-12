@@ -33,6 +33,10 @@ void SfmlDisplay::pollEvents() {
       _pendingEvent = Input::EXIT;
       return;
     }
+    if (event.type == sf::Event::Resized) {
+      _renderer.handleResize(event.size.width, event.size.height);
+      continue;
+    }
     Input mapped = SfmlRenderer::mapEvent(event);
     if (mapped != Input::NONE) {
       _pendingEvent = mapped;

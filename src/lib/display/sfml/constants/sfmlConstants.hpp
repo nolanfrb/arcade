@@ -11,8 +11,10 @@ namespace sfml {
 
 constexpr float TILE_SIZE = 20.F;
 constexpr unsigned int FRAMERATE_LIMIT = 60;
-constexpr unsigned int WINDOW_WIDTH = 800;
-constexpr unsigned int WINDOW_HEIGHT = 600;
+constexpr unsigned int WINDOW_WIDTH = 1280;
+constexpr unsigned int WINDOW_HEIGHT = 720;
+constexpr unsigned int LOGICAL_WIDTH = 800;
+constexpr unsigned int LOGICAL_HEIGHT = 600;
 constexpr auto* WINDOW_TITLE = "Arcade";
 constexpr auto* DEFAULT_FONT = "assets/fonts/PressStart2P.ttf";
 

@@ -16,9 +16,38 @@
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void SfmlRenderer::init(unsigned int width, unsigned int height,
                         const std::string& title) {
-  _window.create(sf::VideoMode(width, height), title,
-                 sf::Style::Titlebar | sf::Style::Close);
+  // NOLINTBEGIN(hicpp-signed-bitwise)
+  const sf::Uint32 windowStyle =
+      sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
+  // NOLINTEND(hicpp-signed-bitwise)
+  _window.create(sf::VideoMode(width, height), title, windowStyle);
   _window.setFramerateLimit(sfml::FRAMERATE_LIMIT);
+  _view.reset(sf::FloatRect(0.F, 0.F, static_cast<float>(sfml::LOGICAL_WIDTH),
+                            static_cast<float>(sfml::LOGICAL_HEIGHT)));
+  handleResize(width, height);
+}
+
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+void SfmlRenderer::handleResize(unsigned int width, unsigned int height) {
+  if (width == 0 || height == 0) {
+    return;
+  }
+  const float windowAspect =
+      static_cast<float>(width) / static_cast<float>(height);
+  const float targetAspect = static_cast<float>(sfml::LOGICAL_WIDTH) /
+                             static_cast<float>(sfml::LOGICAL_HEIGHT);
+  sf::FloatRect viewport(0.F, 0.F, 1.F, 1.F);
+  if (windowAspect > targetAspect) {
+    const float viewportWidth = targetAspect / windowAspect;
+    viewport =
+        sf::FloatRect((1.F - viewportWidth) / 2.F, 0.F, viewportWidth, 1.F);
+  } else if (windowAspect < targetAspect) {
+    const float viewportHeight = windowAspect / targetAspect;
+    viewport =
+        sf::FloatRect(0.F, (1.F - viewportHeight) / 2.F, 1.F, viewportHeight);
+  }
+  _view.setViewport(viewport);
+  _window.setView(_view);
 }
 
 void SfmlRenderer::close() {

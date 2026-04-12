@@ -36,6 +36,8 @@ class SfmlRenderer {
   static Input mapEvent(const sf::Event& event);
   static char mapTextEvent(const sf::Event& event);
 
+  void handleResize(unsigned int width, unsigned int height);
+
   void clear();
   void drawEntity(const Entity& entity);
   void drawText(const Text& text);
@@ -44,6 +46,7 @@ class SfmlRenderer {
 
  private:
   sf::RenderWindow _window;
+  sf::View _view;
   std::unordered_map<std::string, sf::Texture> _textures;
   std::unordered_map<std::string, sf::Font> _fonts;
 
